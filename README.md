@@ -48,28 +48,57 @@ Esc, credits refunded either way for an aborted or errored turn).
 
 ## Install
 
-### Option A — point Claude Code straight at this checkout
-
-```bash
-claude --plugin-dir /path/to/claude_slot
-```
-
-Everything works immediately: the plugin loads inline, hooks fire, and `/claude-slots:setup`,
-`/claude-slots:teardown`, `/claude-slots:stats`, `/claude-slots:demo` are all available.
-
-### Option B — as a local marketplace
+### Option A — from GitHub (recommended)
 
 This repo doubles as a one-plugin marketplace (`.claude-plugin/marketplace.json`, name
-`claude-slots-local`). From inside Claude Code:
+`claude-slots-local`) at
+[`WorldInnovationsDepartment/claude_slots`](https://github.com/WorldInnovationsDepartment/claude_slots).
+From inside Claude Code:
 
 ```
-/plugin marketplace add /path/to/claude_slot
+/plugin marketplace add WorldInnovationsDepartment/claude_slots
 /plugin install claude-slots@claude-slots-local
 ```
 
-or non-interactively via `--settings` / `settings.json`'s `extraKnownMarketplaces` +
-`enabledPlugins` (see the Claude Code plugin docs for the exact keys — the marketplace name is
-`claude-slots-local`, the plugin name is `claude-slots`).
+(the full URL form `/plugin marketplace add https://github.com/WorldInnovationsDepartment/claude_slots`
+works too). `/claude-slots:setup`, `/claude-slots:teardown`, `/claude-slots:stats`,
+`/claude-slots:demo` become available once the install finishes.
+
+For a non-interactive install (e.g. rolling this out via a shared `settings.json`), add:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "claude-slots-local": {
+      "source": { "source": "github", "repo": "WorldInnovationsDepartment/claude_slots" }
+    }
+  },
+  "enabledPlugins": {
+    "claude-slots@claude-slots-local": true
+  }
+}
+```
+
+to `~/.claude/settings.json` (user-wide) or `.claude/settings.json` (project-scoped).
+
+### Option B — point Claude Code straight at a local checkout
+
+```bash
+git clone https://github.com/WorldInnovationsDepartment/claude_slots.git
+claude --plugin-dir /path/to/claude_slots
+```
+
+Everything works immediately: the plugin loads inline, hooks fire, and the same
+`/claude-slots:*` commands are all available.
+
+### Option C — as a local marketplace
+
+Same as Option A, but pointed at a local clone instead of GitHub:
+
+```
+/plugin marketplace add /path/to/claude_slots
+/plugin install claude-slots@claude-slots-local
+```
 
 ## Enabling Tier 1 (the real animated spinner)
 
