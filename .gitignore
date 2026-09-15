@@ -1,0 +1,28 @@
+# Dependencies (this project has none — zero runtime deps — but ignore
+# node_modules in case a dev tool adds one locally).
+node_modules/
+
+# Editor / OS cruft.
+.DS_Store
+*.swp
+*.swo
+
+# Python cache from scripts/dev/pty-smoke.py and friends.
+__pycache__/
+*.pyc
+
+# Backups written by bin/claude-slots-setup.js when it patches settings.json
+# (only ever alongside a settings file, never inside this repo, but ignored
+# here too in case someone points --settings-path at a repo-local file).
+*.claude-slots.bak-*
+
+# Local scratch/test output some contributors keep next to the repo.
+/.local-test/
+*.log
+
+# Runtime pointer file: bin/claude-slots-hook.js records the real
+# CLAUDE_PLUGIN_DATA directory here so bin/claude-slots-statusline.js (which
+# never receives that env var — it's a plain settings.json command, not a
+# plugin hook) can find the same session/economy files. Machine-specific
+# runtime state, never checked in.
+/.claude-slots-runtime/

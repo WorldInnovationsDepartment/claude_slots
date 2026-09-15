@@ -1,0 +1,3052 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Claude Slots Preview</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --page-bg: #f3f2ee;
+    --page-fg: #1c1d21;
+    --muted: #5b5e68;
+    --card-bg: #ffffff;
+    --card-border: #dcdadd;
+    --accent: #b45309;
+    --accent-fg: #ffffff;
+    --code-bg: #efeae2;
+    --code-fg: #43290f;
+    --shadow: 0 1px 2px rgba(20, 20, 25, 0.06), 0 8px 24px rgba(20, 20, 25, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page-bg: #16161a;
+      --page-fg: #e7e6ea;
+      --muted: #9a9ba5;
+      --card-bg: #1e1f24;
+      --card-border: #303138;
+      --accent: #f0a94e;
+      --accent-fg: #1c1200;
+      --code-bg: #262019;
+      --code-fg: #ecd9b8;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--page-fg);
+  }
+  body {
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    padding: 28px 20px 64px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  header h1 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    letter-spacing: 0.01em;
+  }
+  header p {
+    margin: 0 0 14px;
+    color: var(--muted);
+    max-width: 74ch;
+  }
+  code, .cmd {
+    font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .cmd-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 10px 0 22px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 14px 20px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  select, input[type="text"] {
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    border: 1px solid var(--card-border);
+    background: var(--page-bg);
+    color: var(--page-fg);
+    min-width: 9em;
+  }
+  input[type="text"] { min-width: 7em; font-family: "SF Mono", Menlo, Consolas, monospace; }
+
+  .fps-group { display: flex; gap: 4px; }
+  .fps-group button {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--card-border);
+    background: var(--page-bg);
+    color: var(--page-fg);
+    cursor: pointer;
+  }
+  .fps-group button[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  button.primary, button.secondary {
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  button.primary {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+  button.secondary {
+    background: transparent;
+    color: var(--page-fg);
+    border-color: var(--card-border);
+  }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .stat-row {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    font-size: 13px;
+  }
+  .stat-row .stat b {
+    font-size: 15px;
+    display: block;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-row .stat span.label {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  #status-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--muted);
+  }
+  #status-pill[data-state="spinning"] { background: var(--accent); color: var(--accent-fg); }
+
+  .panel-outer {
+    background: #0e0e12;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    overflow-x: auto;
+  }
+  #terminal {
+    font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 13.5px;
+    line-height: 1.15;
+    white-space: pre;
+    display: inline-block;
+    min-width: 100%;
+  }
+  #terminal .tl { white-space: pre; }
+
+  #transcript {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: auto;
+    background: #0e0e12;
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  #transcript .tl { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.5; white-space: pre; }
+  #transcript .empty { color: #6e7280; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px; }
+
+  footer {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Claude Slots Preview</h1>
+    <p>
+      A browser-side preview of the Claude Slots plugin's slot machine, rendered with the exact same
+      <code>lib/</code> engine (state machine, art builders, RNG, economy) that drives the real Claude Code
+      spinner replacement — bundled here into one inline script with no server and no network requests, purely
+      for visually reviewing frames, timing, and every outcome without a live Claude Code session.
+    </p>
+    <div class="cmd-block">
+      <div><span class="cmd">export CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1</span> &mdash; enable Tier 1 (function-hooks spinner replacement)</div>
+      <div><span class="cmd">claude --plugin-dir /path/to/claude_slot</span> &mdash; run Claude Code with this plugin loaded</div>
+      <div><span class="cmd">/claude-slots:setup</span> &mdash; inside Claude Code, install the Tier 2 statusline fallback</div>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="controls">
+      <div class="field">
+        <label for="size">Size</label>
+        <select id="size">
+          <option value="auto">auto</option>
+          <option value="compact">compact</option>
+          <option value="standard" selected>standard</option>
+          <option value="grand">grand</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="outcome">Outcome</label>
+        <select id="outcome">
+          <option value="">auto (random)</option>
+          <option value="jackpot">jackpot</option>
+          <option value="medallion">medallion</option>
+          <option value="triple">triple</option>
+          <option value="double">double</option>
+          <option value="nearmiss">near miss</option>
+          <option value="lose">lose</option>
+          <option value="aborted">aborted (esc)</option>
+          <option value="error">error</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="seed">Seed</label>
+        <input type="text" id="seed" placeholder="random" />
+      </div>
+      <div class="field">
+        <label>FPS</label>
+        <div class="fps-group" id="fps-group" role="group" aria-label="Frames per second">
+          <button type="button" data-fps="1">1</button>
+          <button type="button" data-fps="5">5</button>
+          <button type="button" data-fps="10" aria-pressed="true">10</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button type="button" class="primary" id="btn-pull">Pull lever</button>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button type="button" class="secondary" id="btn-play-all">Play all outcomes</button>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button type="button" class="secondary" id="btn-reset">Reset credits</button>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <span id="status-pill" data-state="idle">idle</span>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><span class="label">Credits</span><b id="stat-credits">100</b></div>
+      <div class="stat"><span class="label">Last win</span><b id="stat-lastwin">0</b></div>
+      <div class="stat"><span class="label">Spins</span><b id="stat-spins">0</b></div>
+      <div class="stat"><span class="label">Jackpots</span><b id="stat-jackpots">0</b></div>
+      <div class="stat"><span class="label">Best streak</span><b id="stat-streak">0</b></div>
+    </div>
+  </section>
+
+  <section class="panel-outer">
+    <div id="terminal"></div>
+  </section>
+
+  <section class="card" style="margin-top:18px;">
+    <div class="field" style="margin-bottom:8px;">
+      <label>Transcript (result lines)</label>
+    </div>
+    <div id="transcript"><div class="empty">No spins yet — pull the lever.</div></div>
+  </section>
+
+  <footer>
+    Built by <code>scripts/dev/build-preview.js</code> from the unmodified <code>lib/</code> engine. Reads no
+    network resources; every symbol, color, and duration comes straight from <code>docs/ART-SPEC.md</code> via
+    <code>lib/symbols.js</code> / <code>lib/art.js</code>.
+  </footer>
+</div>
+
+<script type="module">
+const __modules = Object.create(null);
+
+__modules["./width.js"] = (function () {
+  'use strict';
+
+
+  // Claude Slots — display-width primitives (lib/width.js)
+  //
+  // Pure ESM, zero dependencies, no Node/DOM/browser APIs — this file must run
+  // unchanged in Node, in a browser, and inside Claude Code's hooks worker.
+  //
+  // The whole cabinet (docs/ART-SPEC.md §1, §13) is built from glyphs that are
+  // verified single-width (box drawing, geometric shapes, a handful of dingbat
+  // symbols, ASCII). This module gives every other lib/ file one place to ask
+  // "how many terminal columns does this string occupy", so frame.js/art.js
+  // never hand-count characters.
+  //
+  // The algorithm below is a compact, dependency-free wcwidth-style table: it
+  // is not an exhaustive Unicode database, but it correctly classifies every
+  // glyph this project's default theme uses (ASCII, box drawing U+2500-257F,
+  // block elements U+2580-259F, geometric shapes U+25A0-25FF, the dingbats
+  // used here including ✻ U+273B), plus the general shape of "wide" (CJK,
+  // fullwidth, most emoji) and "zero-width" (combining marks, joiners,
+  // variation selectors) codepoints for the optional emoji theme (§14) and for
+  // any prose/tool-output text a future integration might need to measure.
+  
+  // --- zero-width ranges ------------------------------------------------------
+  // Combining marks, joiners, variation selectors, and other codepoints that
+  // attach to the previous character without occupying a column of their own.
+  const ZERO_WIDTH_RANGES = [
+    [0x0300, 0x036f], // Combining Diacritical Marks
+    [0x0483, 0x0489],
+    [0x0591, 0x05bd],
+    [0x05bf, 0x05bf],
+    [0x05c1, 0x05c2],
+    [0x05c4, 0x05c5],
+    [0x05c7, 0x05c7],
+    [0x0610, 0x061a],
+    [0x064b, 0x065f],
+    [0x0670, 0x0670],
+    [0x06d6, 0x06dc],
+    [0x06df, 0x06e4],
+    [0x06e7, 0x06e8],
+    [0x06ea, 0x06ed],
+    [0x0711, 0x0711],
+    [0x0730, 0x074a],
+    [0x07a6, 0x07b0],
+    [0x0816, 0x0819],
+    [0x081b, 0x0823],
+    [0x0825, 0x0827],
+    [0x0829, 0x082d],
+    [0x0e31, 0x0e31],
+    [0x0e34, 0x0e3a],
+    [0x0e47, 0x0e4e],
+    [0x200b, 0x200f], // ZWSP, ZWNJ, ZWJ, LRM, RLM
+    [0x202a, 0x202e], // directional formatting
+    [0x2060, 0x2064], // word joiner etc.
+    [0x20d0, 0x20ff], // Combining Diacritical Marks for Symbols
+    [0xfe00, 0xfe0f], // variation selectors (VS1-16; VS-16 handled specially below)
+    [0xfe20, 0xfe2f], // combining half marks
+    [0xfeff, 0xfeff], // BOM / zero width no-break space
+    [0x1ab0, 0x1aff],
+    [0x1dc0, 0x1dff],
+    [0xe0100, 0xe01ef], // variation selectors supplement
+  ];
+  
+  // --- wide (2-column) ranges --------------------------------------------------
+  // East Asian Wide/Fullwidth blocks, plus the emoji-presentation ranges. Box
+  // drawing (U+2500-257F), block elements (U+2580-259F), geometric shapes
+  // (U+25A0-25FF) and the general dingbats range (U+2700-27BF) are all
+  // deliberately excluded — every glyph this cabinet uses in its default theme
+  // lives in one of those "narrow" ranges (verified against ART-SPEC §1/§13).
+  const WIDE_RANGES = [
+    [0x1100, 0x115f], // Hangul Jamo
+    [0x231a, 0x231b], // watch, hourglass (emoji presentation by default)
+    [0x2329, 0x232a],
+    [0x23e9, 0x23ec],
+    [0x23f0, 0x23f0],
+    [0x23f3, 0x23f3],
+    [0x25fd, 0x25fe],
+    [0x2614, 0x2615],
+    [0x2648, 0x2653],
+    [0x267f, 0x267f],
+    [0x2693, 0x2693],
+    [0x26a1, 0x26a1],
+    [0x26aa, 0x26ab],
+    [0x26bd, 0x26be],
+    [0x26c4, 0x26c5],
+    [0x26ce, 0x26ce],
+    [0x26d4, 0x26d4],
+    [0x26ea, 0x26ea],
+    [0x26f2, 0x26f3],
+    [0x26f5, 0x26f5],
+    [0x26fa, 0x26fa],
+    [0x26fd, 0x26fd],
+    [0x2705, 0x2705],
+    [0x270a, 0x270b],
+    [0x2728, 0x2728],
+    [0x274c, 0x274c],
+    [0x274e, 0x274e],
+    [0x2753, 0x2755],
+    [0x2757, 0x2757],
+    [0x2795, 0x2797],
+    [0x27b0, 0x27b0],
+    [0x27bf, 0x27bf],
+    [0x2b1b, 0x2b1c],
+    [0x2b50, 0x2b50],
+    [0x2b55, 0x2b55],
+    [0x2e80, 0x303e], // CJK radicals, punctuation, Hiragana/Katakana start
+    [0x3041, 0x33ff], // Hiragana..CJK compat
+    [0x3400, 0x4dbf], // CJK extension A
+    [0x4e00, 0x9fff], // CJK unified ideographs
+    [0xa000, 0xa4cf], // Yi
+    [0xac00, 0xd7a3], // Hangul syllables
+    [0xf900, 0xfaff], // CJK compatibility ideographs
+    [0xfe30, 0xfe4f], // CJK compatibility forms
+    [0xff00, 0xff60], // fullwidth forms
+    [0xffe0, 0xffe6],
+    [0x16fe0, 0x16fe4],
+    [0x17000, 0x18d08], // Tangut
+    [0x1b000, 0x1b2fb], // Kana supplement
+    [0x1f004, 0x1f004],
+    [0x1f0cf, 0x1f0cf],
+    [0x1f18e, 0x1f18e],
+    [0x1f191, 0x1f19a],
+    [0x1f200, 0x1f320],
+    [0x1f32d, 0x1f335],
+    [0x1f337, 0x1f37c],
+    [0x1f37e, 0x1f393],
+    [0x1f3a0, 0x1f3ca],
+    [0x1f3cf, 0x1f3d3],
+    [0x1f3e0, 0x1f3f0],
+    [0x1f3f4, 0x1f3f4],
+    [0x1f3f8, 0x1f43e],
+    [0x1f440, 0x1f440],
+    [0x1f442, 0x1f4fc],
+    [0x1f4ff, 0x1f53d],
+    [0x1f54b, 0x1f54e],
+    [0x1f550, 0x1f567],
+    [0x1f57a, 0x1f57a],
+    [0x1f595, 0x1f596],
+    [0x1f5a4, 0x1f5a4],
+    [0x1f5fb, 0x1f64f], // ... incl. emoticons block
+    [0x1f680, 0x1f6c5],
+    [0x1f6cc, 0x1f6cc],
+    [0x1f6d0, 0x1f6d2],
+    [0x1f6d5, 0x1f6d7],
+    [0x1f6dc, 0x1f6df],
+    [0x1f6eb, 0x1f6ec],
+    [0x1f6f4, 0x1f6fc],
+    [0x1f7e0, 0x1f7eb],
+    [0x1f7f0, 0x1f7f0],
+    [0x1f900, 0x1f9ff], // supplemental symbols and pictographs
+    [0x1fa70, 0x1faff],
+    [0x20000, 0x2fffd],
+    [0x30000, 0x3fffd],
+  ];
+  
+  function inRanges(cp, ranges) {
+    // Binary search over sorted, non-overlapping ranges.
+    let lo = 0;
+    let hi = ranges.length - 1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      const [start, end] = ranges[mid];
+      if (cp < start) hi = mid - 1;
+      else if (cp > end) lo = mid + 1;
+      else return true;
+    }
+    return false;
+  }
+  
+  const VS16 = 0xfe0f; // forces emoji (wide) presentation on the preceding codepoint
+  const VS15 = 0xfe0e; // forces text (narrow) presentation
+  
+  /**
+   * Split a string into an array of "grapheme-ish" units for width purposes:
+   * a base codepoint plus any immediately-following combining marks / a single
+   * trailing variation selector are kept together as one unit. Good enough for
+   * this project's glyph set without pulling in Intl.Segmenter (unavailable in
+   * some hook-worker runtimes) or a full grapheme-break table.
+   * @param {string} str
+   * @returns {string[]}
+   */
+  function graphemeUnits(str) {
+    const units = [];
+    const chars = Array.from(str); // splits on UTF-16 surrogate pairs correctly
+    let i = 0;
+    while (i < chars.length) {
+      let unit = chars[i];
+      let cp = unit.codePointAt(0);
+      i += 1;
+      // absorb a following variation selector into this unit
+      if (i < chars.length) {
+        const nextCp = chars[i].codePointAt(0);
+        if (nextCp === VS16 || nextCp === VS15) {
+          unit += chars[i];
+          i += 1;
+        }
+      }
+      // absorb any run of zero-width combining marks that follow
+      while (i < chars.length && inRanges(chars[i].codePointAt(0), ZERO_WIDTH_RANGES) && chars[i].codePointAt(0) !== VS16 && chars[i].codePointAt(0) !== VS15) {
+        unit += chars[i];
+        i += 1;
+      }
+      units.push(unit);
+    }
+    return units;
+  }
+  
+  /**
+   * Display width, in terminal columns, of a single grapheme unit (as produced
+   * by graphemeUnits) — i.e. at most one base codepoint plus trailing
+   * combining marks / one variation selector.
+   * @param {string} unit
+   * @returns {0|1|2}
+   */
+  function unitWidth(unit) {
+    const first = unit.codePointAt(0);
+    // an explicit trailing variation selector overrides default presentation
+    if (unit.length > String.fromCodePoint(first).length) {
+      const rest = unit.slice(String.fromCodePoint(first).length);
+      const vs = rest.codePointAt(0);
+      if (vs === VS16) return 2;
+      if (vs === VS15) return 1;
+    }
+    if (inRanges(first, ZERO_WIDTH_RANGES)) return 0;
+    if (first === 0) return 0;
+    // C0/C1 controls (excluding tab/newline, which callers should not be
+    // measuring anyway) contribute no visible column.
+    if ((first >= 0 && first < 0x20) || (first >= 0x7f && first < 0xa0)) return 0;
+    if (inRanges(first, WIDE_RANGES)) return 2;
+    return 1;
+  }
+  
+  /**
+   * Total display width, in terminal columns, of a string.
+   * @param {string} str
+   * @returns {number}
+   */
+  function displayWidth(str) {
+    if (str === '' || str == null) return 0;
+    let width = 0;
+    for (const unit of graphemeUnits(String(str))) width += unitWidth(unit);
+    return width;
+  }
+  
+  /**
+   * Pad `str` on the right with `ch` (a single-width fill character, default
+   * space) until it reaches `width` display columns. No-op (returns `str`
+   * unchanged) if `str` is already at or over budget — callers that need a
+   * hard cap should truncate first.
+   * @param {string} str
+   * @param {number} width
+   * @param {string} [ch]
+   */
+  function padEnd(str, width, ch = ' ') {
+    if (unitWidth(ch) !== 1) throw new Error(`padEnd: fill char must be single-width, got ${JSON.stringify(ch)}`);
+    const w = displayWidth(str);
+    if (w >= width) return str;
+    return str + ch.repeat(width - w);
+  }
+  
+  /**
+   * Pad `str` on the left with `ch` until it reaches `width` display columns.
+   * @param {string} str
+   * @param {number} width
+   * @param {string} [ch]
+   */
+  function padStart(str, width, ch = ' ') {
+    if (unitWidth(ch) !== 1) throw new Error(`padStart: fill char must be single-width, got ${JSON.stringify(ch)}`);
+    const w = displayWidth(str);
+    if (w >= width) return str;
+    return ch.repeat(width - w) + str;
+  }
+  
+  /**
+   * Truncate `str` to at most `width` display columns, appending `ellipsis`
+   * (counted against the same budget) when truncation actually happens.
+   * Never splits a wide glyph in half — a unit that would only partially fit
+   * is dropped rather than corrupting the column count.
+   * @param {string} str
+   * @param {number} width
+   * @param {string} [ellipsis]
+   */
+  function truncate(str, width, ellipsis = '') {
+    if (displayWidth(str) <= width) return str;
+    const ellW = displayWidth(ellipsis);
+    const budget = Math.max(0, width - ellW);
+    let out = '';
+    let w = 0;
+    for (const unit of graphemeUnits(String(str))) {
+      const uw = unitWidth(unit);
+      if (w + uw > budget) break;
+      out += unit;
+      w += uw;
+    }
+    return out + ellipsis;
+  }
+  
+
+  return { graphemeUnits, unitWidth, displayWidth, padEnd, padStart, truncate };
+})();
+
+__modules["./frame.js"] = (function () {
+  'use strict';
+  const { displayWidth, unitWidth, graphemeUnits } = __modules["./width.js"];
+
+  // Claude Slots — the Frame model (lib/frame.js)
+  //
+  // Pure ESM, zero dependencies, no Node/DOM/browser APIs (see lib/width.js).
+  //
+  // Frame is the contract between the engine (machine.js/art.js) and the two
+  // renderers (render-ansi.js, render-tree.js) — docs/ARCHITECTURE.md §2:
+  //
+  //   Frame = { width: number, lines: Span[][] }
+  //   Span  = { text: string, color?: '#rrggbb', bold?: boolean, dim?: boolean,
+  //             inverse?: boolean, bg?: '#rrggbb' }
+  //
+  // Every line in a Frame must sum to exactly `frame.width` display columns
+  // (assertRect below enforces this). Builders in art.js compose each line
+  // from fixed-width primitives via `compose`/`canvas`/`place`, mirroring the
+  // approach docs/ART-SPEC.md's own generator (frames_lib.py/gen.py) uses to
+  // guarantee every golden frame is a true rectangle before it ships.
+  
+  /**
+   * @typedef {{text: string, color?: string, bg?: string, bold?: boolean, dim?: boolean, inverse?: boolean}} Span
+   * @typedef {{width: number, lines: Span[][]}} Frame
+   */
+  
+  /**
+   * Create an empty Frame shell of a fixed display width.
+   * @param {number} width
+   * @returns {Frame}
+   */
+  function makeFrame(width) {
+    if (!Number.isInteger(width) || width <= 0) {
+      throw new Error(`makeFrame: width must be a positive integer, got ${JSON.stringify(width)}`);
+    }
+    return { width, lines: [] };
+  }
+  
+  /**
+   * Build a Span. Only style keys that are actually set are copied onto the
+   * result, so spans serialize compactly and render-tree.js's "omit undefined
+   * props" rule is trivial to satisfy downstream.
+   * @param {string} text
+   * @param {{color?:string, bg?:string, bold?:boolean, dim?:boolean, inverse?:boolean}} [style]
+   * @returns {Span}
+   */
+  function span(text, style = {}) {
+    if (typeof text !== 'string') throw new Error(`span: text must be a string, got ${JSON.stringify(text)}`);
+    if (text.includes('\n')) throw new Error('span: text must not contain newlines');
+    const s = { text };
+    if (style.color) s.color = style.color;
+    if (style.bg) s.bg = style.bg;
+    if (style.bold) s.bold = true;
+    if (style.dim) s.dim = true;
+    if (style.inverse) s.inverse = true;
+    return s;
+  }
+  
+  /** Display width of a single span's text. */
+  function spanWidth(s) {
+    return displayWidth(s.text);
+  }
+  
+  /** Display width of a whole line (array of spans). */
+  function lineWidth(lineSpans) {
+    return lineSpans.reduce((w, s) => w + spanWidth(s), 0);
+  }
+  
+  /**
+   * Build one Frame line out of spans. Flattens nested arrays (so callers can
+   * splice in a sub-row built elsewhere) and drops falsy entries, so optional
+   * spans can be expressed as `cond && span(...)`.
+   * @param {...(Span|Span[]|false|null|undefined)} spans
+   * @returns {Span[]}
+   */
+  function line(...spans) {
+    return spans.flat(Infinity).filter(Boolean);
+  }
+  
+  /**
+   * A line made of a single repeated single-width fill character — the common
+   * case for chassis borders/separators (`═`.repeat(interiorWidth) etc).
+   * @param {number} width
+   * @param {string} [ch]
+   * @param {object} [style]
+   */
+  function hline(width, ch = '─', style = {}) {
+    if (unitWidth(ch) !== 1) throw new Error(`hline: fill char must be single-width, got ${JSON.stringify(ch)}`);
+    return line(span(ch.repeat(width), style));
+  }
+  
+  // ---------------------------------------------------------------------------
+  // compose: a small column-addressable canvas for building a line out of
+  // independently-styled pieces placed at fixed columns (reel cells, the lever
+  // track, left/right-justified info-strip text, …) — the "place text at
+  // column" primitive ARCHITECTURE.md §2 calls for.
+  // ---------------------------------------------------------------------------
+  
+  /**
+   * @typedef {{ch: string, style: object, _cont?: boolean}} Cell
+   */
+  
+  /**
+   * A blank canvas of `width` single-width cells, each initialized to `fillCh`.
+   * @param {number} width
+   * @param {string} [fillCh]
+   * @param {object} [fillStyle]
+   * @returns {Cell[]}
+   */
+  function canvas(width, fillCh = ' ', fillStyle = {}) {
+    if (!Number.isInteger(width) || width < 0) throw new Error(`canvas: width must be a non-negative integer, got ${JSON.stringify(width)}`);
+    if (unitWidth(fillCh) !== 1) throw new Error(`canvas: fill char must be single-width, got ${JSON.stringify(fillCh)}`);
+    const cells = new Array(width);
+    for (let i = 0; i < width; i++) cells[i] = { ch: fillCh, style: fillStyle };
+    return cells;
+  }
+  
+  /**
+   * Return a NEW canvas (does not mutate `cv`) with `text` written starting at
+   * display column `col`, styled with `style`. A zero-width unit (a combining
+   * mark) merges into the previous cell's text rather than occupying its own
+   * column. Throws if `text` would run past either edge of the canvas.
+   * @param {Cell[]} cv
+   * @param {number} col
+   * @param {string} text
+   * @param {object} [style]
+   * @returns {Cell[]}
+   */
+  function place(cv, col, text, style = {}) {
+    const out = cv.slice();
+    let i = col;
+    for (const unit of graphemeUnits(text)) {
+      const w = unitWidth(unit);
+      if (w === 0) {
+        const prev = i - 1;
+        if (prev >= 0 && prev < out.length) {
+          out[prev] = { ch: out[prev].ch + unit, style: out[prev].style };
+        }
+        continue;
+      }
+      if (i < 0 || i + w > out.length) {
+        throw new Error(`place: ${JSON.stringify(text)} at col ${col} overflows canvas width ${out.length}`);
+      }
+      out[i] = { ch: unit, style };
+      for (let k = 1; k < w; k++) out[i + k] = { ch: '', style, _cont: true };
+      i += w;
+    }
+    return out;
+  }
+  
+  function stylesEqual(a, b) {
+    return (
+      (a.color || null) === (b.color || null) &&
+      (a.bg || null) === (b.bg || null) &&
+      !!a.bold === !!b.bold &&
+      !!a.dim === !!b.dim &&
+      !!a.inverse === !!b.inverse
+    );
+  }
+  
+  /** Collapse a canvas into a Frame line, merging adjacent same-style cells into one span. */
+  function canvasToLine(cv) {
+    const spans = [];
+    let cur = null;
+    for (const cell of cv) {
+      if (cell._cont) continue; // second+ column of a wide glyph carries no span of its own
+      if (cur && stylesEqual(cur.style, cell.style)) {
+        cur.text += cell.ch;
+      } else {
+        if (cur) spans.push(span(cur.text, cur.style));
+        cur = { text: cell.ch, style: cell.style };
+      }
+    }
+    if (cur) spans.push(span(cur.text, cur.style));
+    return spans;
+  }
+  
+  /**
+   * Build one Frame line of `width` columns by laying `placements` onto a
+   * blank canvas in order (later placements may overwrite earlier ones).
+   * @param {number} width
+   * @param {{col:number, text:string, style?:object}[]} placements
+   * @param {{fillCh?:string, fillStyle?:object}} [opts]
+   * @returns {Span[]}
+   */
+  function compose(width, placements, opts = {}) {
+    const { fillCh = ' ', fillStyle = {} } = opts;
+    let cv = canvas(width, fillCh, fillStyle);
+    for (const p of placements) cv = place(cv, p.col, p.text, p.style || {});
+    return canvasToLine(cv);
+  }
+  
+  /**
+   * Assert every line in `frame` sums to exactly `frame.width` display
+   * columns. Throws an Error listing every offending line (index, actual vs
+   * expected width, and its plain text) so a mismatch is easy to diff against
+   * an ART-SPEC golden frame.
+   * @param {Frame} frame
+   * @returns {Frame} the same frame, for chaining
+   */
+  function assertRect(frame) {
+    const diffs = [];
+    frame.lines.forEach((l, i) => {
+      const w = lineWidth(l);
+      if (w !== frame.width) {
+        diffs.push({ index: i, width: w, expected: frame.width, text: l.map((s) => s.text).join('') });
+      }
+    });
+    if (diffs.length) {
+      const msg = diffs
+        .map((d) => `  line ${d.index}: width ${d.width} !== ${d.expected} -- ${JSON.stringify(d.text)}`)
+        .join('\n');
+      throw new Error(`assertRect: frame is not rectangular (expected width ${frame.width}):\n${msg}`);
+    }
+    return frame;
+  }
+  
+  /** Render a Frame to plain text (styling stripped), lines joined with '\n'. */
+  function frameToPlainText(frame) {
+    return frame.lines.map((l) => l.map((s) => s.text).join('')).join('\n');
+  }
+  
+
+  return { makeFrame, span, spanWidth, lineWidth, line, hline, canvas, place, canvasToLine, compose, assertRect, frameToPlainText };
+})();
+
+__modules["./symbols.js"] = (function () {
+  'use strict';
+
+
+  // Claude Slots — symbols, strips, paytable, colors (lib/symbols.js)
+  //
+  // Pure ESM, zero dependencies. Transcribed literally from docs/ART-SPEC.md
+  // §1 (symbol set), §2 (paytable/probabilities), §3 (reel strips + neighbor
+  // table), §9 (color spec), §14 (optional emoji theme). Every table here is
+  // treated as golden — if a number changes, it changes here first, and every
+  // consumer (rng.js, economy.js, art.js) reads it from this module rather
+  // than re-declaring it.
+  
+  // ---------------------------------------------------------------------------
+  // §1 — Symbol set & Claude Code semantics
+  // ---------------------------------------------------------------------------
+  
+  /** Canonical symbol ids, in the order §1's table lists them. */
+  const SYMBOL_IDS = Object.freeze(['CLAUDE', 'MEDALLION', 'TOOL', 'TEST', 'DIFF', 'FILE', 'TOKEN', 'PROSE']);
+  
+  /** Every symbol id except the two "shaped" combos (never a plain DOUBLE/TRIPLE filler in the LOSE/DOUBLE-filler pools where excluded explicitly by the caller). */
+  const ALL_SYMBOL_IDS = SYMBOL_IDS;
+  
+  const SYMBOLS_RAW = {
+    CLAUDE: {
+      glyph: '✻',
+      name: 'CLAUDE',
+      concept:
+        'The assistant itself — the top symbol, U+273B, sanctioned single-width exception (matches Claude Code’s own spinner)',
+      tier: 'Top',
+      dressingWeight: 1.2,
+      color: { hex: '#F5A623', ansi256: 214, bold: true },
+    },
+    MEDALLION: {
+      glyph: '◆C◆',
+      name: 'MEDALLION',
+      concept: "Claude's signature — a completed, clean turn. Special rarity tier, sits between JACKPOT and TRIPLE",
+      tier: 'Special',
+      dressingWeight: 0.3,
+      color: { hex: '#FF8A3D', ansi256: 208, bold: true },
+    },
+    TOOL: {
+      glyph: 'BAR',
+      name: 'TOOL',
+      concept: 'An active/loaded tool call',
+      tier: 'High',
+      dressingWeight: 7.0,
+      color: { hex: '#C77DFF', ansi256: 141 },
+    },
+    TEST: {
+      glyph: '★',
+      name: 'TEST',
+      concept: 'A passing test / green check',
+      tier: 'High',
+      dressingWeight: 3.5,
+      color: { hex: '#FFD166', ansi256: 221 },
+    },
+    DIFF: {
+      glyph: '♦',
+      name: 'DIFF',
+      concept: 'A code diff / edit',
+      tier: 'Mid-high',
+      dressingWeight: 24.0,
+      color: { hex: '#4ADE80', ansi256: 114 },
+    },
+    FILE: {
+      glyph: '♣',
+      name: 'FILE',
+      concept: 'A file read/write',
+      tier: 'Mid',
+      dressingWeight: 20.0,
+      color: { hex: '#9CA3AF', ansi256: 249 },
+    },
+    TOKEN: {
+      glyph: '☼',
+      name: 'TOKEN',
+      concept: 'A token — also literally the credit/coin glyph used in coin-rain',
+      tier: 'Mid-low',
+      dressingWeight: 14.0,
+      color: { hex: '#F5A623', ansi256: 214 },
+    },
+    PROSE: {
+      glyph: '♥',
+      name: 'PROSE',
+      concept: 'Creative/explanatory prose generation',
+      tier: 'Low',
+      dressingWeight: 30.0,
+      color: { hex: '#F472B6', ansi256: 211 },
+    },
+  };
+  
+  /** id -> {glyph, name, concept, tier, dressingWeight, color}. */
+  const SYMBOLS = Object.freeze(
+    Object.fromEntries(Object.entries(SYMBOLS_RAW).map(([id, v]) => [id, Object.freeze({ id, ...v, color: Object.freeze({ ...v.color }) })]))
+  );
+  
+  /** @param {string} id @returns {typeof SYMBOLS[keyof typeof SYMBOLS]} */
+  function getSymbol(id) {
+    const s = SYMBOLS[id];
+    if (!s) throw new Error(`getSymbol: unknown symbol id ${JSON.stringify(id)}`);
+    return s;
+  }
+  
+  /** @param {string} id @returns {string} the display glyph, e.g. 'BAR', '✻', '◆C◆' */
+  function getGlyph(id) {
+    return getSymbol(id).glyph;
+  }
+  
+  // ---------------------------------------------------------------------------
+  // §3 — Canonical reel strips & neighbor table
+  // ---------------------------------------------------------------------------
+  
+  // Three different-length circular strips, hard-coded verbatim from §3.
+  const REEL_1 = [
+    'CLAUDE', 'TOOL', 'TEST', 'TOKEN', 'FILE', 'DIFF', 'PROSE', 'MEDALLION',
+    'TOOL', 'TOKEN', 'FILE', 'DIFF', 'PROSE', 'TOKEN', 'FILE', 'DIFF', 'PROSE',
+    'FILE', 'DIFF', 'PROSE', 'PROSE', 'PROSE',
+  ];
+  const REEL_2 = [
+    'CLAUDE', 'TOOL', 'TEST', 'TOKEN', 'FILE', 'DIFF', 'PROSE', 'MEDALLION',
+    'TOOL', 'TOKEN', 'FILE', 'DIFF', 'PROSE', 'TOKEN', 'FILE', 'DIFF', 'PROSE',
+    'FILE', 'DIFF', 'PROSE', 'FILE', 'DIFF', 'PROSE', 'PROSE',
+  ];
+  const REEL_3 = [
+    'CLAUDE', 'TOOL', 'TEST', 'TOKEN', 'FILE', 'DIFF', 'PROSE', 'MEDALLION',
+    'TOOL', 'TOKEN', 'FILE', 'DIFF', 'PROSE', 'TOKEN', 'FILE', 'DIFF', 'PROSE',
+    'DIFF', 'PROSE', 'PROSE',
+  ];
+  
+  /** REEL_STRIPS[0..2] — 22, 24, and 20 stops respectively (ART-SPEC §3). */
+  const REEL_STRIPS = Object.freeze([Object.freeze(REEL_1), Object.freeze(REEL_2), Object.freeze(REEL_3)]);
+  
+  /** @param {0|1|2} reelIndex @returns {readonly string[]} */
+  function getStrip(reelIndex) {
+    const strip = REEL_STRIPS[reelIndex];
+    if (!strip) throw new Error(`getStrip: reelIndex must be 0, 1, or 2, got ${JSON.stringify(reelIndex)}`);
+    return strip;
+  }
+  
+  function computeNeighbors(strip) {
+    const next = {};
+    const prev = {};
+    for (const id of SYMBOL_IDS) {
+      const first = strip.indexOf(id);
+      if (first === -1) throw new Error(`computeNeighbors: symbol ${id} missing from strip`);
+      next[id] = strip[(first + 1) % strip.length];
+      prev[id] = strip[(first - 1 + strip.length) % strip.length];
+    }
+    return { NEXT: Object.freeze(next), PREV: Object.freeze(prev) };
+  }
+  
+  // Derived from reel 1 per §3's stated rule (first-occurrence +1/-1 mod
+  // length). §3 guarantees this table comes out identical for all three
+  // reels since the four rare symbols share the same head-of-strip layout —
+  // asserted below rather than assumed.
+  const NEIGHBORS_FROM_REEL1 = computeNeighbors(REEL_1);
+  for (const strip of [REEL_2, REEL_3]) {
+    const n = computeNeighbors(strip);
+    for (const id of SYMBOL_IDS) {
+      if (n.NEXT[id] !== NEIGHBORS_FROM_REEL1.NEXT[id] || n.PREV[id] !== NEIGHBORS_FROM_REEL1.PREV[id]) {
+        throw new Error(`symbols.js: neighbor table diverges between reels for ${id} — REEL_STRIPS transcription bug`);
+      }
+    }
+  }
+  
+  /** { NEXT: {id -> id}, PREV: {id -> id} } — one static table shared by all three reels (§3). */
+  const NEIGHBORS = NEIGHBORS_FROM_REEL1;
+  
+  /** @param {'NEXT'|'PREV'} dir @param {string} id */
+  function getNeighbor(dir, id) {
+    const table = NEIGHBORS[dir];
+    if (!table) throw new Error(`getNeighbor: dir must be 'NEXT' or 'PREV', got ${JSON.stringify(dir)}`);
+    const v = table[id];
+    if (!v) throw new Error(`getNeighbor: unknown symbol id ${JSON.stringify(id)}`);
+    return v;
+  }
+  
+  // ---------------------------------------------------------------------------
+  // §2 — Paytable & probability table
+  // ---------------------------------------------------------------------------
+  
+  /** Outcome classes, in the exact cumulative-probability order §4's rollOutcomeClass iterates. */
+  const OUTCOME_ORDER = Object.freeze(['JACKPOT', 'MEDALLION', 'TRIPLE', 'DOUBLE', 'NEAR_MISS', 'LOSE']);
+  
+  /** class -> P(class); sums to 1.0 (verified in tests/probabilities.test.js). */
+  const OUTCOME_PROBABILITIES = Object.freeze({
+    JACKPOT: 0.015,
+    MEDALLION: 0.025,
+    TRIPLE: 0.08,
+    DOUBLE: 0.26,
+    NEAR_MISS: 0.12,
+    LOSE: 0.5,
+  });
+  
+  /** Sub-tier weights for a rolled TRIPLE, of the class's own 0.08 (§4's resolvePayline). */
+  const TRIPLE_TIERS = Object.freeze({
+    TOOL: 0.01,
+    TEST: 0.01,
+    TOKEN: 0.012,
+    FILE: 0.015,
+    DIFF: 0.016,
+    PROSE: 0.017,
+  });
+  
+  /** Sub-tier weights for a rolled DOUBLE, of the class's own 0.26. */
+  const DOUBLE_TIERS = Object.freeze({
+    CLAUDE: 0.01,
+    TOOL: 0.01,
+    TEST: 0.02,
+    TOKEN: 0.03,
+    FILE: 0.045,
+    DIFF: 0.065,
+    PROSE: 0.08,
+  });
+  
+  /** Weights for which symbol a NEAR_MISS teases with — deliberately biased toward rarer/flashier symbols, NOT the §1 dressing weights. Sums to 1.0. */
+  const NEARMISS_WEIGHTS = Object.freeze({
+    CLAUDE: 0.3,
+    MEDALLION: 0.2,
+    TOOL: 0.15,
+    TEST: 0.12,
+    TOKEN: 0.1,
+    FILE: 0.06,
+    DIFF: 0.04,
+    PROSE: 0.03,
+  });
+  
+  /** Paytable (§2) — spin cost 1 credit. JACKPOT/MEDALLION have no tier; TRIPLE/DOUBLE are keyed by the matched symbol id; NEAR_MISS/LOSE always pay 0. */
+  const PAYTABLE = Object.freeze({
+    JACKPOT: 250,
+    MEDALLION: 77,
+    TRIPLE: Object.freeze({ TOOL: 40, TEST: 35, TOKEN: 25, FILE: 18, DIFF: 12, PROSE: 8 }),
+    DOUBLE: Object.freeze({ CLAUDE: 10, TOOL: 6, TEST: 5, TOKEN: 4, FILE: 3, DIFF: 2, PROSE: 1 }),
+    NEAR_MISS: 0,
+    LOSE: 0,
+  });
+  
+  /**
+   * @param {'JACKPOT'|'MEDALLION'|'TRIPLE'|'DOUBLE'|'NEAR_MISS'|'LOSE'} outcomeClass
+   * @param {string|null} [tier] required (and used) only for TRIPLE/DOUBLE
+   * @returns {number}
+   */
+  function getPayout(outcomeClass, tier = null) {
+    const entry = PAYTABLE[outcomeClass];
+    if (entry === undefined) throw new Error(`getPayout: unknown outcome class ${JSON.stringify(outcomeClass)}`);
+    if (typeof entry === 'number') return entry;
+    if (tier == null || !(tier in entry)) throw new Error(`getPayout: ${outcomeClass} requires a valid tier, got ${JSON.stringify(tier)}`);
+    return entry[tier];
+  }
+  
+  // ---------------------------------------------------------------------------
+  // §9 — Color spec (truecolor + 256-color fallback)
+  // ---------------------------------------------------------------------------
+  
+  /** Background: dark ground every foreground color in this palette sits on. */
+  const BACKGROUND = Object.freeze({ hex: '#0E0E12', ansi256: 234 });
+  
+  /** Non-symbol chrome/role colors, transcribed verbatim from §9's table. */
+  const COLORS = Object.freeze({
+    background: BACKGROUND,
+    chassisBorderIdle: Object.freeze({ hex: '#C9CED6', ansi256: 251 }),
+    chassisBorderHot: Object.freeze({ hex: '#FFD24C', ansi256: 220, bold: true }),
+    bulbLit: Object.freeze({ hex: '#FFD700', ansi256: 220, bold: true }),
+    bulbUnlit: Object.freeze({ hex: '#7A6220', ansi256: 94, dim: true }),
+    wordmark: Object.freeze({ hex: '#F5F1E6', ansi256: 230, bold: true }),
+    reelFrameIdle: Object.freeze({ hex: '#9AA0A8', ansi256: 246 }),
+    reelFrameHot: Object.freeze({ hex: '#FFB000', ansi256: 214, bold: true }),
+    paylineBarIdle: Object.freeze({ hex: '#E4B04A', ansi256: 179, bold: true }),
+    paylineBarHot: Object.freeze({ hex: '#FF3B30', ansi256: 203, bold: true }),
+    motionBlur: Object.freeze({ from: '#5C5E66', to: '#8A8C94', ansi256From: 240, ansi256To: 249 }),
+    glintSweep: Object.freeze({ from: '#6B7280', to: '#D1D5DB', ansi256From: 240, ansi256To: 253 }),
+    coins: Object.freeze({ hex: '#FFD700', ansi256: 220, bold: true }),
+    sunburst: Object.freeze({ hex: '#FFFFFF', ansi256: 231, bold: true }),
+    infoText: Object.freeze({ hex: '#B9BEC8', ansi256: 250 }),
+    hintText: Object.freeze({ hex: '#6E7280', ansi256: 244, dim: true }),
+    loseNeutral: Object.freeze({ hex: '#9AA0A8', ansi256: 246, dim: true }),
+    nearMissWhisper: Object.freeze({ hex: '#E4B04A', ansi256: 179, dim: true }),
+    // §9's table marks these two roles `dim`, but ARCHITECTURE.md's verified
+    // platform fact is that both renderers turn ANY `dim` span into one flat
+    // #999999 gray (render-ansi.js's DIM_GRAY; Tier 1's dimColor measured the
+    // same way) — so a literal transcription would make ABORTED and ERROR
+    // render as the *same* indistinguishable gray as each other (and as every
+    // other dim role), which directly defeats §9's own "red = error, always
+    // unambiguous" rule. Deliberate, documented deviation: keep the exact
+    // hues, drop `dim` only for these two roles so they stay visually
+    // distinct instead of collapsing together.
+    abortedText: Object.freeze({ hex: '#8A93A6', ansi256: 246 }),
+    errorText: Object.freeze({ hex: '#E4342F', ansi256: 160 }),
+    onTheHouseText: Object.freeze({ hex: '#E4B04A', ansi256: 179, dim: true }),
+  });
+  
+  /**
+   * @param {keyof typeof COLORS} role
+   */
+  function getColor(role) {
+    const c = COLORS[role];
+    if (!c) throw new Error(`getColor: unknown color role ${JSON.stringify(role)}`);
+    return c;
+  }
+  
+  // ---------------------------------------------------------------------------
+  // §14 — Optional emoji theme (opt-in, never default)
+  // ---------------------------------------------------------------------------
+  
+  /** id -> emoji glyph. Opt-in only (theme:'emoji'); default theme never uses these (§14 width caveats apply). */
+  const EMOJI_THEME = Object.freeze({
+    CLAUDE: '✨',
+    MEDALLION: '🏅',
+    TOOL: '🔧',
+    TEST: '✅',
+    DIFF: '📝',
+    FILE: '📄',
+    TOKEN: '🪙',
+    PROSE: '💬',
+  });
+  
+  /** @param {string} id @param {'classic'|'emoji'} [theme] */
+  function getThemedGlyph(id, theme = 'classic') {
+    if (theme === 'emoji') return EMOJI_THEME[id] ?? getGlyph(id);
+    return getGlyph(id);
+  }
+  
+  function listSymbolIds() {
+    return SYMBOL_IDS.slice();
+  }
+  
+
+  return { SYMBOL_IDS, ALL_SYMBOL_IDS, SYMBOLS, getSymbol, getGlyph, REEL_STRIPS, getStrip, NEIGHBORS, getNeighbor, OUTCOME_ORDER, OUTCOME_PROBABILITIES, TRIPLE_TIERS, DOUBLE_TIERS, NEARMISS_WEIGHTS, PAYTABLE, getPayout, BACKGROUND, COLORS, getColor, EMOJI_THEME, getThemedGlyph, listSymbolIds };
+})();
+
+__modules["./rng.js"] = (function () {
+  'use strict';
+  const { ALL_SYMBOL_IDS, NEIGHBORS, OUTCOME_ORDER, OUTCOME_PROBABILITIES, TRIPLE_TIERS, DOUBLE_TIERS, NEARMISS_WEIGHTS, REEL_STRIPS, getPayout } = __modules["./symbols.js"];
+
+  // Claude Slots — outcome-first RNG (lib/rng.js)
+  //
+  // Pure ESM, zero dependencies. Implements docs/ART-SPEC.md §4 ("do not spin
+  // three independent reels and hope the probabilities fall out right") and
+  // §5 (the near-miss rule): pick the outcome class first, resolve the
+  // payline to match it, then derive the two dressing rows purely from
+  // symbols.js's static neighbor table — no further randomness.
+  //
+  // NOTE on the §4 worked examples: ART-SPEC's six seed->outcome rows are
+  // attributed to "a reference mulberry32 implementation... included in
+  // build_spec.py" — that file only embeds the pseudocode as documentation
+  // text, it contains no runnable PRNG. mulberry32 below is the well-known
+  // public-domain algorithm (Tommy Ettinger); it was checked against two
+  // independent, commonly-cited mulberry32 encodings and against those six
+  // worked seeds — neither reproduces them bit-for-bit, so they could not be
+  // used as byte-exact golden vectors here (see this package's test notes).
+  // What *is* verified (tests/rng.test.js): the six-class probability table
+  // sums to 1 and matches within tolerance over a large sample, the near-miss
+  // shape is always exactly [S, S, NEXT(S)], dressing rows always equal
+  // PREV/NEXT of the payline per symbols.js, and a given seed always
+  // reproduces an identical result.
+  
+  /**
+   * mulberry32: a fast, small, seedable 32-bit PRNG. Returns a function that
+   * yields floats in [0, 1) on each call.
+   * @param {number} seed a uint32 (values are coerced with `>>> 0`)
+   * @returns {() => number}
+   */
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function mulberry32Next() {
+      a |= 0;
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  
+  /**
+   * Deterministically hash an arbitrary string to a uint32, for callers that
+   * want to seed mulberry32 from a session id / turn id / free-form string
+   * rather than a raw number. (cyrb-style FNV-1a variant — small, dependency
+   * free, well distributed for this use, not cryptographic.)
+   * @param {string} str
+   * @returns {number}
+   */
+  function hashSeed(str) {
+    const s = String(str);
+    let h = 0x811c9dc5;
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    // final avalanche so short/similar strings don't cluster in low bits
+    h ^= h >>> 16;
+    h = Math.imul(h, 0x85ebca6b);
+    h ^= h >>> 13;
+    return h >>> 0;
+  }
+  
+  function toUint32Seed(seed) {
+    if (typeof seed === 'number') return seed >>> 0;
+    return hashSeed(seed);
+  }
+  
+  /**
+   * Weighted pick over an ordered {id: weight} map. Weights need not sum to
+   * 1 — they are normalized against their own total, matching §4's
+   * `weightedPick(rng, TABLE)` calls against tables whose weights are
+   * fractions of the *outer* class probability (e.g. TRIPLE_TIERS sums to
+   * 0.08, not 1).
+   * @param {() => number} rng
+   * @param {Record<string, number>} weights
+   */
+  function weightedPick(rng, weights) {
+    const entries = Object.entries(weights);
+    const total = entries.reduce((sum, [, w]) => sum + w, 0);
+    const r = rng() * total;
+    let acc = 0;
+    for (const [id, w] of entries) {
+      acc += w;
+      if (r < acc) return id;
+    }
+    return entries[entries.length - 1][0];
+  }
+  
+  function uniformPick(rng, ids) {
+    const idx = Math.min(ids.length - 1, Math.floor(rng() * ids.length));
+    return ids[idx];
+  }
+  
+  function rollOutcomeClass(rng) {
+    const r = rng();
+    let acc = 0;
+    for (const cls of OUTCOME_ORDER) {
+      acc += OUTCOME_PROBABILITIES[cls];
+      if (r < acc) return cls;
+    }
+    return 'LOSE'; // floating-point fallback, never reached if the table sums to 1.0
+  }
+  
+  /**
+   * True if `[a,b,c]` has the canonical near-miss shape (two matching reels,
+   * the third the matched symbol's NEXT) in ANY reel arrangement. A guard used
+   * only by the LOSE reroll loop; given the loop's own distinctness check this
+   * can never actually trigger (a genuine near-miss requires exactly two equal
+   * entries) — kept as the belt-and-suspenders check §4's pseudocode specifies.
+   */
+  function looksLikeNearMiss(a, b, c) {
+    const trip = [a, b, c];
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (i === j) continue;
+        const k = 3 - i - j;
+        if (trip[i] === trip[j] && NEIGHBORS.NEXT[trip[i]] === trip[k]) return true;
+      }
+    }
+    return false;
+  }
+  
+  function resolvePayline(cls, rng) {
+    switch (cls) {
+      case 'JACKPOT':
+        return ['CLAUDE', 'CLAUDE', 'CLAUDE'];
+      case 'MEDALLION':
+        return ['MEDALLION', 'MEDALLION', 'MEDALLION'];
+      case 'TRIPLE': {
+        const tier = weightedPick(rng, TRIPLE_TIERS);
+        return [tier, tier, tier];
+      }
+      case 'DOUBLE': {
+        const tier = weightedPick(rng, DOUBLE_TIERS);
+        const oddPos = Math.floor(rng() * 3);
+        const pool = ALL_SYMBOL_IDS.filter((id) => id !== tier && id !== 'MEDALLION');
+        const filler = uniformPick(rng, pool);
+        const paylineLine = [tier, tier, tier];
+        paylineLine[oddPos] = filler;
+        return paylineLine;
+      }
+      case 'NEAR_MISS': {
+        const sym = weightedPick(rng, NEARMISS_WEIGHTS);
+        return [sym, sym, NEIGHBORS.NEXT[sym]];
+      }
+      case 'LOSE':
+      default: {
+        const GUARD = 10000; // pathological-fallback guard; a correctly-weighted 8-symbol alphabet resolves in a handful of tries
+        for (let i = 0; i < GUARD; i++) {
+          const a = uniformPick(rng, ALL_SYMBOL_IDS);
+          const b = uniformPick(rng, ALL_SYMBOL_IDS);
+          const c = uniformPick(rng, ALL_SYMBOL_IDS);
+          if (new Set([a, b, c]).size === 3 && !looksLikeNearMiss(a, b, c)) return [a, b, c];
+        }
+        return ['FILE', 'TEST', 'DIFF']; // never reached with 8 distinct symbols; a safe, definitely-3-distinct fallback
+      }
+    }
+  }
+  
+  function fillNonPaylineRows(paylineSymbols) {
+    return {
+      above: paylineSymbols.map((s) => NEIGHBORS.PREV[s]),
+      below: paylineSymbols.map((s) => NEIGHBORS.NEXT[s]),
+    };
+  }
+  
+  /**
+   * Roll a full spin outcome for `seed` — deterministic: the same seed always
+   * returns an identical result (verified in tests). Implements ART-SPEC §4-5
+   * exactly: outcome class first, then payline, then pure (no further
+   * randomness) dressing rows from the static neighbor table.
+   *
+   * @param {number|string} seed a uint32, or any string (hashed via hashSeed)
+   * @param {{credits?: number}} [opts] accepted for forward-compatibility with
+   *   callers that want to pass current-state context through; the paytable
+   *   is a flat lookup per §2 and `credits` does not currently affect the roll.
+   * @returns {{
+   *   outcomeClass: 'JACKPOT'|'MEDALLION'|'TRIPLE'|'DOUBLE'|'NEAR_MISS'|'LOSE',
+   *   tier: string|null,
+   *   paylineSymbols: [string,string,string],
+   *   grid: [string,string,string][],
+   *   targetStops: [number,number,number],
+   *   payout: number,
+   *   overshootReel?: number,
+   * }}
+   */
+  function rollOutcome(seed, opts = {}) {
+    void opts; // see jsdoc: reserved, currently unused
+    const rng = mulberry32(toUint32Seed(seed));
+    const outcomeClass = rollOutcomeClass(rng);
+    const paylineSymbols = resolvePayline(outcomeClass, rng);
+    const { above, below } = fillNonPaylineRows(paylineSymbols);
+  
+    // grid[reel][row], row 0 = above the payline, row 1 = the payline itself, row 2 = below
+    const grid = [0, 1, 2].map((reelIdx) => [above[reelIdx], paylineSymbols[reelIdx], below[reelIdx]]);
+  
+    // targetStops: the first-occurrence strip index each reel settles on. Using
+    // first occurrence (the same convention symbols.js's NEIGHBORS table uses)
+    // keeps grid's dressing rows consistent with "one stop above/below" on the
+    // actual reel-strip window a renderer might display while settling.
+    const targetStops = [0, 1, 2].map((reelIdx) => REEL_STRIPS[reelIdx].indexOf(paylineSymbols[reelIdx]));
+  
+    let tier = null;
+    if (outcomeClass === 'TRIPLE') {
+      tier = paylineSymbols[0];
+    } else if (outcomeClass === 'DOUBLE') {
+      const counts = {};
+      for (const s of paylineSymbols) counts[s] = (counts[s] || 0) + 1;
+      tier = Object.keys(counts).find((k) => counts[k] === 2) ?? null;
+    }
+  
+    const payout = getPayout(outcomeClass, tier);
+  
+    const result = { outcomeClass, tier, paylineSymbols, grid, targetStops, payout };
+    if (outcomeClass === 'NEAR_MISS') result.overshootReel = 2; // always reel 3 (index 2), per §5
+    return result;
+  }
+  
+  // Compatibility alias: some early integration sketches referred to this
+  // function as `roll`.
+  const roll = rollOutcome;
+  
+
+  return { mulberry32, hashSeed, rollOutcome, roll };
+})();
+
+__modules["./economy.js"] = (function () {
+  'use strict';
+
+
+  // Claude Slots — credits economy (lib/economy.js)
+  //
+  // Pure ESM, zero dependencies. Implements docs/ART-SPEC.md §10: starting
+  // balance, spin cost charged at the lever (never on reveal), payouts,
+  // refunds for interrupted/errored spins, and the "ON THE HOUSE" floor —
+  // balance never goes negative and a spin is never blocked by lack of
+  // credits.
+  
+  /** Starting balance for a brand-new session (§10; also plugin.json's userConfig default). */
+  const DEFAULT_START_CREDITS = 100;
+  
+  /** Cost of a single spin, in credits (§10). */
+  const SPIN_COST = 1;
+  
+  /**
+   * @typedef {{
+   *   credits: number,
+   *   lastWin: number,
+   *   stats: {
+   *     spins: number,
+   *     winsByClass: Record<string, number>,
+   *     jackpots: number,
+   *     streak: number,
+   *     bestStreak: number,
+   *     recent: string[],
+   *   },
+   * }} Economy
+   */
+  
+  /**
+   * @param {{startCredits?: number}} [opts]
+   * @returns {Economy}
+   */
+  function createEconomy(opts = {}) {
+    const startCredits = Number.isFinite(opts.startCredits) ? Math.max(0, opts.startCredits) : DEFAULT_START_CREDITS;
+    return {
+      credits: startCredits,
+      lastWin: 0,
+      stats: {
+        spins: 0,
+        winsByClass: { JACKPOT: 0, MEDALLION: 0, TRIPLE: 0, DOUBLE: 0, NEAR_MISS: 0, LOSE: 0, ABORTED: 0, ERROR: 0 },
+        jackpots: 0,
+        streak: 0,
+        bestStreak: 0,
+        recent: [],
+      },
+    };
+  }
+  
+  /**
+   * Charge the spin cost the instant the lever is pulled (§8.2/§10 — never on
+   * reveal). Floors at 0 rather than going negative or blocking the spin
+   * ("ON THE HOUSE", §8.1/§10). Mutates and returns `economy`.
+   * @param {Economy} economy
+   * @returns {Economy}
+   */
+  function applySpinStart(economy) {
+    economy.credits = Math.max(0, economy.credits - SPIN_COST);
+    economy.stats.spins += 1;
+    return economy;
+  }
+  
+  function pushRecent(economy, cls, symbols) {
+    economy.stats.recent.unshift({ outcomeClass: cls, symbols: symbols || null });
+    if (economy.stats.recent.length > 3) economy.stats.recent.length = 3;
+  }
+  
+  /**
+   * Apply a resolved spin's consequence to `economy`. `outcome` is either an
+   * rng.js rollOutcome() result ({outcomeClass, payout, paylineSymbols, ...})
+   * for a completed turn ('answer'/'refusal'), or a synthetic
+   * {outcomeClass: 'ABORTED'|'ERROR'} for an interrupted/errored turn — those
+   * two refund the spin cost, since no payline was ever actually resolved
+   * (§8.13-8.14, §10). Mutates and returns `economy`.
+   *
+   * `economy.stats.recent` holds, most-recent-first, up to 3
+   * `{outcomeClass, symbols}` entries (`symbols` is the 3-wide payline, or
+   * `null` for ABORTED/ERROR) — enough for art.js's GRAND-size RECENT field
+   * (§7.3) to render each past spin's payline.
+   *
+   * @param {Economy} economy
+   * @param {{outcomeClass: string, payout?: number, paylineSymbols?: string[]}} outcome
+   * @returns {Economy}
+   */
+  function applyOutcome(economy, outcome) {
+    const cls = outcome.outcomeClass;
+  
+    if (cls === 'ABORTED' || cls === 'ERROR') {
+      economy.credits += SPIN_COST; // refund: this spin resolved no payline
+      economy.lastWin = 0;
+      economy.stats.winsByClass[cls] = (economy.stats.winsByClass[cls] || 0) + 1;
+      economy.stats.streak = 0;
+      pushRecent(economy, cls, null);
+      return economy;
+    }
+  
+    const payout = outcome.payout || 0;
+    economy.credits += payout;
+    economy.lastWin = payout;
+    economy.stats.winsByClass[cls] = (economy.stats.winsByClass[cls] || 0) + 1;
+    if (cls === 'JACKPOT') economy.stats.jackpots += 1;
+  
+    const isWin = payout > 0;
+    economy.stats.streak = isWin ? economy.stats.streak + 1 : 0;
+    economy.stats.bestStreak = Math.max(economy.stats.bestStreak, economy.stats.streak);
+  
+    pushRecent(economy, cls, outcome.paylineSymbols || null);
+    return economy;
+  }
+  
+  /** True at 0 credits — the "ON THE HOUSE" info-strip substitution applies (§8.1/§10). */
+  function isOnTheHouse(economy) {
+    return economy.credits <= 0;
+  }
+  
+
+  return { DEFAULT_START_CREDITS, SPIN_COST, createEconomy, applySpinStart, applyOutcome, isOnTheHouse };
+})();
+
+__modules["./art.js"] = (function () {
+  'use strict';
+  const { makeFrame, span, line, compose, assertRect, frameToPlainText } = __modules["./frame.js"];
+  const { displayWidth, padStart: wPadStart, truncate: wTruncate } = __modules["./width.js"];
+  const { SYMBOL_IDS, getSymbol, getThemedGlyph, COLORS } = __modules["./symbols.js"];
+
+  // Claude Slots — chassis art & storyboards (lib/art.js)
+  //
+  // Pure ESM, zero dependencies. Owns everything docs/ART-SPEC.md §7-§14
+  // describe: the STANDARD/COMPACT/GRAND chassis geometry, the marquee/reel
+  // bay/lever primitives, every phase's and outcome class's storyboard
+  // content and sub-beat timing, the info strip, the transcript result line
+  // (§12), and RETURN TO IDLE (§8.15). machine.js supplies only *when*
+  // (phase, elapsed-ms-in-phase, the pre-rolled outcome, reel-lock booleans);
+  // this file decides everything about what that looks like. Every builder
+  // returns a Frame and is assertRect-checked before it is handed back.
+  
+  // This file holds the chassis geometry/primitives, the STANDARD/GRAND
+  // builder, and the §12 transcript result line. The per-phase/per-outcome
+  // storyboard content (what LEVER/SPINNING/OUTCOME/etc. actually look like,
+  // and the COMPACT/ULTRA-COMPACT layouts) lives in ./art-storyboards.js,
+  // re-exported below — split out purely to keep each file under a readable
+  // line budget; machine.js and tests both just `import ... from './art.js'`.
+  // ---------------------------------------------------------------------------
+  // Storyboard timing constants — the single source of truth for how long
+  // each phase/sub-beat lasts. machine.js imports these for its phase-boundary
+  // arithmetic; this file uses them to pick which sub-frame is on screen.
+  // ---------------------------------------------------------------------------
+  
+  const LEVER_DURATION_MS = 800; // §8.2, 5 knob positions ~160ms apart
+  const SPINUP_DURATION_MS = 1200; // §8.3, 3 stagger beats of 400ms
+  const STOPPING_STAGGER_MS = 300; // §8.5: reel2 +300, reel3 +600
+  const OVERSHOOT_MS = 80; // §5: the illusory near-miss triple beat
+  const REVEAL_DURATION_MS = 300; // §8.6
+  const JAM_DURATION_MS = 600; // §8.13: 300 brake + 300 settled
+  const MALFUNCTION_DURATION_MS = 600; // §8.14: mirrors JAM's timing
+  
+  /** OUTCOME phase total duration, ms, by class (TRIPLE is further keyed by tier). */
+  const OUTCOME_DURATIONS_MS = Object.freeze({
+    JACKPOT: 2800,
+    MEDALLION: 2100,
+    TRIPLE: Object.freeze({ TOOL: 2200, TEST: 1900, TOKEN: 1700, FILE: 1600, DIFF: 1500, PROSE: 1500 }),
+    DOUBLE: 1500,
+    NEAR_MISS: 1800,
+    LOSE: 1600,
+  });
+  
+  function outcomeDurationMs(outcomeClass, tier) {
+    const d = OUTCOME_DURATIONS_MS[outcomeClass];
+    if (d == null) return 1600;
+    return typeof d === 'number' ? d : d[tier] ?? 1600;
+  }
+  
+  // ---------------------------------------------------------------------------
+  // Chassis geometry (§7)
+  // ---------------------------------------------------------------------------
+  
+  const STANDARD_GEO = Object.freeze({ width: 60, interior: 58, leftMargin: 10, cellW: 5, gap: 1, leverGap: 4 });
+  const GRAND_GEO = Object.freeze({ width: 80, interior: 78, leftMargin: 14, cellW: 7, gap: 1, leverGap: 4 });
+  const COMPACT_WIDTH = 40;
+  
+  const TITLE = 'C L A U D E   S L O T S';
+  
+  function roleStyle(role) {
+    const s = { color: role.hex };
+    if (role.bold) s.bold = true;
+    if (role.dim) s.dim = true;
+    return s;
+  }
+  
+  function centerText(text, w) {
+    const tw = displayWidth(text);
+    const pad = w - tw;
+    if (pad < 0) throw new Error(`centerText: ${JSON.stringify(text)} (width ${tw}) doesn't fit in ${w}`);
+    const left = Math.floor(pad / 2);
+    return ' '.repeat(left) + text + ' '.repeat(pad - left);
+  }
+  
+  // --- reel-cell content resolution -------------------------------------------
+  
+  /** True if `text` is one of the eight canonical symbol ids. */
+  function isSymbolId(text) {
+    return SYMBOL_IDS.includes(text);
+  }
+  
+  function blurStyle(ch) {
+    if (ch === '▓') return { color: COLORS.motionBlur.from };
+    if (ch === '░') return { color: COLORS.motionBlur.to };
+    if (ch === '▒') return { color: '#73757D' }; // midpoint of motionBlur.from/to
+    if (ch === '—') return { color: COLORS.hintText.hex, dim: true };
+    return { color: COLORS.infoText.hex };
+  }
+  
+  /**
+   * Resolve one reel cell's glyph + style. `entry` is either a symbol id
+   * (§1's eight glyphs) or a literal decoration string ('▓','▒','░','—', a
+   * single space for a still-blank slot). `tone: 'dim'` desaturates a real
+   * symbol to the LOSE-state neutral gray (§9's "LOSE state... dim" rule).
+   */
+  function cellContent(entry, { hot = false, tone = 'normal', theme = 'classic' } = {}) {
+    if (isSymbolId(entry)) {
+      const sym = getSymbol(entry);
+      const glyph = getThemedGlyph(entry, theme);
+      if (tone === 'dim') return { glyph, style: { color: COLORS.loseNeutral.hex, dim: true } };
+      return { glyph, style: { color: sym.color.hex, bold: !!sym.color.bold || hot } };
+    }
+    return { glyph: entry, style: blurStyle(entry) };
+  }
+  
+  // --- box-drawing primitives --------------------------------------------------
+  
+  function boxEdge(kind, hot, w) {
+    const left = hot ? (kind === 'top' ? '╔' : '╚') : kind === 'top' ? '┌' : '└';
+    const right = hot ? (kind === 'top' ? '╗' : '╝') : kind === 'top' ? '┐' : '┘';
+    const fill = hot ? '═' : '─';
+    return left + fill.repeat(w) + right;
+  }
+  
+  function wallStyle(hot) {
+    return roleStyle(hot ? COLORS.reelFrameHot : COLORS.reelFrameIdle);
+  }
+  
+  /**
+   * Push the placements for one reel-bay row (top/mid/bot) across all 3 cells
+   * into `placements`, starting at `startCol`. `entries` is a length-3 array
+   * (ignored for top/bot). `payline` swaps the row's two OUTERMOST wall
+   * characters for the block-bar markers (§6/§7 anatomy note) — internal
+   * cell walls are untouched.
+   */
+  function pushReelRow(placements, startCol, geo, kind, entries, hots, payline, opts) {
+    const { cellW: w, gap } = geo;
+    const cellSpan = w + 2 + gap;
+    for (let i = 0; i < 3; i++) {
+      const col = startCol + i * cellSpan;
+      const hot = hots[i];
+      if (kind === 'top' || kind === 'bot') {
+        placements.push({ col, text: boxEdge(kind, hot, w), style: wallStyle(hot) });
+      } else {
+        const wallCh = hot ? '║' : '│';
+        const ws = wallStyle(hot);
+        const { glyph, style } = cellContent(entries[i], { hot, ...opts });
+        placements.push({ col, text: wallCh, style: ws });
+        placements.push({ col: col + 1, text: centerText(glyph, w), style });
+        placements.push({ col: col + 1 + w, text: wallCh, style: ws });
+      }
+    }
+    if (payline) {
+      const rowWidth = 3 * (w + 2) + 2 * gap;
+      const barStyle = roleStyle(hots.some(Boolean) ? COLORS.paylineBarHot : COLORS.paylineBarIdle);
+      placements.push({ col: startCol, text: '▐', style: barStyle });
+      placements.push({ col: startCol + rowWidth - 1, text: '▌', style: barStyle });
+    }
+  }
+  
+  const BULB_STYLES = {
+    bulbs: (ch) => (ch === '●' ? roleStyle(COLORS.bulbLit) : ch === '○' ? roleStyle(COLORS.bulbUnlit) : ch === '★' ? roleStyle(COLORS.chassisBorderHot) : roleStyle(COLORS.bulbLit)),
+    blur: (ch) => blurStyle(ch),
+    decor: (ch) => {
+      if (ch === '●') return roleStyle(COLORS.coins);
+      if (ch === '○') return roleStyle(COLORS.bulbUnlit);
+      if (ch === '★') return roleStyle(COLORS.chassisBorderHot);
+      if (ch === '☆') return roleStyle(COLORS.sunburst);
+      // Was hardcoded to '#FF8A3D' — byte-identical to MEDALLION's signature
+      // orange (symbols.js), so the JAM 'INTERRUPTED' banner's flanking '◆ ◆'
+      // glyphs collided visually with the game's second-rarest win. Use the
+      // ABORTED role color instead so it reads as "something stopped", not
+      // "you won something special".
+      if (ch === '◆') return { color: COLORS.abortedText.hex };
+      if (ch === '♦') return { color: getSymbol('DIFF').color.hex };
+      if (ch === '♣') return { color: getSymbol('FILE').color.hex };
+      if (ch === '☼') return { color: getSymbol('TOKEN').color.hex };
+      if (ch === '♥') return { color: getSymbol('PROSE').color.hex };
+      if (ch === ' ') return {};
+      return { color: COLORS.infoText.hex };
+    },
+    void: () => roleStyle(COLORS.errorText),
+    brake: () => roleStyle(COLORS.abortedText),
+  };
+  
+  function pushMarquee(placements, geo, marqueeText, bulbsLeft, bulbsRight, bulbMode, marqueeStyle) {
+    const bulbStyler = BULB_STYLES[bulbMode] || BULB_STYLES.decor;
+    const parts = [];
+    for (const ch of bulbsLeft) parts.push({ text: ch, style: bulbStyler(ch) });
+    parts.push({ text: '  ', style: {} });
+    parts.push({ text: marqueeText, style: marqueeStyle || roleStyle(COLORS.wordmark) });
+    parts.push({ text: '  ', style: {} });
+    for (const ch of bulbsRight) parts.push({ text: ch, style: bulbStyler(ch) });
+    const total = parts.reduce((w, p) => w + displayWidth(p.text), 0);
+    const pad = geo.interior - total;
+    if (pad < 0) throw new Error(`pushMarquee: marquee too wide for interior ${geo.interior}`);
+    let col = Math.floor(pad / 2);
+    for (const p of parts) {
+      if (p.text.length) placements.push({ col, text: p.text, style: p.style });
+      col += displayWidth(p.text);
+    }
+  }
+  
+  function pushInfoStrip(placements, geo, left, right) {
+    const w = geo.interior;
+    const rw = displayWidth(right);
+    const lw = displayWidth(left);
+    if (lw + rw > w) {
+      // defensive: never throw on a too-long info line — truncate the left field
+      const budget = Math.max(0, w - rw - 1);
+      left = left.slice(0, budget);
+    }
+    placements.push({ col: 0, text: left, style: roleStyle(COLORS.infoText) });
+    if (right) placements.push({ col: w - displayWidth(right), text: right, style: roleStyle(COLORS.hintText) });
+  }
+  
+  /**
+   * @typedef {{
+   *   marqueeText: string, bulbsLeft: string, bulbsRight: string, bulbMode?: 'bulbs'|'blur'|'decor'|'void'|'brake',
+   *   topSyms: [string,string,string], paySyms: [string,string,string], botSyms: [string,string,string],
+   *   hotCols: [boolean,boolean,boolean], tone?: 'normal'|'dim', theme?: 'classic'|'emoji',
+   *   knobRow: number|null, infoLeft: string, infoRight: string, outerHot?: boolean,
+   *   marqueeStyle?: {color?:string, bold?:boolean, dim?:boolean},
+   * }} BoxParams
+   */
+  
+  // Every interior cell of the chassis (between the two `║` borders) is
+  // composed onto a canvas whose UNPLACED cells get this fill: an explicit
+  // `bg` matching symbols.js's COLORS.background (§9's "dark ground every
+  // foreground color sits on"), never a styleless space. This isn't just
+  // cosmetic: Claude Code's Ink-based renderer treats a plain, unstyled
+  // whitespace run as safe to skip over with a cursor-forward/CHA jump
+  // instead of actually writing space bytes (verified live — see the "stale
+  // digits inside the chassis" note in docs/ARCHITECTURE.md §4). That's only
+  // safe when the terminal cells under the jump are already correctly blank.
+  // They aren't always: the Spinner/AbovePrompt chassis renders *inline* in
+  // the same scrolling transcript region as the model's streamed text
+  // (ARCHITECTURE.md's scroll-region evidence), so a row the chassis is about
+  // to occupy can still hold leftover transcript characters from a moment
+  // earlier. Giving every interior cell an explicit background forces the
+  // renderer to actually paint it — it can no longer treat the run as a
+  // no-op — which overwrites any such stale content instead of skipping past
+  // it. Every compose() call below that builds a chassis interior line must
+  // carry this fillStyle. Exported so art-storyboards.js's COMPACT single-line
+  // layout (the same class of multi-span, gapped line) can reuse it too.
+  const CHASSIS_FILL_STYLE = Object.freeze({ bg: COLORS.background.hex });
+  
+  /** @param {typeof STANDARD_GEO} geo @param {BoxParams} p */
+  function buildBoxFrame(geo, p) {
+    const { width, interior, leftMargin } = geo;
+    const fr = makeFrame(width);
+    const borderStyle = roleStyle(p.outerHot ? COLORS.chassisBorderHot : COLORS.chassisBorderIdle);
+    const wrap = (interiorSpans) => line(span('║', borderStyle), ...interiorSpans, span('║', borderStyle));
+    const composeInterior = (placements) => compose(interior, placements, { fillStyle: CHASSIS_FILL_STYLE });
+  
+    fr.lines.push(line(span('╔' + '═'.repeat(interior) + '╗', borderStyle)));
+  
+    const marqueePlacements = [];
+    pushMarquee(marqueePlacements, geo, p.marqueeText, p.bulbsLeft, p.bulbsRight, p.bulbMode || 'bulbs', p.marqueeStyle);
+    fr.lines.push(wrap(composeInterior(marqueePlacements)));
+  
+    fr.lines.push(line(span('╠' + '═'.repeat(interior) + '╣', borderStyle)));
+  
+    const leverCol = leftMargin + 3 * (geo.cellW + 2) + 2 * geo.gap + geo.leverGap;
+    const knobStyle = roleStyle(COLORS.bulbLit);
+    const rodStyle = roleStyle(COLORS.reelFrameIdle);
+    const leverGlyphFor = (row) => {
+      if (p.knobRow == null) return null;
+      if (row < p.knobRow) return { ch: '│', style: rodStyle };
+      if (row === p.knobRow) return { ch: '●', style: knobStyle };
+      return null;
+    };
+  
+    const bodyOpts = { tone: p.tone || 'normal', theme: p.theme || 'classic' };
+    const rowKinds = ['top', 'mid', 'mid', 'mid', 'bot'];
+    const rowEntries = [null, p.topSyms, p.paySyms, p.botSyms, null];
+    for (let row = 0; row < 5; row++) {
+      const placements = [];
+      pushReelRow(placements, leftMargin, geo, rowKinds[row], rowEntries[row], p.hotCols, row === 2, bodyOpts);
+      const lg = leverGlyphFor(row);
+      if (lg) placements.push({ col: leverCol, text: lg.ch, style: lg.style });
+      fr.lines.push(wrap(composeInterior(placements)));
+    }
+  
+    fr.lines.push(line(span('╠' + '═'.repeat(interior) + '╣', borderStyle)));
+  
+    const infoPlacements = [];
+    pushInfoStrip(infoPlacements, geo, p.infoLeft, p.infoRight);
+    fr.lines.push(wrap(composeInterior(infoPlacements)));
+  
+    fr.lines.push(line(span('╚' + '═'.repeat(interior) + '╝', borderStyle)));
+  
+    return assertRect(fr);
+  }
+  
+  function buildStandardFrame(p) {
+    return buildBoxFrame(STANDARD_GEO, p);
+  }
+  function buildGrandFrame(p) {
+    return buildBoxFrame(GRAND_GEO, p);
+  }
+  
+  function placeParts(placements, col, parts) {
+    let c = col;
+    for (const p of parts) {
+      if (p.text.length) placements.push({ col: c, text: p.text, style: p.style });
+      c += displayWidth(p.text);
+    }
+    return c;
+  }
+  
+  // ---------------------------------------------------------------------------
+  // §12 — Transcript result line (the permanent static record)
+  // ---------------------------------------------------------------------------
+  
+  const RESULT_LABELS = {
+    JACKPOT: (o) => `JACKPOT +${o.payout}`,
+    MEDALLION: (o) => `SIGNATURE +${o.payout}`,
+    TRIPLE: (o) => `TRIPLE +${o.payout}`,
+    DOUBLE: (o) => `DOUBLE +${o.payout}`,
+    NEAR_MISS: () => `so close +0`,
+    LOSE: () => `no win`,
+    ABORTED: () => `INTERRUPTED`,
+    ERROR: () => `ERROR`,
+  };
+  
+  /**
+   * Build the permanent 1-line transcript record (§12): `▐ a │ b │ c ▌ LABEL
+   * payout ✦ credits N · Ts`. `outcome` is a rollOutcome() result, or a
+   * synthetic `{outcomeClass:'ABORTED'|'ERROR'}`.
+   * @param {{outcomeClass:string, paylineSymbols?:string[], payout?:number}} outcome
+   * @param {{credits:number, elapsedSec:number, theme?:string}} info
+   */
+  function resultLine(outcome, info) {
+    const cls = outcome.outcomeClass;
+    const theme = info.theme || 'classic';
+    const symbols = outcome.paylineSymbols || ['—', '—', '—'];
+    const placements = [];
+    let col = 0;
+    const barStyle = roleStyle(cls === 'ABORTED' || cls === 'ERROR' ? COLORS.abortedText : COLORS.paylineBarIdle);
+    col = placeParts(placements, col, [{ text: '▐ ', style: barStyle }]);
+    symbols.forEach((s, i) => {
+      if (i > 0) col = placeParts(placements, col, [{ text: ' │ ', style: roleStyle(COLORS.infoText) }]);
+      const { glyph, style } = isSymbolId(s) ? cellContent(s, { theme }) : { glyph: s, style: blurStyle(s) };
+      col = placeParts(placements, col, [{ text: glyph, style }]);
+    });
+    col = placeParts(placements, col, [{ text: ' ▌ ', style: barStyle }]);
+    const label = (RESULT_LABELS[cls] || (() => cls))(outcome);
+    const labelStyle = cls === 'ERROR' ? roleStyle(COLORS.errorText) : cls === 'ABORTED' ? roleStyle(COLORS.abortedText) : roleStyle(COLORS.wordmark);
+    col = placeParts(placements, col, [{ text: label, style: labelStyle }]);
+    col = placeParts(placements, col, [{ text: ` ✦ credits ${Math.max(0, Math.trunc(info.credits))} · ${Math.max(0, Math.trunc(info.elapsedSec))}s`, style: roleStyle(COLORS.infoText) }]);
+  
+    const width = Math.max(col, info.columns || col);
+    const fr = makeFrame(width);
+    const pad = width - col;
+    const spans = placements.map((p) => span(p.text, p.style));
+    // Same rationale as CHASSIS_FILL_STYLE above: an explicit bg on the
+    // trailing pad keeps the renderer from CHA-jumping over it and leaving
+    // whatever a wider previous line (e.g. the "Baked for Ns" TurnDuration
+    // text this result line replaces) left behind at those columns.
+    if (pad > 0) spans.push(span(' '.repeat(pad), CHASSIS_FILL_STYLE));
+    fr.lines.push(spans);
+    return assertRect(fr);
+  }
+  
+  
+
+  // Claude Slots — per-phase/per-outcome storyboard content (lib/art-storyboards.js)
+  //
+  // Pure ESM, zero dependencies. Split out of lib/art.js purely to keep each
+  // file under a readable line budget — see that file's header for the
+  // chassis geometry/primitives this one builds on. This file owns "what does
+  // phase X (or outcome class Y) actually look like": marquee text/bulbs, the
+  // reel-cell content and hot flags, the info-strip text, the progressive
+  // payout counter, and the COMPACT/ULTRA-COMPACT layouts (§7.2/§8.17, which
+  // are hand-set fixed-format templates rather than a shrunk STANDARD, per
+  // gen.py's own literal source strings).
+  function compactLine(placements) {
+    // See art.js's CHASSIS_FILL_STYLE comment: this line is built from
+    // several independently-styled segments ("CLAUDE SLOTS", "[...]",
+    // "cr:NNN", the trailing "[-]") separated by gaps that must stay
+    // explicitly painted rather than left as skippable plain whitespace.
+    return compose(COMPACT_WIDTH, placements, { fillStyle: CHASSIS_FILL_STYLE });
+  }
+  
+  function creditsDigits(size) {
+    return size === 'grand' ? 4 : 3;
+  }
+  
+  function fmtCredits(n, size) {
+    return wPadStart(String(Math.max(0, Math.trunc(n))), creditsDigits(size), '0');
+  }
+  
+  // ---------------------------------------------------------------------------
+  // Default (never-spun) dressing grid (§8.1's canonical idle combo)
+  // ---------------------------------------------------------------------------
+  
+  const DEFAULT_TOP = ['DIFF', 'FILE', 'TOKEN'];
+  const DEFAULT_PAY = ['TEST', 'TOOL', 'PROSE'];
+  const DEFAULT_BOT = ['PROSE', 'DIFF', 'FILE'];
+  const NO_HOT = [false, false, false];
+  
+  function bulbPair(t, periodMs = 600) {
+    return Math.floor(t / periodMs) % 2 === 0 ? ['●○●○●', '●○●○●'] : ['○●○●○', '○●○●○'];
+  }
+  
+  function grandBulbPair(t, periodMs = 600) {
+    return Math.floor(t / periodMs) % 2 === 0 ? ['★●○●○●○★', '★●○●○●○★'] : ['★○●○●○●★', '★○●○●○●★'];
+  }
+  
+  function tickCredits(creditsBefore, payout, tick) {
+    const credits = Math.round(creditsBefore + payout * tick);
+    const lastWin = Math.round(payout * tick);
+    return { credits, lastWin };
+  }
+  
+  function fmtElapsed(ms) {
+    const sec = Math.max(0, Math.floor(ms / 1000));
+    const mm = Math.floor(sec / 60);
+    const ss = sec % 60;
+    return `${mm}:${String(ss).padStart(2, '0')}`;
+  }
+  
+  function fmtTokens(n) {
+    const v = Math.max(0, Math.round(n || 0));
+    return v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v);
+  }
+  
+  function normalInfo(size, credits, lastWin, onTheHouse) {
+    if (onTheHouse) return `CREDITS: ${fmtCredits(0, size)} · ON THE HOUSE`;
+    return `CREDITS: ${fmtCredits(credits, size)}   LAST WIN: ${fmtCredits(lastWin, size)}`;
+  }
+  
+  function recentText(recent) {
+    const slots = [];
+    for (let i = 0; i < 3; i++) {
+      const r = recent && recent[i];
+      if (!r || !r.symbols) {
+        slots.push('---');
+        continue;
+      }
+      const glyphs = r.symbols.map((id) => getSymbol(id).glyph);
+      slots.push(glyphs.every((g) => g === glyphs[0]) ? glyphs.join('') : glyphs.join('-'));
+    }
+    return slots.join(' ');
+  }
+  
+  // ---------------------------------------------------------------------------
+  // Phase -> BoxParams resolvers. Each returns a params object consumable by
+  // buildStandardFrame/buildGrandFrame directly (size-independent content).
+  // ---------------------------------------------------------------------------
+  
+  function idleParams(ctx) {
+    const outcome = ctx.outcome;
+    const [top, pay, bot] = outcome
+      ? [[0, 1, 2].map((i) => outcome.grid[i][0]), [0, 1, 2].map((i) => outcome.grid[i][1]), [0, 1, 2].map((i) => outcome.grid[i][2])]
+      : [DEFAULT_TOP, DEFAULT_PAY, DEFAULT_BOT];
+    const [bl, br] = ctx.size === 'grand' ? grandBulbPair(ctx.now ?? ctx.t) : bulbPair(ctx.now ?? ctx.t);
+    const onTheHouse = ctx.economy.credits <= 0;
+    let infoLeft = normalInfo(ctx.size, ctx.economy.credits, ctx.economy.lastWin, onTheHouse);
+    if (ctx.size === 'grand') {
+      infoLeft = onTheHouse
+        ? infoLeft
+        : `CREDITS: ${fmtCredits(ctx.economy.credits, 'grand')}   LAST WIN: ${fmtCredits(ctx.economy.lastWin, 'grand')}   RECENT: ${recentText(ctx.economy.stats && ctx.economy.stats.recent)}`;
+    }
+    return {
+      marqueeText: TITLE, bulbsLeft: bl, bulbsRight: br, bulbMode: 'bulbs',
+      topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, tone: 'normal', theme: ctx.theme,
+      knobRow: 0, infoLeft, infoRight: 'esc to interrupt',
+    };
+  }
+  
+  function leverParams(t, economy, size) {
+    const knobRow = Math.min(4, Math.floor(t / (LEVER_DURATION_MS / 5)));
+    const onTheHouse = economy.credits <= 0;
+    return {
+      marqueeText: TITLE, bulbsLeft: '♦♣☼♠♥', bulbsRight: '♦♣☼♠♥', bulbMode: 'decor',
+      topSyms: DEFAULT_TOP, paySyms: DEFAULT_PAY, botSyms: DEFAULT_BOT, hotCols: NO_HOT,
+      knobRow, infoLeft: normalInfo(size, economy.credits, economy.lastWin, onTheHouse), infoRight: '...',
+    };
+  }
+  
+  const SPINUP_FRAMES = [
+    { bulbs: '▓▒░▒▓', top: ['▒', '▒', '▒'], pay: ['▓', '▓', '▓'], bot: ['▒', '▒', '▒'], knobRow: 4 },
+    { bulbs: '▒░▓░▒', top: ['▓', '▒', '▒'], pay: ['▓', '▓', '▓'], bot: ['▓', '▒', '▒'], knobRow: 4 },
+    { bulbs: '░▓▒▓░', top: ['▓', '▓', '▓'], pay: ['▓', '▓', '▓'], bot: ['▓', '▓', '▓'], knobRow: 0 },
+  ];
+  
+  function spinupParams(t) {
+    const idx = Math.min(2, Math.floor(t / 400));
+    const f = SPINUP_FRAMES[idx];
+    return {
+      marqueeText: TITLE, bulbsLeft: f.bulbs, bulbsRight: f.bulbs, bulbMode: 'blur',
+      topSyms: f.top, paySyms: f.pay, botSyms: f.bot, hotCols: NO_HOT,
+      knobRow: f.knobRow, infoLeft: 'SPINNING...  0:00   0 tok', infoRight: 'esc to interrupt',
+    };
+  }
+  
+  const GLINT_SWEEPS = [
+    { top: ['░', '▓', '▓'], pay: ['▒', '▓', '▓'], bot: ['░', '▓', '▓'] },
+    { top: ['▓', '▒', '▓'], pay: ['▓', '░', '▓'], bot: ['▓', '▒', '▓'] },
+    { top: ['▓', '▓', '░'], pay: ['▓', '▓', '▒'], bot: ['▓', '▓', '░'] },
+  ];
+  const GLINT_PERIOD_MS = 7000;
+  const GLINT_SUB_MS = 170;
+  const EASE_PERIOD_MS = 6000;
+  const EASE_TOTAL_MS = 400;
+  
+  function spinningParams(t, info) {
+    const elapsedMs = info.elapsedMs ?? t;
+    const tokens = info.tokens ?? 0;
+    const infoLeft = `SPINNING...  ${fmtElapsed(elapsedMs)}   ${fmtTokens(tokens)} tok`;
+    const infoRight = 'esc to interrupt';
+    const glintPos = t % GLINT_PERIOD_MS;
+    if (glintPos < GLINT_SUB_MS * 3) {
+      const f = GLINT_SWEEPS[Math.floor(glintPos / GLINT_SUB_MS)];
+      return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: f.top, paySyms: f.pay, botSyms: f.bot, hotCols: NO_HOT, knobRow: 0, infoLeft, infoRight };
+    }
+    if (t % EASE_PERIOD_MS < EASE_TOTAL_MS) {
+      return { marqueeText: TITLE, bulbsLeft: '▒▓▒▓▒', bulbsRight: '▒▓▒▓▒', bulbMode: 'blur', topSyms: ['▒', '▓', '▒'], paySyms: ['▒', '▓', '▒'], botSyms: ['▒', '▓', '▒'], hotCols: NO_HOT, knobRow: 0, infoLeft, infoRight };
+    }
+    return { marqueeText: TITLE, bulbsLeft: '▓▓▓▓▓', bulbsRight: '▓▓▓▓▓', bulbMode: 'blur', topSyms: ['▓', '▓', '▓'], paySyms: ['▓', '▓', '▓'], botSyms: ['▓', '▓', '▓'], hotCols: NO_HOT, knobRow: 0, infoLeft, infoRight };
+  }
+  
+  function stoppingParams(t, outcome, reelLocks, overshoot) {
+    const lockedN = reelLocks.filter(Boolean).length;
+    // The near-miss overshoot (§5/§8.5) only teases the illusory triple on the
+    // PAYLINE row — reel 3's dressing (top/bottom) cells are still mid-settle
+    // and show the transitional '▒' placeholder (build_spec.py's literal
+    // [DIFF,DIFF,"▒"]/[PROSE,PROSE,"▒"] source), never the true settled grid
+    // value (that only appears once REVEAL starts) and never plain spin-blur.
+    const isOvershootReel = (i) => overshoot && i === 2;
+    const top = [0, 1, 2].map((i) => (isOvershootReel(i) ? '▒' : reelLocks[i] ? outcome.grid[i][0] : '▓'));
+    const pay = [0, 1, 2].map((i) => (isOvershootReel(i) ? outcome.paylineSymbols[0] : reelLocks[i] ? outcome.grid[i][1] : '▓'));
+    const bot = [0, 1, 2].map((i) => (isOvershootReel(i) ? '▒' : reelLocks[i] ? outcome.grid[i][2] : '▓'));
+    return {
+      marqueeText: TITLE, bulbsLeft: '●●●●●', bulbsRight: '●●●●●', bulbMode: 'bulbs',
+      topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0,
+      infoLeft: `WORKING...  DONE.  locking reel ${lockedN}`, infoRight: '',
+    };
+  }
+  
+  function hotColsFor(outcome) {
+    if (['JACKPOT', 'MEDALLION', 'TRIPLE'].includes(outcome.outcomeClass)) return [true, true, true];
+    if (outcome.outcomeClass === 'DOUBLE') {
+      // exactly the two positions holding the matched (doubled) symbol are hot
+      const counts = {};
+      outcome.paylineSymbols.forEach((s) => (counts[s] = (counts[s] || 0) + 1));
+      return outcome.paylineSymbols.map((s) => counts[s] === 2);
+    }
+    return [false, false, false];
+  }
+  
+  function revealParams(outcome, creditsBefore, size) {
+    const hot = hotColsFor(outcome);
+    const [top, pay, bot] = [0, 1, 2].map((r) => [0, 1, 2].map((i) => outcome.grid[i][r]));
+    return {
+      marqueeText: TITLE, bulbsLeft: hot.some(Boolean) ? '★●★●★' : '●●●●●', bulbsRight: hot.some(Boolean) ? '★●★●★' : '●●●●●', bulbMode: 'bulbs',
+      topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: false,
+      infoLeft: normalInfo(size, creditsBefore, 0, false), infoRight: 'esc to interrupt',
+    };
+  }
+  
+  // --- per-class OUTCOME sub-frame resolvers ----------------------------------
+  
+  function gridRows(outcome) {
+    return [0, 1, 2].map((r) => [0, 1, 2].map((i) => outcome.grid[i][r]));
+  }
+  
+  function outcomeJackpot(t, o, creditsBefore, size) {
+    const [top, pay, bot] = gridRows(o);
+    const hot = [true, true, true];
+    if (t < 100) {
+      const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
+      return { marqueeText: '* * *  J A C K P O T  * * *', bulbsLeft: '★★★★★', bulbsRight: '★★★★★', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    }
+    if (t < 900) {
+      const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
+      return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: '  ●   ●', bulbsRight: '●   ●  ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    }
+    if (t < 1900) {
+      const tick = (t - 900) / 1000;
+      const { credits, lastWin } = tickCredits(creditsBefore, o.payout, tick);
+      return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: ' ●  ● ', bulbsRight: ' ●  ●', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '*** PAYOUT ***' };
+    }
+    const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 1);
+    return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: '  ●  ', bulbsRight: '  ●  ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+  }
+  
+  function outcomeMedallion(t, o, creditsBefore, size) {
+    const [top, pay, bot] = gridRows(o);
+    const hot = [true, true, true];
+    const tick = t < 200 ? 0 : 1;
+    const { credits, lastWin } = tickCredits(creditsBefore, o.payout, tick);
+    if (t < 200) {
+      return { marqueeText: 'S I G N A T U R E   C O M B O', bulbsLeft: '☆●☆●☆', bulbsRight: '☆●☆●☆', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    }
+    if (t < 1200) {
+      const sweepA = Math.floor(t / 200) % 2 === 0;
+      return { marqueeText: 'C L A U D E !', bulbsLeft: sweepA ? '  ☆    ' : '    ☆  ', bulbsRight: sweepA ? '    ☆  ' : '  ☆    ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    }
+    return { marqueeText: 'S I G N A T U R E   C O M B O', bulbsLeft: '☆★☆★☆', bulbsRight: '☆★☆★☆', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+  }
+  
+  function outcomeTriple(t, o, creditsBefore, total, size) {
+    const [top, pay, bot] = gridRows(o);
+    const pulseEnd = total * 0.5;
+    const tickEnd = total * 0.8;
+    if (t < pulseEnd) {
+      const bright = Math.floor(t / 180) % 2 === 0;
+      const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
+      return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: bright ? [true, true, true] : [false, false, false], knobRow: 0, outerHot: bright, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    }
+    const tick = t < tickEnd ? (t - pulseEnd) / (tickEnd - pulseEnd) : 1;
+    const { credits, lastWin } = tickCredits(creditsBefore, o.payout, tick);
+    return { marqueeText: TITLE, bulbsLeft: '●●●●●', bulbsRight: '●●●●●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: [true, true, true], knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+  }
+  
+  function outcomeDouble(t, o, creditsBefore, size) {
+    const [top, pay, bot] = gridRows(o);
+    const hot = hotColsFor(o);
+    if (t < 300) {
+      const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
+      return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    }
+    const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 1);
+    return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+  }
+  
+  function outcomeNearMiss(t, o, creditsBefore, size) {
+    const [top, pay, bot] = gridRows(o);
+    const base = { topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0, tone: 'normal' };
+    const info = normalInfo(size, creditsBefore, 0);
+    if (t < 450) return { ...base, marqueeText: TITLE, bulbsLeft: '●●●●●', bulbsRight: '●●●●●', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
+    if (t < 1350) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: 'SO CLOSE...', infoRight: 'esc to interrupt' };
+    return { ...base, marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
+  }
+  
+  function outcomeLose(t, o, creditsBefore, size) {
+    const [top, pay, bot] = gridRows(o);
+    const base = { topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0, tone: 'dim' };
+    const info = normalInfo(size, creditsBefore, 0);
+    if (t < 500) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
+    if (t < 1100) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: 'no dice, spin again?  o_o', infoRight: '' };
+    return { ...base, tone: 'normal', marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
+  }
+  
+  function jamParams(t, creditsAfter, size) {
+    if (t < 300) {
+      return { marqueeText: TITLE, bulbsLeft: '▓▒░', bulbsRight: '░▒▓', bulbMode: 'brake', topSyms: ['▓', '░', '▒'], paySyms: ['▒', '▓', '░'], botSyms: ['░', '▒', '▓'], hotCols: NO_HOT, knobRow: 3, infoLeft: 'esc pressed — brake engaged...', infoRight: '' };
+    }
+    return { marqueeText: 'I N T E R R U P T E D', marqueeStyle: roleStyle(COLORS.abortedText), bulbsLeft: '◆ ◆', bulbsRight: '◆ ◆', bulbMode: 'decor', topSyms: ['—', '—', '—'], paySyms: ['—', '—', '—'], botSyms: ['—', '—', '—'], hotCols: NO_HOT, knobRow: 4, infoLeft: `CREDITS: ${fmtCredits(creditsAfter, size)}   spin refunded`, infoRight: 'esc to interrupt' };
+  }
+  
+  function malfunctionParams(t, creditsAfter, size) {
+    if (t < 300) {
+      return { marqueeText: TITLE, bulbsLeft: '▓▒░', bulbsRight: '░▒▓', bulbMode: 'void', topSyms: ['░', '░', '░'], paySyms: ['░', '░', '░'], botSyms: ['░', '░', '░'], hotCols: NO_HOT, knobRow: 3, infoLeft: 'hmm, something jammed...', infoRight: '' };
+    }
+    return { marqueeText: '* * *  E R R O R  * * *', marqueeStyle: roleStyle(COLORS.errorText), bulbsLeft: '░ ░', bulbsRight: '░ ░', bulbMode: 'void', topSyms: ['—', '—', '—'], paySyms: ['—', '—', '—'], botSyms: ['—', '—', '—'], hotCols: NO_HOT, knobRow: 4, infoLeft: `CREDITS: ${fmtCredits(creditsAfter, size)}   spin refunded`, infoRight: 'esc to interrupt' };
+  }
+  
+  /** Resolve the full BoxParams for a given (phase, t, outcome, ...) — size-independent. */
+  function resolveParams(ctx) {
+    const { phase, t } = ctx;
+    const outcome = ctx.outcome;
+    switch (phase) {
+      case 'IDLE':
+      case 'RESULT':
+        return idleParams(ctx);
+      case 'LEVER':
+        return leverParams(t, ctx.economy, ctx.size);
+      case 'SPINUP':
+        return spinupParams(t);
+      case 'SPINNING':
+        return spinningParams(t, ctx.info || {});
+      case 'STOPPING':
+        return stoppingParams(t, outcome, ctx.reelLocks, ctx.overshoot);
+      case 'REVEAL':
+        return revealParams(outcome, ctx.creditsBeforeOutcome, ctx.size);
+      case 'OUTCOME': {
+        const cb = ctx.creditsBeforeOutcome;
+        switch (outcome.outcomeClass) {
+          case 'JACKPOT': return outcomeJackpot(t, outcome, cb, ctx.size);
+          case 'MEDALLION': return outcomeMedallion(t, outcome, cb, ctx.size);
+          case 'TRIPLE': return outcomeTriple(t, outcome, cb, outcomeDurationMs('TRIPLE', outcome.tier), ctx.size);
+          case 'DOUBLE': return outcomeDouble(t, outcome, cb, ctx.size);
+          case 'NEAR_MISS': return outcomeNearMiss(t, outcome, cb, ctx.size);
+          case 'LOSE': return outcomeLose(t, outcome, cb, ctx.size);
+          default: return outcomeLose(t, outcome, cb, ctx.size);
+        }
+      }
+      case 'JAM':
+        return jamParams(t, ctx.economy.credits, ctx.size);
+      case 'MALFUNCTION':
+        return malfunctionParams(t, ctx.economy.credits, ctx.size);
+      default:
+        return idleParams(ctx);
+    }
+  }
+  
+  // ---------------------------------------------------------------------------
+  // COMPACT-size phase rendering (§7.2/§8.17) — structurally distinct from
+  // STANDARD/GRAND rather than a shrunk version of the same params shape.
+  // ---------------------------------------------------------------------------
+  
+  // COMPACT/ULTRA-COMPACT lines are hand-set fixed-format templates in
+  // ART-SPEC §7.2/§8.17 (verified against gen.py's literal source strings),
+  // not an algorithmically-justified layout — so this file reproduces them as
+  // literal templates (numbers substituted in) rather than re-deriving
+  // column positions. `colorizeCompactText` then recovers per-glyph styling
+  // by recognizing known tokens, so the plain text stays byte-identical to
+  // the spec while still rendering in color.
+  const GLYPH_COLOR = {
+    '◆C◆': () => ({ color: getSymbol('MEDALLION').color.hex, bold: true }),
+    BAR: () => ({ color: getSymbol('TOOL').color.hex }),
+    '✻': () => ({ color: getSymbol('CLAUDE').color.hex, bold: true }),
+    '★': () => ({ color: getSymbol('TEST').color.hex }),
+    '♦': () => ({ color: getSymbol('DIFF').color.hex }),
+    '♣': () => ({ color: getSymbol('FILE').color.hex }),
+    '☼': () => ({ color: getSymbol('TOKEN').color.hex }),
+    '♥': () => ({ color: getSymbol('PROSE').color.hex }),
+    '—': () => ({ color: COLORS.abortedText.hex, dim: true }),
+  };
+  const GLYPH_TOKENS_SORTED = Object.keys(GLYPH_COLOR).sort((a, b) => b.length - a.length);
+  const HINT_TOKENS = ['esc to interrupt', 'esc:x'];
+  
+  function colorizeCompactText(text) {
+    const spans = [];
+    let i = 0;
+    let plainStart = 0;
+    const flushPlain = (end) => {
+      if (end > plainStart) spans.push(span(text.slice(plainStart, end), roleStyle(COLORS.infoText)));
+    };
+    outer: while (i < text.length) {
+      for (const hint of HINT_TOKENS) {
+        if (text.startsWith(hint, i)) {
+          flushPlain(i);
+          spans.push(span(hint, roleStyle(COLORS.hintText)));
+          i += hint.length;
+          plainStart = i;
+          continue outer;
+        }
+      }
+      for (const tok of GLYPH_TOKENS_SORTED) {
+        if (text.startsWith(tok, i)) {
+          flushPlain(i);
+          spans.push(span(tok, GLYPH_COLOR[tok]()));
+          i += tok.length;
+          plainStart = i;
+          continue outer;
+        }
+      }
+      i += 1;
+    }
+    flushPlain(text.length);
+    return spans;
+  }
+  
+  /**
+   * COMPACT is a fixed ≤40-col budget (§7.2/§13.1), but the *actual* terminal
+   * requesting it can be narrower still (a split pane, a phone SSH client, or
+   * simply ctx.columns < COMPACT_WIDTH — resolveSize() picks 'compact' for
+   * anything under 62 cols, not just exactly 40). Clamp the working width to
+   * whatever's smaller, so COMPACT/ULTRA-COMPACT lines never assert/pad out
+   * to a width wider than the terminal actually offered.
+   */
+  function resolveCompactWidth(columns) {
+    if (!Number.isFinite(columns) || columns <= 0) return COMPACT_WIDTH;
+    return Math.max(1, Math.min(COMPACT_WIDTH, Math.trunc(columns)));
+  }
+  
+  function compactTextLine(text, width = COMPACT_WIDTH) {
+    // Defensive, like pushInfoStrip() in art.js: never throw on a too-long
+    // line (a narrow terminal, or credits/lastWin grown past the assumed
+    // digit budget) — truncate instead, so COMPACT never takes the whole
+    // renderer down with it.
+    const clipped = displayWidth(text) > width ? wTruncate(text, width) : text;
+    const padded = clipped + ' '.repeat(Math.max(0, width - displayWidth(clipped)));
+    return colorizeCompactText(padded);
+  }
+  
+  function compactIdleLines(ctx, width = COMPACT_WIDTH) {
+    const onTheHouse = ctx.economy.credits <= 0;
+    const cr = fmtCredits(ctx.economy.credits, 'compact');
+    const win = fmtCredits(ctx.economy.lastWin, 'compact');
+    const line1 = `CLAUDE SLOTS   ♦ BAR ✻   cr:${cr}`;
+    const line2 = onTheHouse ? `ON THE HOUSE         esc to interrupt` : `win:${win}              esc to interrupt`;
+    return [compactTextLine(line1, width), compactTextLine(line2, width)];
+  }
+  
+  function compactSpinningLines(ctx, width = COMPACT_WIDTH) {
+    const elapsedMs = (ctx.info && ctx.info.elapsedMs) ?? ctx.t;
+    const tokens = (ctx.info && ctx.info.tokens) ?? 0;
+    const cr = fmtCredits(ctx.economy.credits, 'compact');
+    const line1 = `CLAUDE SLOTS  [▓▓▓ spinning]  cr:${cr}`;
+    const line2 = `${fmtElapsed(elapsedMs)}  ${fmtTokens(tokens)} tok      esc to interrupt`;
+    return [compactTextLine(line1, width), compactTextLine(line2, width)];
+  }
+  
+  function compactPayline(symbols, theme) {
+    return symbols.map((s) => (isSymbolId(s) ? getThemedGlyph(s, theme) : s)).join('|');
+  }
+  
+  function compactOutcomeLines(ctx, width = COMPACT_WIDTH) {
+    const o = ctx.outcome;
+    const cls = o.outcomeClass;
+    const symbols = o.paylineSymbols || ['—', '—', '—'];
+    const bracket = `[${compactPayline(symbols, ctx.theme)}]`;
+    const cr = fmtCredits(ctx.economy.credits, 'compact');
+    if (cls === 'JACKPOT') {
+      return [compactTextLine(`CLAUDE SLOTS  [✻ ✻ ✻]  JACKPOT +${o.payout}`, width), compactTextLine(`cr:${cr}  * * * CLAUDING * * *`, width)];
+    }
+    if (cls === 'MEDALLION') {
+      return [compactTextLine(`CLAUDE SLOTS [◆C◆|◆C◆|◆C◆] SIGNATURE`, width), compactTextLine(`cr:${cr}  +${o.payout}  so claude`, width)];
+    }
+    if (cls === 'TRIPLE') return [compactTextLine(`CLAUDE SLOTS ${bracket} TRIPLE +${o.payout}`, width)];
+    if (cls === 'DOUBLE') return [compactTextLine(`CLAUDE SLOTS ${bracket}  DOUBLE +${o.payout}`, width)];
+    if (cls === 'NEAR_MISS') return [compactTextLine(`CLAUDE SLOTS ${bracket}  so close...`, width)];
+    if (cls === 'LOSE') return [compactTextLine(`CLAUDE SLOTS ${bracket}  no win  cr:${cr}`, width)];
+    if (cls === 'ABORTED') return [compactTextLine(`CLAUDE SLOTS [—|—|—]  INTERRUPTED`, width)];
+    return [compactTextLine(`CLAUDE SLOTS [—|—|—]  ERROR  cr:${cr}`, width)]; // ERROR
+  }
+  
+  function ultraCompactLines(ctx, width = COMPACT_WIDTH) {
+    if (ctx.phase === 'SPINNING' || ctx.phase === 'SPINUP') {
+      const elapsedMs = (ctx.info && ctx.info.elapsedMs) ?? ctx.t;
+      const tokens = (ctx.info && ctx.info.tokens) ?? 0;
+      const cr = fmtCredits(ctx.economy.credits, 'compact');
+      return [compactTextLine(`[spinning ${fmtElapsed(elapsedMs)} ${fmtTokens(tokens)} tok] cr:${cr} esc:x`, width)];
+    }
+    const onTheHouse = ctx.economy.credits <= 0;
+    const cr = fmtCredits(ctx.economy.credits, 'compact');
+    const win = fmtCredits(ctx.economy.lastWin, 'compact');
+    const status = onTheHouse ? 'ON THE HOUSE' : `cr:${cr} win:${win}`;
+    return [compactTextLine(`♦ BAR ✻ * ${status} * esc:x`, width)];
+  }
+  
+  function buildCompactFrame(linesArr, width = COMPACT_WIDTH) {
+    const fr = makeFrame(width);
+    fr.lines.push(...linesArr);
+    return assertRect(fr);
+  }
+  
+  // ---------------------------------------------------------------------------
+  // Top-level dispatcher — machine.js's only entry point into this module.
+  // ---------------------------------------------------------------------------
+  
+  /**
+   * @param {object} ctx see machine.js's frame() for the full shape:
+   *   {size, columns, maxRows, phase, t, outcome, reelLocks, overshoot,
+   *    economy, creditsBeforeOutcome, info, theme}
+   * @returns {import('./frame.js').Frame}
+   */
+  function renderFrame(ctx) {
+    if (ctx.size === 'compact') {
+      const width = resolveCompactWidth(ctx.columns);
+      const ultra = width <= 36 || ctx.maxRows === 1;
+      if (ultra) return buildCompactFrame(ultraCompactLines(ctx, width), width);
+      if (ctx.phase === 'SPINNING' || ctx.phase === 'SPINUP') return buildCompactFrame(compactSpinningLines(ctx, width), width);
+      if (ctx.phase === 'IDLE' || ctx.phase === 'RESULT') return buildCompactFrame(compactIdleLines(ctx, width), width);
+      if (['OUTCOME', 'JAM', 'MALFUNCTION'].includes(ctx.phase)) {
+        const synthetic = ctx.phase === 'JAM' ? { outcomeClass: 'ABORTED' } : ctx.phase === 'MALFUNCTION' ? { outcomeClass: 'ERROR' } : ctx.outcome;
+        return buildCompactFrame(compactOutcomeLines({ ...ctx, outcome: synthetic }, width), width);
+      }
+      return buildCompactFrame(compactIdleLines(ctx, width), width);
+    }
+    const params = resolveParams(ctx);
+    return ctx.size === 'grand' ? buildGrandFrame(params) : buildStandardFrame(params);
+  }
+  
+
+  return { LEVER_DURATION_MS, SPINUP_DURATION_MS, STOPPING_STAGGER_MS, OVERSHOOT_MS, REVEAL_DURATION_MS, JAM_DURATION_MS, MALFUNCTION_DURATION_MS, OUTCOME_DURATIONS_MS, outcomeDurationMs, COMPACT_WIDTH, TITLE, roleStyle, isSymbolId, CHASSIS_FILL_STYLE, buildStandardFrame, buildGrandFrame, resultLine, resolveParams, renderFrame, frameToPlainText };
+})();
+
+__modules["./machine.js"] = (function () {
+  'use strict';
+  const { rollOutcome } = __modules["./rng.js"];
+  const { createEconomy, applySpinStart, applyOutcome, DEFAULT_START_CREDITS } = __modules["./economy.js"];
+  const { renderFrame, resultLine: artResultLine, LEVER_DURATION_MS, SPINUP_DURATION_MS, STOPPING_STAGGER_MS, OVERSHOOT_MS, REVEAL_DURATION_MS, JAM_DURATION_MS, MALFUNCTION_DURATION_MS, outcomeDurationMs } = __modules["./art.js"];
+
+  // Claude Slots — the pure, time-driven state machine (lib/machine.js)
+  //
+  // Pure ESM, zero dependencies. Implements docs/ARCHITECTURE.md §3: given a
+  // `state` (plain, JSON-serializable data) and a wall-clock `now` in
+  // milliseconds, `frame(state, now, opts)` always returns the identical
+  // Frame — no hidden clocks, no randomness beyond the outcome rolled once at
+  // `pullLever`. Both Tier 1 (polling ~every 100ms) and Tier 2 (polling every
+  // 1000ms) call the exact same functions; they just sample at different
+  // rates.
+  //
+  //   IDLE --pullLever(now)--> LEVER -> SPINUP -> SPINNING (until stop())
+  //   SPINNING --stop(now,'answer'|'refusal')--> STOPPING -> REVEAL -> OUTCOME -> RESULT
+  //   SPINNING --stop(now,'aborted')--> JAM -> RESULT
+  //   SPINNING --stop(now,'error')--> MALFUNCTION -> RESULT
+  //
+  // All storyboard content (what each phase/outcome looks like) lives in
+  // art.js; this file only knows *when* phases start and end, and the handful
+  // of numbers (reel-lock booleans, the near-miss overshoot flag, the
+  // pre-payout credit snapshot) that are genuinely timing/economy concerns.
+  
+  /** Timing constants shared by both tiers — see art.js for the numbers themselves (this file just adds them up). */
+  const TIMINGS = Object.freeze({
+    leverMs: LEVER_DURATION_MS,
+    spinupMs: SPINUP_DURATION_MS,
+    stoppingStaggerMs: STOPPING_STAGGER_MS,
+    overshootMs: OVERSHOOT_MS,
+    revealMs: REVEAL_DURATION_MS,
+    jamMs: JAM_DURATION_MS,
+    malfunctionMs: MALFUNCTION_DURATION_MS,
+    outcomeMs: outcomeDurationMs,
+  });
+  
+  const STOPPING_TOTAL = (isNearMiss) => 2 * TIMINGS.stoppingStaggerMs + (isNearMiss ? TIMINGS.overshootMs : 0);
+  
+  /**
+   * @typedef {{
+   *   version: 1,
+   *   options: {startCredits:number, theme:'classic'|'emoji', grandEnabled:boolean},
+   *   economy: import('./economy.js').Economy,
+   *   seed: number|string|null,
+   *   outcome: ReturnType<typeof rollOutcome>|null,
+   *   leverAt: number|null,
+   *   stopAt: number|null,
+   *   stopReason: 'answer'|'aborted'|'error'|'refusal'|null,
+   *   creditsBeforeOutcome: number,
+   * }} State
+   */
+  
+  /**
+   * Create a fresh, idle machine state. Accepts either `createState(opts)` or
+   * `createState(now, opts)` (some early integration sketches called it with a
+   * leading timestamp) — both forms work.
+   * @param {number|object} [nowOrOpts]
+   * @param {object} [maybeOpts]
+   * @returns {State}
+   */
+  function createState(nowOrOpts, maybeOpts) {
+    const opts = typeof nowOrOpts === 'number' ? maybeOpts || {} : nowOrOpts || {};
+    return {
+      version: 1,
+      options: {
+        startCredits: Number.isFinite(opts.startCredits) ? opts.startCredits : DEFAULT_START_CREDITS,
+        theme: opts.theme === 'emoji' ? 'emoji' : 'classic',
+        grandEnabled: opts.grandEnabled !== false,
+      },
+      economy: createEconomy({ startCredits: opts.startCredits }),
+      seed: null,
+      outcome: null,
+      leverAt: null,
+      stopAt: null,
+      stopReason: null,
+      creditsBeforeOutcome: 0,
+    };
+  }
+  
+  /**
+   * Pull the lever: charges the spin cost, rolls this spin's outcome
+   * (deterministically, from `seed`), and starts the LEVER phase at `now`.
+   * Mutates and returns `state`.
+   * @param {State} state
+   * @param {number} now
+   * @param {number|string} seed
+   * @returns {State}
+   */
+  function pullLever(state, now, seed) {
+    applySpinStart(state.economy);
+    state.seed = seed;
+    state.outcome = rollOutcome(seed, { credits: state.economy.credits });
+    state.leverAt = now;
+    state.stopAt = null;
+    state.stopReason = null;
+    return state;
+  }
+  
+  /**
+   * Stop the spin: records when/why, snapshots pre-payout credits (so
+   * frame()'s progressive payout counter has a start value to interpolate
+   * from), and immediately applies the economic consequence (payout or
+   * refund) — the OUTCOME animation's "counter tick" is purely a display
+   * interpolation over this already-final credits value, computed in art.js.
+   * @param {State} state
+   * @param {number} now
+   * @param {'answer'|'aborted'|'error'|'refusal'} reason
+   * @returns {State}
+   */
+  function stop(state, now, reason) {
+    if (!state.outcome) {
+      throw new Error('machine.stop: called before pullLever (no outcome to resolve)');
+    }
+    state.stopAt = now;
+    state.stopReason = reason;
+    state.creditsBeforeOutcome = state.economy.credits;
+    if (reason === 'aborted' || reason === 'error') {
+      applyOutcome(state.economy, { outcomeClass: reason === 'aborted' ? 'ABORTED' : 'ERROR' });
+    } else {
+      applyOutcome(state.economy, state.outcome);
+    }
+    return state;
+  }
+  
+  /**
+   * Compute which phase `state` is in at `now`, and how far into that phase.
+   * Pure function of (state, now) — no side effects, no mutation.
+   * @param {State} state
+   * @param {number} now
+   * @returns {{phase:string, t:number, reelLocks:[boolean,boolean,boolean], overshoot:boolean}}
+   */
+  function phaseAt(state, now) {
+    if (state.leverAt == null) {
+      return { phase: state.outcome ? 'RESULT' : 'IDLE', t: now, reelLocks: [true, true, true], overshoot: false };
+    }
+  
+    // stop() can land at any point — even mid LEVER/SPINUP, if the turn ends
+    // (or is interrupted) very fast — so it takes priority over the
+    // lever/spin-up/spinning timeline the instant it has happened.
+    if (state.stopAt == null) {
+      const sinceLever = now - state.leverAt;
+      if (sinceLever < TIMINGS.leverMs) {
+        return { phase: 'LEVER', t: sinceLever, reelLocks: [false, false, false], overshoot: false };
+      }
+      if (sinceLever < TIMINGS.leverMs + TIMINGS.spinupMs) {
+        return { phase: 'SPINUP', t: sinceLever - TIMINGS.leverMs, reelLocks: [false, false, false], overshoot: false };
+      }
+      return { phase: 'SPINNING', t: sinceLever - TIMINGS.leverMs - TIMINGS.spinupMs, reelLocks: [false, false, false], overshoot: false };
+    }
+  
+    const sinceStop = now - state.stopAt;
+    const reason = state.stopReason;
+  
+    if (reason === 'aborted') {
+      if (sinceStop < TIMINGS.jamMs) return { phase: 'JAM', t: sinceStop, reelLocks: [false, false, false], overshoot: false };
+      return { phase: 'RESULT', t: sinceStop - TIMINGS.jamMs, reelLocks: [true, true, true], overshoot: false };
+    }
+    if (reason === 'error') {
+      if (sinceStop < TIMINGS.malfunctionMs) return { phase: 'MALFUNCTION', t: sinceStop, reelLocks: [false, false, false], overshoot: false };
+      return { phase: 'RESULT', t: sinceStop - TIMINGS.malfunctionMs, reelLocks: [true, true, true], overshoot: false };
+    }
+  
+    // 'answer' / 'refusal' — the normal STOPPING -> REVEAL -> OUTCOME -> RESULT path
+    const isNearMiss = state.outcome.outcomeClass === 'NEAR_MISS';
+    const stoppingTotal = STOPPING_TOTAL(isNearMiss);
+    if (sinceStop < stoppingTotal) {
+      const stagger = TIMINGS.stoppingStaggerMs;
+      const reelLocks = [true, sinceStop >= stagger, sinceStop >= 2 * stagger];
+      const overshoot = isNearMiss && sinceStop >= 2 * stagger && sinceStop < stoppingTotal;
+      return { phase: 'STOPPING', t: sinceStop, reelLocks, overshoot };
+    }
+    const sinceReveal = sinceStop - stoppingTotal;
+    if (sinceReveal < TIMINGS.revealMs) {
+      return { phase: 'REVEAL', t: sinceReveal, reelLocks: [true, true, true], overshoot: false };
+    }
+    const sinceOutcome = sinceReveal - TIMINGS.revealMs;
+    const outcomeTotal = outcomeDurationMs(state.outcome.outcomeClass, state.outcome.tier);
+    if (sinceOutcome < outcomeTotal) {
+      return { phase: 'OUTCOME', t: sinceOutcome, reelLocks: [true, true, true], overshoot: false };
+    }
+    return { phase: 'RESULT', t: sinceOutcome - outcomeTotal, reelLocks: [true, true, true], overshoot: false };
+  }
+  
+  /** True while a spin's animation is still playing — false once RESULT is reached (or before any spin). */
+  function isAnimating(state, now) {
+    const { phase } = phaseAt(state, now);
+    return !(phase === 'IDLE' || phase === 'RESULT');
+  }
+  
+  function resolveSize(size, columns, grandEnabled) {
+    if (size && size !== 'auto') return size;
+    if (columns >= 90 && grandEnabled) return 'grand';
+    if (columns >= 62) return 'standard';
+    return 'compact';
+  }
+  
+  /**
+   * Render the current visual state as a Frame.
+   * @param {State} state
+   * @param {number} now
+   * @param {{size?:'auto'|'compact'|'standard'|'grand', columns?:number, maxRows?:number,
+   *          info?:{elapsedMs?:number, tokens?:number, mode?:string, hint?:string, credits?:number, lastWin?:number}}} [opts]
+   * @returns {import('./frame.js').Frame}
+   */
+  function frame(state, now, opts = {}) {
+    const columns = opts.columns ?? 60;
+    const size = resolveSize(opts.size, columns, state.options.grandEnabled);
+    const { phase, t, reelLocks, overshoot } = phaseAt(state, now);
+    const info = opts.info || {};
+    const economy = info.credits != null || info.lastWin != null ? { ...state.economy, credits: info.credits ?? state.economy.credits, lastWin: info.lastWin ?? state.economy.lastWin } : state.economy;
+    return renderFrame({
+      size, columns, maxRows: opts.maxRows,
+      phase, t, seed: state.seed,
+      outcome: state.outcome, reelLocks, overshoot,
+      economy, creditsBeforeOutcome: state.creditsBeforeOutcome,
+      info, theme: state.options.theme,
+    });
+  }
+  
+  /**
+   * The permanent 1-line transcript record (§12) for the spin that just
+   * resolved. Only meaningful once RESULT has been reached; safe to call any
+   * time after `stop()`.
+   * @param {State} state
+   * @param {{columns?:number}} [opts]
+   * @returns {import('./frame.js').Frame}
+   */
+  function resultLine(state, opts = {}) {
+    const outcome = state.stopReason === 'aborted' ? { outcomeClass: 'ABORTED' } : state.stopReason === 'error' ? { outcomeClass: 'ERROR' } : state.outcome;
+    const elapsedSec = state.stopAt != null && state.leverAt != null ? Math.round((state.stopAt - state.leverAt) / 1000) : 0;
+    return artResultLine(outcome || { outcomeClass: 'LOSE', paylineSymbols: null }, {
+      credits: state.economy.credits,
+      elapsedSec,
+      columns: opts.columns,
+      theme: state.options.theme,
+    });
+  }
+  
+
+  return { TIMINGS, createState, pullLever, stop, phaseAt, isAnimating, frame, resultLine };
+})();
+
+__modules["./render-tree.js"] = (function () {
+  'use strict';
+
+
+  // Claude Slots — RenderElement tree renderer (lib/render-tree.js), Tier 1
+  //
+  // Pure ESM, zero dependencies. Frame -> the plain-data element tree a
+  // function-hooks `ui.render` handler returns (docs/ARCHITECTURE.md §2, and
+  // claude-code.d.ts's RenderElement/TextProps): a column Box containing one
+  // Text wrapper per line, each wrapping one Text child per span. Only the
+  // allow-listed Text props are ever emitted — `color`, `backgroundColor`,
+  // `bold`, `dimColor`, `inverse` — and only when actually set, since the
+  // scanner/validator rejects a tree carrying any other prop. A line with no
+  // spans still emits one Text child (a single space) so it can never
+  // collapse and shift the rows below it.
+  
+  function textElement(text, style = {}) {
+    const props = {};
+    if (style.color) props.color = style.color;
+    if (style.bg) props.backgroundColor = style.bg;
+    if (style.bold) props.bold = true;
+    if (style.dim) props.dimColor = true;
+    if (style.inverse) props.inverse = true;
+    const el = { type: 'Text', children: [text] };
+    if (Object.keys(props).length) el.props = props;
+    return el;
+  }
+  
+  /**
+   * @param {import('./frame.js').Frame} frame
+   * @returns {{type:'Box', props:{flexDirection:'column'}, children: object[]}}
+   */
+  function renderTree(frame) {
+    const children = frame.lines.map((lineSpans) => {
+      const spanEls = lineSpans.length ? lineSpans.map((s) => textElement(s.text, s)) : [textElement(' ')];
+      return { type: 'Text', children: spanEls };
+    });
+    return { type: 'Box', props: { flexDirection: 'column' }, children };
+  }
+  
+  /**
+   * Convenience alias for rendering a single-line result Frame (§12) — a
+   * transcript result line is structurally just a 1-line Frame, so this is
+   * `renderTree` under another name for call sites that want to be explicit
+   * about rendering a result rather than a live animation frame.
+   * @param {import('./frame.js').Frame} frame
+   */
+  function renderResultTree(frame) {
+    return renderTree(frame);
+  }
+  
+
+  return { renderTree, renderResultTree };
+})();
+
+__modules["./render-ansi.js"] = (function () {
+  'use strict';
+
+
+  // Claude Slots — ANSI renderer (lib/render-ansi.js), Tier 2 (statusLine)
+  //
+  // Pure ESM, zero dependencies. Frame -> a raw ANSI string: `\x1b[38;2;r;g;bm`
+  // truecolor (or a 256-color `\x1b[38;5;Nm` fallback via nearest xterm index
+  // when the terminal lacks truecolor), one reset per styled span, lines
+  // joined with '\n'. No leading/trailing whitespace reliance — every line is
+  // bounded by the chassis's own border glyphs (or, for COMPACT, padded to a
+  // fixed column budget by art.js), so a renderer/terminal that trims
+  // whitespace never breaks alignment.
+  //
+  // docs/ARCHITECTURE.md's live-measured facts note that Tier 1's `dimColor`
+  // renders as a flat gray (~#999999), not the SGR "faint" attribute — this
+  // renderer matches that for visual parity between tiers: a dim span's
+  // foreground is forced to that gray rather than emitting SGR 2.
+  
+  const ESC = '\x1b[';
+  const RESET = `${ESC}0m`;
+  const DIM_GRAY = '#999999';
+  
+  function hexToRgb(hex) {
+    const h = hex.replace('#', '');
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  
+  /** Nearest xterm-256 palette index for an RGB triple (6x6x6 cube + grayscale ramp). */
+  function rgbToAnsi256(r, g, b) {
+    if (r === g && g === b) {
+      if (r < 8) return 16;
+      if (r > 248) return 231;
+      return Math.round(((r - 8) / 247) * 24) + 232;
+    }
+    const toCube = (v) => Math.round((v / 255) * 5);
+    return 16 + 36 * toCube(r) + 6 * toCube(g) + toCube(b);
+  }
+  
+  function colorCodes(prefixTrue, prefix256, hex, truecolor) {
+    const [r, g, b] = hexToRgb(hex);
+    return truecolor ? [...prefixTrue, r, g, b] : [...prefix256, rgbToAnsi256(r, g, b)];
+  }
+  
+  /**
+   * @param {import('./frame.js').Frame} frame
+   * @param {{truecolor?: boolean}} [opts] default true; pass false to use the 256-color fallback
+   * @returns {string}
+   */
+  function renderAnsi(frame, opts = {}) {
+    const truecolor = opts.truecolor !== false;
+    const lines = frame.lines.map((lineSpans) => {
+      let out = '';
+      for (const s of lineSpans) {
+        const codes = [];
+        if (s.bold) codes.push(1);
+        if (s.inverse) codes.push(7);
+        const fgHex = s.dim ? DIM_GRAY : s.color;
+        if (fgHex) codes.push(...colorCodes([38, 2], [38, 5], fgHex, truecolor));
+        if (s.bg) codes.push(...colorCodes([48, 2], [48, 5], s.bg, truecolor));
+        out += codes.length ? `${ESC}${codes.join(';')}m${s.text}${RESET}` : s.text;
+      }
+      return out;
+    });
+    return lines.join('\n');
+  }
+  
+
+  return { renderAnsi };
+})();
+
+// Public surface for the preview page's own script — mirrors the CORE ENGINE PUBLIC API doc.
+const CS = {
+  width: __modules['./width.js'],
+  frame: __modules['./frame.js'],
+  symbols: __modules['./symbols.js'],
+  rng: __modules['./rng.js'],
+  economy: __modules['./economy.js'],
+  art: __modules['./art.js'],
+  machine: __modules['./machine.js'],
+  renderTree: __modules['./render-tree.js'],
+  renderAnsi: __modules['./render-ansi.js'],
+};
+globalThis.CS = CS;
+
+// ---------------------------------------------------------------------------
+// Claude Slots preview — page logic (uses only the `CS` global the bundle
+// above defines; no further imports, no network requests).
+// ---------------------------------------------------------------------------
+(function () {
+  'use strict';
+
+  const PANEL_BG = '#0e0e12';
+  const PANEL_FG = '#d7d9de';
+
+  const terminalEl = document.getElementById('terminal');
+  const transcriptEl = document.getElementById('transcript');
+  const sizeEl = document.getElementById('size');
+  const outcomeEl = document.getElementById('outcome');
+  const seedEl = document.getElementById('seed');
+  const fpsGroup = document.getElementById('fps-group');
+  const btnPull = document.getElementById('btn-pull');
+  const btnPlayAll = document.getElementById('btn-play-all');
+  const btnReset = document.getElementById('btn-reset');
+  const statusPill = document.getElementById('status-pill');
+  const statCredits = document.getElementById('stat-credits');
+  const statLastWin = document.getElementById('stat-lastwin');
+  const statSpins = document.getElementById('stat-spins');
+  const statJackpots = document.getElementById('stat-jackpots');
+  const statStreak = document.getElementById('stat-streak');
+
+  let fps = 10;
+  let machineState = CS.machine.createState({ startCredits: 100 });
+  let playAllCancelled = false;
+  let activeCancel = null; // set while a spin animation is running; calling it force-ends it
+
+  // ---- rendering: Frame -> HTML (spans -> inline-styled <span>) -----------
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function spanStyle(s) {
+    let fg = s.color || PANEL_FG;
+    let bg = s.bg || null;
+    if (s.inverse) {
+      const swapped = bg || PANEL_BG;
+      bg = fg;
+      fg = swapped;
+    }
+    const decls = [`color:${fg}`];
+    decls.push(`background-color:${bg || 'transparent'}`);
+    if (s.bold) decls.push('font-weight:700');
+    if (s.dim) decls.push('opacity:0.55');
+    return decls.join(';');
+  }
+
+  /** @param {import('./frame').Frame} frame @returns {string} */
+  function frameToHtml(frame) {
+    if (!frame || !frame.lines.length) return '<div class="tl">&nbsp;</div>';
+    return frame.lines
+      .map((lineSpans) => {
+        if (!lineSpans.length) return '<div class="tl">&nbsp;</div>';
+        const inner = lineSpans.map((s) => `<span style="${spanStyle(s)}">${escapeHtml(s.text)}</span>`).join('');
+        return `<div class="tl">${inner}</div>`;
+      })
+      .join('');
+  }
+
+  function renderFrameToPanel(frame) {
+    terminalEl.innerHTML = frameToHtml(frame);
+  }
+
+  function appendResultLine(frame) {
+    if (transcriptEl.querySelector('.empty')) transcriptEl.innerHTML = '';
+    const row = document.createElement('div');
+    row.innerHTML = frameToHtml(frame);
+    transcriptEl.insertBefore(row, transcriptEl.firstChild);
+    while (transcriptEl.children.length > 16) transcriptEl.removeChild(transcriptEl.lastChild);
+  }
+
+  // ---- column-width estimation for size:'auto' -----------------------------
+
+  let cachedCharWidth = null;
+  function charWidthPx() {
+    if (cachedCharWidth) return cachedCharWidth;
+    const probe = document.createElement('span');
+    probe.style.font = getComputedStyle(terminalEl).font;
+    probe.style.visibility = 'hidden';
+    probe.style.position = 'absolute';
+    probe.textContent = 'M'.repeat(40);
+    terminalEl.appendChild(probe);
+    const w = probe.getBoundingClientRect().width / 40;
+    terminalEl.removeChild(probe);
+    cachedCharWidth = w || 8;
+    return cachedCharWidth;
+  }
+
+  function columnsForSize(size) {
+    if (size === 'compact') return 40;
+    if (size === 'standard') return 62;
+    if (size === 'grand') return 90;
+    const outerWidth = document.querySelector('.panel-outer').clientWidth - 32;
+    return Math.max(40, Math.floor(outerWidth / charWidthPx()));
+  }
+
+  // ---- economy / stats display --------------------------------------------
+
+  function refreshStats() {
+    const eco = machineState.economy;
+    statCredits.textContent = String(eco.credits);
+    statLastWin.textContent = String(eco.lastWin);
+    statSpins.textContent = String(eco.stats.spins);
+    statJackpots.textContent = String(eco.stats.jackpots);
+    statStreak.textContent = String(eco.stats.bestStreak);
+  }
+
+  function setStatus(state) {
+    statusPill.textContent = state;
+    statusPill.dataset.state = state;
+  }
+
+  function setControlsDisabled(disabled) {
+    btnPull.disabled = disabled;
+    btnPlayAll.disabled = disabled;
+    btnReset.disabled = disabled;
+  }
+
+  // ---- seed handling --------------------------------------------------------
+
+  const OUTCOME_ALIASES = {
+    jackpot: 'JACKPOT', medallion: 'MEDALLION', triple: 'TRIPLE', double: 'DOUBLE',
+    nearmiss: 'NEAR_MISS', lose: 'LOSE',
+  };
+
+  function coerceSeed(raw) {
+    if (raw == null) return null;
+    const trimmed = String(raw).trim();
+    if (trimmed === '') return null;
+    const n = Number(trimmed);
+    return Number.isFinite(n) && String(n) === trimmed ? n : trimmed;
+  }
+
+  /** Brute-force the smallest seed (from `from`) whose rollOutcome() lands in outcome class `cls`. */
+  function findSeedForClass(cls, from) {
+    const start = typeof from === 'number' ? from : 0;
+    for (let i = 0; i < 20000; i++) {
+      const seed = start + i;
+      const st = CS.machine.pullLever(CS.machine.createState({}), 0, seed);
+      if (st.outcome.outcomeClass === cls) return seed;
+    }
+    return start;
+  }
+
+  // ---- one full spin lifecycle: lever -> spin-up -> spinning -> stop -> ----
+  // ---- stopping -> reveal -> outcome -> result -----------------------------
+
+  const LEVER_MS = CS.machine.TIMINGS.leverMs;
+  const SPINUP_MS = CS.machine.TIMINGS.spinupMs;
+  const SPIN_WORK_MS = 2200; // how long this preview pretends "the model is working"
+
+  function runSpin({ outcomeKey, seedRaw, size, fpsNow }) {
+    return new Promise((resolve) => {
+      const forcedClass = outcomeKey && OUTCOME_ALIASES[outcomeKey];
+      const stopReason = outcomeKey === 'aborted' ? 'aborted' : outcomeKey === 'error' ? 'error' : 'answer';
+      const requestedSeed = coerceSeed(seedRaw);
+      const seed = forcedClass
+        ? findSeedForClass(forcedClass, typeof requestedSeed === 'number' ? requestedSeed : 0)
+        : requestedSeed != null
+          ? requestedSeed
+          : Math.floor(Math.random() * 1e9);
+
+      const leverNow = Date.now();
+      CS.machine.pullLever(machineState, leverNow, seed);
+      setStatus('spinning');
+      setControlsDisabled(true);
+      refreshStats();
+
+      const stopAt = leverNow + LEVER_MS + SPINUP_MS + SPIN_WORK_MS;
+      const columns = columnsForSize(size);
+      const intervalMs = Math.max(50, Math.round(1000 / fpsNow));
+      let stopped = false;
+      let timer = null;
+
+      const finish = () => {
+        if (timer) clearInterval(timer);
+        activeCancel = null;
+        setControlsDisabled(false);
+        setStatus('idle');
+        resolve();
+      };
+
+      activeCancel = finish;
+
+      const tick = () => {
+        const now = Date.now();
+        const fr = CS.machine.frame(machineState, now, {
+          size,
+          columns,
+          info: { elapsedMs: now - leverNow, mode: 'thinking' },
+        });
+        renderFrameToPanel(fr);
+
+        if (!stopped && now >= stopAt) {
+          stopped = true;
+          CS.machine.stop(machineState, now, stopReason);
+          refreshStats();
+        }
+        if (stopped && !CS.machine.isAnimating(machineState, now)) {
+          const finalFr = CS.machine.frame(machineState, now, { size, columns, info: {} });
+          renderFrameToPanel(finalFr);
+          appendResultLine(CS.machine.resultLine(machineState, { columns }));
+          finish();
+        }
+      };
+      tick();
+      timer = setInterval(tick, intervalMs);
+    });
+  }
+
+  // ---- wiring ----------------------------------------------------------------
+
+  fpsGroup.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-fps]');
+    if (!btn) return;
+    fps = Number(btn.dataset.fps);
+    fpsGroup.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+  });
+
+  btnPull.addEventListener('click', async () => {
+    await runSpin({ outcomeKey: outcomeEl.value, seedRaw: seedEl.value, size: sizeEl.value, fpsNow: fps });
+  });
+
+  btnReset.addEventListener('click', () => {
+    if (activeCancel) return; // don't reset mid-spin
+    machineState = CS.machine.createState({ startCredits: 100 });
+    refreshStats();
+    terminalEl.innerHTML = frameToHtml(CS.machine.frame(machineState, Date.now(), { size: sizeEl.value, columns: columnsForSize(sizeEl.value), info: {} }));
+  });
+
+  btnPlayAll.addEventListener('click', async () => {
+    if (btnPlayAll.textContent === 'Stop') {
+      playAllCancelled = true;
+      if (activeCancel) activeCancel();
+      return;
+    }
+    const sequence = ['jackpot', 'medallion', 'triple', 'double', 'nearmiss', 'lose', 'aborted', 'error'];
+    playAllCancelled = false;
+    btnPlayAll.textContent = 'Stop';
+    btnPull.disabled = true;
+    btnReset.disabled = true;
+    for (const key of sequence) {
+      if (playAllCancelled) break;
+      outcomeEl.value = key;
+      await runSpin({ outcomeKey: key, seedRaw: '', size: sizeEl.value, fpsNow: fps });
+      if (playAllCancelled) break;
+      await new Promise((r) => setTimeout(r, 260));
+    }
+    outcomeEl.value = '';
+    btnPlayAll.textContent = 'Play all outcomes';
+    btnPull.disabled = false;
+    btnReset.disabled = false;
+  });
+
+  sizeEl.addEventListener('change', () => {
+    if (activeCancel) return;
+    const size = sizeEl.value;
+    renderFrameToPanel(CS.machine.frame(machineState, Date.now(), { size, columns: columnsForSize(size), info: {} }));
+  });
+
+  // ---- initial idle frame -----------------------------------------------------
+
+  refreshStats();
+  renderFrameToPanel(CS.machine.frame(machineState, Date.now(), { size: sizeEl.value, columns: columnsForSize(sizeEl.value), info: {} }));
+})();
+</script>
+</body>
+</html>
