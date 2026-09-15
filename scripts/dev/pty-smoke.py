@@ -27,10 +27,12 @@ Output (for either tier):
   <out>.timeline.json     {timeline:[[t_rel, label], ...], exit_code, args}
 Prints to stdout: paths to the three files, an excerpt of the stripped
 capture (first/last N lines), and a count of lines containing --marker
-(default: the "CLAUDE SLOTS" wordmark baked into every chassis frame per
-docs/ART-SPEC.md — a tier-agnostic signal that the machine actually
-rendered, since both the Tier 1 render tree and the Tier 2 statusLine draw
-that literal wordmark).
+(default: `╔`, the chassis top-left corner glyph baked into every
+STANDARD/GRAND frame per docs/ART-SPEC.md — a tier-agnostic signal that the
+machine actually rendered, since both the Tier 1 render tree and the Tier 2
+statusLine draw that literal chassis border; simpler and more robust than
+counting occurrences of the single-glyph "✻" marquee mark, which also
+appears elsewhere in the UI).
 """
 import argparse
 import fcntl
@@ -92,7 +94,7 @@ def main():
     ap.add_argument("--boot-wait", type=float, default=6.0)
     ap.add_argument("--interrupt-after", type=float, default=None, help="seconds after sending the prompt to send ESC (interrupt test)")
     ap.add_argument("--extra-settings", default=None, help="JSON object merged into the built --settings payload")
-    ap.add_argument("--marker", default="CLAUDE SLOTS", help="substring to count occurrences of in the stripped capture")
+    ap.add_argument("--marker", default="╔", help="substring to count occurrences of in the stripped capture")
     ap.add_argument("--excerpt-lines", type=int, default=25, help="how many head/tail lines of the stripped capture to print")
     ap.add_argument("--model", default="haiku")
     args = ap.parse_args()

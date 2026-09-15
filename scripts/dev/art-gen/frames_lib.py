@@ -182,7 +182,7 @@ BULB_ALL_LIT = ("●●●●●", "●●●●●")
 BULB_DARK = ("○○○○○", "○○○○○")
 BULB_BLUR = ("▓▓▓▓▓", "▓▓▓▓▓")
 
-TITLE = "C L A U D E   S L O T S"
+TITLE = "✻"
 
 
 def md_block(lines):

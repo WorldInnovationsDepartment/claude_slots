@@ -5,7 +5,7 @@ slot machine. Pull the lever when you submit a prompt, watch the reels spin whil
 and cash in when the turn completes.
 
 ```
-╔═════════════ CLAUDE SLOTS ══════════════╗
+╔════════════════════ ✻ ════════════════════╗
 ║   ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ●  ║
 ║  ▐  ✻     BAR     ★  ▌  [ 1.2k tok ]     ║
 ║   ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ●  ║
@@ -234,7 +234,7 @@ python3 scripts/dev/pty-smoke.py --tier 2 --tui fullscreen \
 
 Each run writes `<out>.bin` (raw capture), `<out>.stripped.txt` (ANSI stripped), and
 `<out>.timeline.json` (event timeline), and prints a head/tail excerpt plus a count of lines
-containing the `CLAUDE SLOTS` wordmark as a quick tier-agnostic "did it actually render" signal.
+containing the `╔` chassis corner glyph as a quick tier-agnostic "did it actually render" signal.
 Always pass `--model haiku` for these (the script defaults to it) and make sure no stray `claude`
 process from a prior run is still alive:
 

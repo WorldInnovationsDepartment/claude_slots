@@ -195,7 +195,7 @@ function lastResultLabel(economy) {
  * variable `rest` field the same way pushInfoStrip() in lib/art.js does,
  * never throwing, so a narrow terminal never overflows. */
 function tier1CompanionFrame(economy, columns) {
-  const title = 'CLAUDE SLOTS';
+  const title = '✻';
   const fullRest = ` · credits ${Math.max(0, Math.trunc(economy.credits))} · last: ${lastResultLabel(economy)}`;
   const maxWidth = Number.isFinite(columns) && columns > 0 ? columns : title.length + fullRest.length;
   const shownTitle = displayWidth(title) > maxWidth ? truncate(title, maxWidth) : title;

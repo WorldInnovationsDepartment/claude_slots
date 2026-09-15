@@ -157,7 +157,7 @@ BULB_ALL_LIT = ("●●●●●", "●●●●●")
 BULB_DARK = ("○○○○○", "○○○○○")
 BULB_BLUR = ("▓▓▓▓▓", "▓▓▓▓▓")
 
-TITLE = "C L A U D E   S L O T S"
+TITLE = "✻"
 
 # =============================================================================
 out("<!-- === GENERATED STANDARD FRAMES (60 cols x 11 rows) === -->")
@@ -365,30 +365,30 @@ def show_compact(lines, tag):
     out(f"[width<= {COMPACT_W}, each line len={[len(l) for l in lines]}]")
     out()
 
-show_compact([compact("CLAUDE SLOTS   ♦ BAR ✻   cr:097"),
+show_compact([compact("✻   ♦ BAR ✻   cr:097"),
               compact("win:008              esc to interrupt")], "COMPACT-IDLE")
 
-show_compact([compact("CLAUDE SLOTS   ♦ BAR ✻   cr:000"),
+show_compact([compact("✻   ♦ BAR ✻   cr:000"),
               compact("ON THE HOUSE         esc to interrupt")], "COMPACT-ON-THE-HOUSE")
 
-show_compact([compact("CLAUDE SLOTS  [▓▓▓ spinning]  cr:096"),
+show_compact([compact("✻  [▓▓▓ spinning]  cr:096"),
               compact("0:07  1.2k tok      esc to interrupt")], "COMPACT-SPINNING")
 
 show_compact([compact("♦ BAR ✻ * cr:097 win:008 * esc:x")], "ULTRA-COMPACT-IDLE(<=36)")
 show_compact([compact("[spinning 0:07 1.2k tok] cr:096 esc:x")], "ULTRA-COMPACT-SPINNING(<=36)")
 
-show_compact([compact("CLAUDE SLOTS  [✻ ✻ ✻]  JACKPOT +250"),
+show_compact([compact("✻  [✻ ✻ ✻]  JACKPOT +250"),
               compact("cr:346  * * * CLAUDING * * *")], "COMPACT-JACKPOT")
 
-show_compact([compact("CLAUDE SLOTS [◆C◆|◆C◆|◆C◆] SIGNATURE"),
+show_compact([compact("✻ [◆C◆|◆C◆|◆C◆] SIGNATURE"),
               compact("cr:173  +77  so claude")], "COMPACT-MEDALLION")
 
-show_compact([compact("CLAUDE SLOTS [BAR|BAR|BAR] TRIPLE +40")], "COMPACT-TRIPLE")
-show_compact([compact("CLAUDE SLOTS [♥|♥|BAR]  DOUBLE +1")], "COMPACT-DOUBLE")
-show_compact([compact("CLAUDE SLOTS [★|★|☼]  so close...")], "COMPACT-NEARMISS")
-show_compact([compact("CLAUDE SLOTS [♣|★|♦]  no win  cr:096")], "COMPACT-LOSE")
-show_compact([compact("CLAUDE SLOTS [—|—|—]  INTERRUPTED")], "COMPACT-ABORTED")
-show_compact([compact("CLAUDE SLOTS [—|—|—]  ERROR  cr:096")], "COMPACT-ERROR")
+show_compact([compact("✻ [BAR|BAR|BAR] TRIPLE +40")], "COMPACT-TRIPLE")
+show_compact([compact("✻ [♥|♥|BAR]  DOUBLE +1")], "COMPACT-DOUBLE")
+show_compact([compact("✻ [★|★|☼]  so close...")], "COMPACT-NEARMISS")
+show_compact([compact("✻ [♣|★|♦]  no win  cr:096")], "COMPACT-LOSE")
+show_compact([compact("✻ [—|—|—]  INTERRUPTED")], "COMPACT-ABORTED")
+show_compact([compact("✻ [—|—|—]  ERROR  cr:096")], "COMPACT-ERROR")
 
 out()
 out("<!-- === GRAND (<=80 cols, <=11 rows) === -->")

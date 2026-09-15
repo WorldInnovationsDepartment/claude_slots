@@ -111,7 +111,7 @@ test('JAM settled sub-frame\'s flanking ◆ bulbs no longer collide with MEDALLI
 test('the normal (non-JAM/MALFUNCTION) marquee is unaffected — still plain wordmark ivory', () => {
   const p = resolveParams({ phase: 'IDLE', t: 0, size: 'standard', outcome: null, economy: { credits: 97, lastWin: 8, stats: { recent: [] } } });
   const fr = buildStandardFrame(p);
-  const marqueeSpan = findSpan(fr.lines[1], 'C L A U D E');
+  const marqueeSpan = findSpan(fr.lines[1], '✻');
   assert.ok(marqueeSpan);
   assert.equal(marqueeSpan.color, COLORS.wordmark.hex);
 });

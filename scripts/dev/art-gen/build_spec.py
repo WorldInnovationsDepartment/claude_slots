@@ -254,7 +254,7 @@ This applies **per reel-cell-column** (all three symbols in a hot reel's box go 
 # =============================================================================
 p("""## 7. Chassis art — STANDARD / COMPACT / GRAND
 
-All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the wordmark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → lever column pinned to the right → separator → 1-line info strip → bottom border. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
+All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the brand mark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → lever column pinned to the right → separator → 1-line info strip → bottom border. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
 
 ### 7.1 STANDARD — 60 cols × 11 rows (well under the 62-col ceiling)
 """)
@@ -265,16 +265,16 @@ p("""Anatomy notes: reel cells are 5-char interior (`┌─────┐`), a 
 
 ### 7.2 COMPACT — ≤ 40 cols, 1–2 lines, no border (narrow terminals / minimal mode)
 """)
-cframe("COMPACT — idle", [compact("CLAUDE SLOTS   ♦ BAR ✻   cr:097"),
+cframe("COMPACT — idle", [compact("✻   ♦ BAR ✻   cr:097"),
                           compact("win:008              esc to interrupt")])
-cframe("COMPACT — ON THE HOUSE (0 credits)", [compact("CLAUDE SLOTS   ♦ BAR ✻   cr:000"),
+cframe("COMPACT — ON THE HOUSE (0 credits)", [compact("✻   ♦ BAR ✻   cr:000"),
                                                compact("ON THE HOUSE         esc to interrupt")])
-cframe("COMPACT — spinning", [compact("CLAUDE SLOTS  [▓▓▓ spinning]  cr:096"),
+cframe("COMPACT — spinning", [compact("✻  [▓▓▓ spinning]  cr:096"),
                                compact("0:07  1.2k tok      esc to interrupt")])
 cframe("ULTRA-COMPACT — idle (≤36 cols)", [compact("♦ BAR ✻ * cr:097 win:008 * esc:x")])
 cframe("ULTRA-COMPACT — spinning (≤36 cols)", [compact("[spinning 0:07 1.2k tok] cr:096 esc:x")])
 
-p("""No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the wordmark, hint text always rightmost — a stable reading position regardless of what's inside.
+p("""No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the brand mark, hint text always rightmost — a stable reading position regardless of what's inside.
 
 ### 7.3 GRAND — 80 cols × 11 rows (under the 80-col / 9–11-row ceiling)
 """)
@@ -492,32 +492,32 @@ gframe("GRAND — JACKPOT (frame 1, flash)", "* * *   J A C K P O T   * * *", "�
 
 p("""### 8.17 COMPACT-size worked examples (outcome classes)
 """)
-cframe("COMPACT — JACKPOT", [compact("CLAUDE SLOTS  [✻ ✻ ✻]  JACKPOT +250"),
+cframe("COMPACT — JACKPOT", [compact("✻  [✻ ✻ ✻]  JACKPOT +250"),
                              compact("cr:346  * * * CLAUDING * * *")])
-cframe("COMPACT — MEDALLION", [compact("CLAUDE SLOTS [◆C◆|◆C◆|◆C◆] SIGNATURE"),
+cframe("COMPACT — MEDALLION", [compact("✻ [◆C◆|◆C◆|◆C◆] SIGNATURE"),
                                compact("cr:173  +77  so claude")])
-cframe("COMPACT — TRIPLE", [compact("CLAUDE SLOTS [BAR|BAR|BAR] TRIPLE +40")])
-cframe("COMPACT — DOUBLE", [compact("CLAUDE SLOTS [♥|♥|BAR]  DOUBLE +1")])
-cframe("COMPACT — NEAR MISS", [compact("CLAUDE SLOTS [★|★|☼]  so close...")])
-cframe("COMPACT — LOSE", [compact("CLAUDE SLOTS [♣|★|♦]  no win  cr:096")])
-cframe("COMPACT — ABORTED", [compact("CLAUDE SLOTS [—|—|—]  INTERRUPTED")])
-cframe("COMPACT — ERROR", [compact("CLAUDE SLOTS [—|—|—]  ERROR  cr:096")])
+cframe("COMPACT — TRIPLE", [compact("✻ [BAR|BAR|BAR] TRIPLE +40")])
+cframe("COMPACT — DOUBLE", [compact("✻ [♥|♥|BAR]  DOUBLE +1")])
+cframe("COMPACT — NEAR MISS", [compact("✻ [★|★|☼]  so close...")])
+cframe("COMPACT — LOSE", [compact("✻ [♣|★|♦]  no win  cr:096")])
+cframe("COMPACT — ABORTED", [compact("✻ [—|—|—]  INTERRUPTED")])
+cframe("COMPACT — ERROR", [compact("✻ [—|—|—]  ERROR  cr:096")])
 
 # =============================================================================
 p("""## 9. Color spec (truecolor + 256-color fallback)
 
-All values are foreground colors on the machine's dark ground (`bg #0E0E12` / 256 `234`). `bold`/`dim` are the flag bits carried per-cell in the shared frame model (no italics/underline anywhere in this palette).
+All values are foreground colors on the machine's dark ground (`bg #1B1912` / 256 `234`). `bold`/`dim` are the flag bits carried per-cell in the shared frame model (no italics/underline anywhere in this palette).
 
 | Role | Truecolor | 256-fallback | bold/dim |
 |---|---|---|---|
-| Chassis border, idle (`╔═╗║╚╝╠╣`) | `#C9CED6` chrome | 251 `grey84` | — |
-| Chassis border, hot/celebrating (glyph unchanged, hue shifts) | `#FFD24C` hot gold | 220 `gold1` | bold |
-| Marquee lit bulb `●` | `#FFD700` | 220 `gold1` | bold |
-| Marquee unlit bulb `○` | `#7A6220` | 94 `orange4` | dim |
-| Wordmark "CLAUDE SLOTS" | `#F5F1E6` warm ivory | 230 `cornsilk1` | bold |
-| Reel frame, idle (`┌─┐│└┘`) | `#9AA0A8` steel | 246 `grey58` | — |
-| Reel frame, hot (`╔═╗║╚╝`) | `#FFB000` marquee gold | 214 `orange1` | bold |
-| Payline bars `▐▌` (always present) | `#E4B04A` idle / `#FF3B30` hot | 179 / 203 | bold |
+| Chassis border, idle (`╔═╗║╚╝╠╣`) | `#8C7A54` chrome | 101 | — |
+| Chassis border, hot/celebrating (glyph unchanged, hue shifts) | `#FFCB77` hot gold | 222 | bold |
+| Marquee lit bulb `●` | `#F6C67D` | 222 | bold |
+| Marquee unlit bulb `○` | `#6B4F26` | 58 | dim |
+| Marquee brand mark "✻" | `#E9BD7F` warm amber | 180 | bold |
+| Reel frame, idle (`┌─┐│└┘`) | `#A08F66` steel | 137 | — |
+| Reel frame, hot (`╔═╗║╚╝`) | `#FFB454` marquee gold | 215 | bold |
+| Payline bars `▐▌` (always present) | `#E9BD7F` idle / `#FF7A45` hot | 180 / 209 | bold |
 | `✻` CLAUDE (top) | `#F5A623` gold | 214 `orange1` | bold, always |
 | `◆C◆` MEDALLION | `#FF8A3D` signature orange | 208 `orange1` | bold |
 | `BAR` TOOL | `#C77DFF` violet | 141 `mediumpurple` | — |
@@ -526,17 +526,17 @@ All values are foreground colors on the machine's dark ground (`bg #0E0E12` / 25
 | `♣` FILE | `#9CA3AF` neutral gray | 249 `grey74` | — |
 | `☼` TOKEN | `#F5A623` gold (same family as `✻`/coins — "currency-ish") | 214 | — |
 | `♥` PROSE | `#F472B6` pink | 211 `orchid` | — |
-| Motion blur `▓▒░` | `#5C5E66` → `#8A8C94` (dark→light = slow→fast) | 240 → 249 | — |
-| Glint sweep `░▒▓█` | `#6B7280` → `#D1D5DB` gradient | 240 → 253 | — |
-| Coins `●` (jackpot rain, and the `☼` TOKEN reel symbol) | `#FFD700` | 220 | bold |
+| Motion blur `▓▒░` | `#4A4436` → `#8C7A54` (dark→light = slow→fast) | 238 → 101 | — |
+| Glint sweep `░▒▓█` | `#5C5138` → `#E9D3A8` gradient | 239 → 187 | — |
+| Coins `●` (jackpot rain, and the `☼` TOKEN reel symbol) | `#F6C67D` | 222 | bold |
 | Sunburst `☆` (MEDALLION) | `#FFFFFF` | 231 | bold |
-| Info strip text | `#B9BEC8` | 250 `grey82` | — |
-| "esc to interrupt" hint | `#6E7280` | 244 `grey54` | dim |
+| Info strip text | `#BDBEA9` | 249 | — |
+| "esc to interrupt" hint | `#8A7C5E` | 101 | dim |
 | LOSE state (all symbols) | desaturate ~40% | nearest neutral | dim |
-| NEAR MISS "SO CLOSE..." | `#E4B04A` | 179 | dim |
-| ABORTED brake blur / "INTERRUPTED" | `#8A93A6` cool steel-gray | 246 | dim |
+| NEAR MISS "SO CLOSE..." | `#E9BD7F` | 180 | dim |
+| ABORTED brake blur / "INTERRUPTED" | `#9C9686` cool steel-gray | 246 | dim |
 | ERROR void blur / "ERROR" | `#E4342F` warm red | 160 `red3` | dim |
-| ON THE HOUSE banner text | `#E4B04A` | 179 | dim, same family as NEAR MISS whisper — both are "the machine being gentle" |
+| ON THE HOUSE banner text | `#E9BD7F` | 180 | dim, same family as NEAR MISS whisper — both are "the machine being gentle" |
 
 Rule of thumb: **gold = value** (`✻`, `☼`, coins), **violet/green/pink/yellow/gray = the five Claude Code concept symbols**, **steel/chrome = idle chassis**, **red = error, never celebration** (this palette deliberately never uses red for a win, so red is unambiguous "something's wrong" everywhere in the UI), **dim = anything not currently the story**.
 """)

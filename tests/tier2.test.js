@@ -239,7 +239,7 @@ test('tier2 full lifecycle: SessionStart -> UserPromptSubmit -> statusline sampl
     sl = runStatusline({ session_id: sessionId }, dataDir);
     assert.equal(sl.status, 0);
     plain = assertRectangularOutput(sl.stdout, 'stop+5s');
-    assert.match(plain, /CLAUDE SLOTS|CREDITS/i, `expected settled machine content, got:\n${plain}`);
+    assert.match(plain, /✻|CREDITS/i, `expected settled machine content, got:\n${plain}`);
 
     // --- SessionEnd removes the session file ---
     res = runHook({ hook_event_name: 'SessionEnd', session_id: sessionId, reason: 'prompt_input_exit' }, dataDir);
@@ -266,7 +266,7 @@ test('tier2 COMPACT mode at COLUMNS=50', () => {
     // COMPACT (§7.2) is a fixed 40-col budget, no border, one/two lines.
     const lines = plain.split('\n');
     for (const line of lines) assert.ok(displayWidth(line) <= 40, `compact line exceeds 40 cols: ${JSON.stringify(line)}`);
-    assert.match(plain, /CLAUDE SLOTS/);
+    assert.match(plain, /✻/);
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
@@ -305,7 +305,7 @@ test('tier2 skips economy accounting for a session Tier 1 has marked active', ()
     const sl = runStatusline({ session_id: sessionId }, dataDir);
     assert.equal(sl.status, 0);
     const plain = stripAnsi(sl.stdout).trim();
-    assert.match(plain, /CLAUDE SLOTS.*credits 100/i);
+    assert.match(plain, /✻.*credits 100/i);
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
     fs.rmSync(tier1StoreDir, { recursive: true, force: true });
@@ -318,7 +318,7 @@ test('tier2 statusline degrades to an idle frame with no session file at all (ne
     const sl = runStatusline({ session_id: 'never-seen-session' }, dataDir);
     assert.equal(sl.status, 0);
     const plain = assertRectangularOutput(sl.stdout, 'no session file');
-    assert.match(plain, /CLAUDE SLOTS|CREDITS/i);
+    assert.match(plain, /✻|CREDITS/i);
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
   }

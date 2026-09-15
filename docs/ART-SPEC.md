@@ -207,14 +207,14 @@ This applies **per reel-cell-column** (all three symbols in a hot reel's box go 
 
 ## 7. Chassis art — STANDARD / COMPACT / GRAND
 
-All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the wordmark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → lever column pinned to the right → separator → 1-line info strip → bottom border. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
+All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the brand mark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → lever column pinned to the right → separator → 1-line info strip → bottom border. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
 
 ### 7.1 STANDARD — 60 cols × 11 rows (well under the 62-col ceiling)
 
 **STANDARD, idle**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
@@ -233,21 +233,21 @@ Anatomy notes: reel cells are 5-char interior (`┌─────┐`), a singl
 
 **COMPACT — idle**
 ```
-CLAUDE SLOTS   ♦ BAR ✻   cr:097         
+✻   ♦ BAR ✻   cr:097                    
 win:008              esc to interrupt   
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
 
 **COMPACT — ON THE HOUSE (0 credits)**
 ```
-CLAUDE SLOTS   ♦ BAR ✻   cr:000         
+✻   ♦ BAR ✻   cr:000                    
 ON THE HOUSE         esc to interrupt   
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
 
 **COMPACT — spinning**
 ```
-CLAUDE SLOTS  [▓▓▓ spinning]  cr:096    
+✻  [▓▓▓ spinning]  cr:096               
 0:07  1.2k tok      esc to interrupt    
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
@@ -264,14 +264,14 @@ CLAUDE SLOTS  [▓▓▓ spinning]  cr:096
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
-No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the wordmark, hint text always rightmost — a stable reading position regardless of what's inside.
+No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the brand mark, hint text always rightmost — a stable reading position regardless of what's inside.
 
 ### 7.3 GRAND — 80 cols × 11 rows (under the 80-col / 9–11-row ceiling)
 
 **GRAND, idle**
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                 ★●○●○●○★  C L A U D E   S L O T S  ★●○●○●○★                  ║
+║                            ★●○●○●○★  ✻  ★●○●○●○★                             ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║              ┌───────┐ ┌───────┐ ┌───────┐    ●                              ║
 ║              │   ♦   │ │   ♣   │ │   ☼   │                                   ║
@@ -295,7 +295,7 @@ All frames in this section are STANDARD (60×11) unless labeled GRAND. Every fra
 **IDLE — frame A**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
@@ -312,7 +312,7 @@ _hold ~600ms_
 **IDLE — frame B (bulbs swap, loop A/B)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ○●○●○  C L A U D E   S L O T S  ○●○●○           ║
+║                     ○●○●○  ✻  ○●○●○                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
@@ -332,7 +332,7 @@ _hold ~600ms, then back to A_
 **IDLE — ON THE HOUSE (0 credits)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
@@ -352,7 +352,7 @@ Credits already decremented at t=0 (spin cost is charged the instant the lever i
 **LEVER PULL — t=0.00s grip**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ♦♣☼♠♥  C L A U D E   S L O T S  ♦♣☼♠♥           ║
+║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
@@ -368,7 +368,7 @@ Credits already decremented at t=0 (spin cost is charged the instant the lever i
 **LEVER PULL — t=0.20s**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ♦♣☼♠♥  C L A U D E   S L O T S  ♦♣☼♠♥           ║
+║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │    ●                    ║
@@ -384,7 +384,7 @@ Credits already decremented at t=0 (spin cost is charged the instant the lever i
 **LEVER PULL — t=0.40s**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ♦♣☼♠♥  C L A U D E   S L O T S  ♦♣☼♠♥           ║
+║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │    │                    ║
@@ -400,7 +400,7 @@ Credits already decremented at t=0 (spin cost is charged the instant the lever i
 **LEVER PULL — t=0.60s**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ♦♣☼♠♥  C L A U D E   S L O T S  ♦♣☼♠♥           ║
+║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │    │                    ║
@@ -416,7 +416,7 @@ Credits already decremented at t=0 (spin cost is charged the instant the lever i
 **LEVER PULL — t=0.80s yank!**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ♦♣☼♠♥  C L A U D E   S L O T S  ♦♣☼♠♥           ║
+║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ♦  │ │  ♣  │ │  ☼  │    │                    ║
@@ -435,7 +435,7 @@ Marquee bulbs scatter to raw symbol glyphs (`♦♣☼♠♥`) during the pull �
 **SPIN-UP — reel 1 winds up**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ▓▒░▒▓  C L A U D E   S L O T S  ▓▒░▒▓           ║
+║                     ▓▒░▒▓  ✻  ▓▒░▒▓                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ▒  │ │  ▒  │ │  ▒  │    │                    ║
@@ -451,7 +451,7 @@ Marquee bulbs scatter to raw symbol glyphs (`♦♣☼♠♥`) during the pull �
 **SPIN-UP — reel 2 winds up**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ▒░▓░▒  C L A U D E   S L O T S  ▒░▓░▒           ║
+║                     ▒░▓░▒  ✻  ▒░▓░▒                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ▓  │ │  ▒  │ │  ▒  │    │                    ║
@@ -467,7 +467,7 @@ Marquee bulbs scatter to raw symbol glyphs (`♦♣☼♠♥`) during the pull �
 **SPIN-UP — reel 3 winds up; lever springs back to rest**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ░▓▒▓░  C L A U D E   S L O T S  ░▓▒▓░           ║
+║                     ░▓▒▓░  ✻  ░▓▒▓░                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
@@ -488,7 +488,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **SPINNING — steady blur (main loop state)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ▓▓▓▓▓  C L A U D E   S L O T S  ▓▓▓▓▓           ║
+║                     ▓▓▓▓▓  ✻  ▓▓▓▓▓                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
@@ -504,7 +504,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **SPINNING — speed-ease variant (brief 'catch', every 4-8s)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ▒▓▒▓▒  C L A U D E   S L O T S  ▒▓▒▓▒           ║
+║                     ▒▓▒▓▒  ✻  ▒▓▒▓▒                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ▒  │ │  ▓  │ │  ▒  │                         ║
@@ -522,7 +522,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **SPINNING — glint sweep 1/3 (~170ms each)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ░  │ │  ▓  │ │  ▓  │                         ║
@@ -538,7 +538,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **SPINNING — glint sweep 2/3 (~170ms each)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ▓  │ │  ▒  │ │  ▓  │                         ║
@@ -554,7 +554,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **SPINNING — glint sweep 3/3 (~170ms each)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ▓  │ │  ▓  │ │  ░  │                         ║
@@ -570,7 +570,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **SPINNING — long-run state (>1 min): ticker keeps counting, never looks stuck**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ▓▓▓▓▓  C L A U D E   S L O T S  ▓▓▓▓▓           ║
+║                     ▓▓▓▓▓  ✻  ▓▓▓▓▓                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
@@ -588,7 +588,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **STOPPING — reel 1 locks (★ TEST)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●●●●●  C L A U D E   S L O T S  ●●●●●           ║
+║                     ●●●●●  ✻  ●●●●●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ▓  │ │  ▓  │                         ║
@@ -604,7 +604,7 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 **STOPPING — reel 2 locks (BAR TOOL) — two match, tension rises**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●●●●●  C L A U D E   S L O T S  ●●●●●           ║
+║                     ●●●●●  ✻  ●●●●●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │ BAR │ │  ▓  │                         ║
@@ -622,7 +622,7 @@ The near-miss overshoot (§5) slots in here specifically — this example resolv
 **STOPPING (near-miss) — reel 3 OVERSHOOTS: illusory ★★★ for one frame**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●●●●●  C L A U D E   S L O T S  ●●●●●           ║
+║                     ●●●●●  ✻  ●●●●●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♦  │ │  ▒  │                         ║
@@ -639,7 +639,7 @@ _single ~80ms overshoot frame_
 **STOPPING (near-miss) — reel 3 SNAPS one stop further: settles ★★☼**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●●●●●  C L A U D E   S L O T S  ●●●●●           ║
+║                     ●●●●●  ✻  ●●●●●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♦  │ │  ★  │                         ║
@@ -660,7 +660,7 @@ Matched reel cells go hot (§6) the instant REVEAL renders — the hot-state and
 **REVEAL — TRIPLE BAR (hot immediately)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ★●★●★  C L A U D E   S L O T S  ★●★●★           ║
+║                     ★●★●★  ✻  ★●★●★                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
 ║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║                         ║
@@ -803,7 +803,7 @@ _t+1.20-2.10s, then → IDLE_
 **TRIPLE BAR — frame 1: bright pulse (matched boxes flip hot)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
 ║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║                         ║
@@ -819,7 +819,7 @@ _t+1.20-2.10s, then → IDLE_
 **TRIPLE BAR — frame 2: dim pulse (alternates w/ frame 1, 3-4 cycles)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♥  │ │  ♦  │ │  ✻  │                         ║
@@ -835,7 +835,7 @@ _t+1.20-2.10s, then → IDLE_
 **TRIPLE BAR — frame 3: payout ticks 000→015→040, glow settles hot**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●●●●●  C L A U D E   S L O T S  ●●●●●           ║
+║                     ●●●●●  ✻  ●●●●●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
 ║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║                         ║
@@ -855,7 +855,7 @@ _Tier notes (same 3-frame shape, timing/payout scale down): TRIPLE TEST(★) ~1.
 **DOUBLE — frame 1: the two ♥ boxes flip hot for one pulse**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ╔═════╗ ╔═════╗ ┌─────┐    ●                    ║
 ║          ║  ♣  ║ ║  ♦  ║ │  ☼  │                         ║
@@ -872,7 +872,7 @@ _t+0.00-0.30s, 1 pulse only, no repeat_
 **DOUBLE — frame 2: settles, payout appears (no tick-up), holds**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♣  │ │  ♦  │ │  ☼  │                         ║
@@ -891,7 +891,7 @@ _t+0.30-1.50s, hold, then → IDLE_. Still the smallest of the five winning clas
 **NEAR MISS — frame 1: hold, the neighbor symbol sits plainly visible**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●●●●●  C L A U D E   S L O T S  ●●●●●           ║
+║                     ●●●●●  ✻  ●●●●●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♦  │ │  ★  │                         ║
@@ -908,7 +908,7 @@ _t+0.00-0.45s_
 **NEAR MISS — frame 2: bulbs dim, info strip whispers 'SO CLOSE...'**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ○○○○○  C L A U D E   S L O T S  ○○○○○           ║
+║                     ○○○○○  ✻  ○○○○○                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♦  │ │  ★  │                         ║
@@ -925,7 +925,7 @@ _t+0.45-1.35s, hold_
 **NEAR MISS — frame 3: fades back to normal idle lighting**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♦  │ │  ♦  │ │  ★  │                         ║
@@ -944,7 +944,7 @@ _t+1.35-1.80s, then → IDLE. No payout — the entire point is tension without 
 **LOSE — frame 1: marquee bulbs dark, symbols render dim**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ○○○○○  C L A U D E   S L O T S  ○○○○○           ║
+║                     ○○○○○  ✻  ○○○○○                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♣  │ │  ★  │ │  ♦  │                         ║
@@ -961,7 +961,7 @@ _t+0.00-0.50s_
 **LOSE — frame 2: a tiny wistful mark for a beat**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ○○○○○  C L A U D E   S L O T S  ○○○○○           ║
+║                     ○○○○○  ✻  ○○○○○                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♣  │ │  ★  │ │  ♦  │                         ║
@@ -978,7 +978,7 @@ _t+0.50-1.10s_
 **LOSE — frame 3: bulbs relight, back to normal**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♣  │ │  ★  │ │  ♦  │                         ║
@@ -999,7 +999,7 @@ Not present in any source design — the reel bank does not simply vanish; it vi
 **ABORTED — frame 1: brake/jam (asymmetric blur, lever mid-track)**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║            ▓▒░  C L A U D E   S L O T S  ░▒▓             ║
+║                       ▓▒░  ✻  ░▒▓                        ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ▓  │ │  ░  │ │  ▒  │    │                    ║
@@ -1037,7 +1037,7 @@ Same brake mechanic as ABORTED (the reel bank should never look fundamentally di
 **ERROR — frame 1: void blur (dim, uniform — reads as 'wrong', not 'stopped')**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║            ▓▒░  C L A U D E   S L O T S  ░▒▓             ║
+║                       ▓▒░  ✻  ░▒▓                        ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
 ║          │  ░  │ │  ░  │ │  ░  │    │                    ║
@@ -1074,7 +1074,7 @@ Every outcome hands off to the ordinary IDLE loop (§8.1) with two persistent ch
 **IDLE (post-JACKPOT) — last combo parked, credits updated, attract-mode resumes**
 ```
 ╔══════════════════════════════════════════════════════════╗
-║          ●○●○●  C L A U D E   S L O T S  ●○●○●           ║
+║                     ●○●○●  ✻  ●○●○●                      ║
 ╠══════════════════════════════════════════════════════════╣
 ║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
 ║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
@@ -1094,7 +1094,7 @@ GRAND reuses the identical state machine; only the chassis substitution changes 
 **GRAND — SPINNING (steady blur)**
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    ░▓▒▓░  C L A U D E   S L O T S  ░▓▒▓░                     ║
+║                               ░▓▒▓░  ✻  ░▓▒▓░                                ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║              ┌───────┐ ┌───────┐ ┌───────┐    ●                              ║
 ║              │   ▓   │ │   ▓   │ │   ▓   │                                   ║
@@ -1127,68 +1127,68 @@ GRAND reuses the identical state machine; only the chassis substitution changes 
 
 **COMPACT — JACKPOT**
 ```
-CLAUDE SLOTS  [✻ ✻ ✻]  JACKPOT +250     
+✻  [✻ ✻ ✻]  JACKPOT +250                
 cr:346  * * * CLAUDING * * *            
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
 
 **COMPACT — MEDALLION**
 ```
-CLAUDE SLOTS [◆C◆|◆C◆|◆C◆] SIGNATURE    
+✻ [◆C◆|◆C◆|◆C◆] SIGNATURE               
 cr:173  +77  so claude                  
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
 
 **COMPACT — TRIPLE**
 ```
-CLAUDE SLOTS [BAR|BAR|BAR] TRIPLE +40   
+✻ [BAR|BAR|BAR] TRIPLE +40              
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
 **COMPACT — DOUBLE**
 ```
-CLAUDE SLOTS [♥|♥|BAR]  DOUBLE +1       
+✻ [♥|♥|BAR]  DOUBLE +1                  
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
 **COMPACT — NEAR MISS**
 ```
-CLAUDE SLOTS [★|★|☼]  so close...       
+✻ [★|★|☼]  so close...                  
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
 **COMPACT — LOSE**
 ```
-CLAUDE SLOTS [♣|★|♦]  no win  cr:096    
+✻ [♣|★|♦]  no win  cr:096               
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
 **COMPACT — ABORTED**
 ```
-CLAUDE SLOTS [—|—|—]  INTERRUPTED       
+✻ [—|—|—]  INTERRUPTED                  
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
 **COMPACT — ERROR**
 ```
-CLAUDE SLOTS [—|—|—]  ERROR  cr:096     
+✻ [—|—|—]  ERROR  cr:096                
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
 ## 9. Color spec (truecolor + 256-color fallback)
 
-All values are foreground colors on the machine's dark ground (`bg #0E0E12` / 256 `234`). `bold`/`dim` are the flag bits carried per-cell in the shared frame model (no italics/underline anywhere in this palette).
+All values are foreground colors on the machine's dark ground (`bg #1B1912` / 256 `234`). `bold`/`dim` are the flag bits carried per-cell in the shared frame model (no italics/underline anywhere in this palette).
 
 | Role | Truecolor | 256-fallback | bold/dim |
 |---|---|---|---|
-| Chassis border, idle (`╔═╗║╚╝╠╣`) | `#C9CED6` chrome | 251 `grey84` | — |
-| Chassis border, hot/celebrating (glyph unchanged, hue shifts) | `#FFD24C` hot gold | 220 `gold1` | bold |
-| Marquee lit bulb `●` | `#FFD700` | 220 `gold1` | bold |
-| Marquee unlit bulb `○` | `#7A6220` | 94 `orange4` | dim |
-| Wordmark "CLAUDE SLOTS" | `#F5F1E6` warm ivory | 230 `cornsilk1` | bold |
-| Reel frame, idle (`┌─┐│└┘`) | `#9AA0A8` steel | 246 `grey58` | — |
-| Reel frame, hot (`╔═╗║╚╝`) | `#FFB000` marquee gold | 214 `orange1` | bold |
-| Payline bars `▐▌` (always present) | `#E4B04A` idle / `#FF3B30` hot | 179 / 203 | bold |
+| Chassis border, idle (`╔═╗║╚╝╠╣`) | `#8C7A54` chrome | 101 | — |
+| Chassis border, hot/celebrating (glyph unchanged, hue shifts) | `#FFCB77` hot gold | 222 | bold |
+| Marquee lit bulb `●` | `#F6C67D` | 222 | bold |
+| Marquee unlit bulb `○` | `#6B4F26` | 58 | dim |
+| Marquee brand mark "✻" | `#E9BD7F` warm amber | 180 | bold |
+| Reel frame, idle (`┌─┐│└┘`) | `#A08F66` steel | 137 | — |
+| Reel frame, hot (`╔═╗║╚╝`) | `#FFB454` marquee gold | 215 | bold |
+| Payline bars `▐▌` (always present) | `#E9BD7F` idle / `#FF7A45` hot | 180 / 209 | bold |
 | `✻` CLAUDE (top) | `#F5A623` gold | 214 `orange1` | bold, always |
 | `◆C◆` MEDALLION | `#FF8A3D` signature orange | 208 `orange1` | bold |
 | `BAR` TOOL | `#C77DFF` violet | 141 `mediumpurple` | — |
@@ -1197,29 +1197,19 @@ All values are foreground colors on the machine's dark ground (`bg #0E0E12` / 25
 | `♣` FILE | `#9CA3AF` neutral gray | 249 `grey74` | — |
 | `☼` TOKEN | `#F5A623` gold (same family as `✻`/coins — "currency-ish") | 214 | — |
 | `♥` PROSE | `#F472B6` pink | 211 `orchid` | — |
-| Motion blur `▓▒░` | `#5C5E66` → `#8A8C94` (dark→light = slow→fast) | 240 → 249 | — |
-| Glint sweep `░▒▓█` | `#6B7280` → `#D1D5DB` gradient | 240 → 253 | — |
-| Coins `●` (jackpot rain, and the `☼` TOKEN reel symbol) | `#FFD700` | 220 | bold |
+| Motion blur `▓▒░` | `#4A4436` → `#8C7A54` (dark→light = slow→fast) | 238 → 101 | — |
+| Glint sweep `░▒▓█` | `#5C5138` → `#E9D3A8` gradient | 239 → 187 | — |
+| Coins `●` (jackpot rain, and the `☼` TOKEN reel symbol) | `#F6C67D` | 222 | bold |
 | Sunburst `☆` (MEDALLION) | `#FFFFFF` | 231 | bold |
-| Info strip text | `#B9BEC8` | 250 `grey82` | — |
-| "esc to interrupt" hint | `#6E7280` | 244 `grey54` | dim |
+| Info strip text | `#BDBEA9` | 249 | — |
+| "esc to interrupt" hint | `#8A7C5E` | 101 | dim |
 | LOSE state (all symbols) | desaturate ~40% | nearest neutral | dim |
-| NEAR MISS "SO CLOSE..." | `#E4B04A` | 179 | dim |
-| ABORTED brake blur / "INTERRUPTED" | `#8A93A6` cool steel-gray | 246 | dim |
+| NEAR MISS "SO CLOSE..." | `#E9BD7F` | 180 | dim |
+| ABORTED brake blur / "INTERRUPTED" | `#9C9686` cool steel-gray | 246 | dim |
 | ERROR void blur / "ERROR" | `#E4342F` warm red | 160 `red3` | dim |
-| ON THE HOUSE banner text | `#E4B04A` | 179 | dim, same family as NEAR MISS whisper — both are "the machine being gentle" |
+| ON THE HOUSE banner text | `#E9BD7F` | 180 | dim, same family as NEAR MISS whisper — both are "the machine being gentle" |
 
 Rule of thumb: **gold = value** (`✻`, `☼`, coins), **violet/green/pink/yellow/gray = the five Claude Code concept symbols**, **steel/chrome = idle chassis**, **red = error, never celebration** (this palette deliberately never uses red for a win, so red is unambiguous "something's wrong" everywhere in the UI), **dim = anything not currently the story**.
-
-**Implementation note (deviation from the table above):** both renderers verifiably turn *any* `dim` span
-into one flat `#999999` gray (see ARCHITECTURE.md §4's live-measured `dimColor` fact, and
-`render-ansi.js`'s matching `DIM_GRAY` override) — there is no dimmed-but-still-tinted rendering available on
-either tier. A literal `dim:true` on both `abortedText` and `errorText` would therefore make ABORTED and
-ERROR collapse into the *same* indistinguishable gray as each other (and as every other dim role in this
-table), which directly defeats this section's own "red = error, always unambiguous" rule. `lib/symbols.js`
-keeps the exact hues above but drops `dim` for just these two roles so ERROR reads as red and ABORTED as
-cool steel-gray, distinctly, everywhere they appear (marquee text, the JAM/MALFUNCTION brake-phase bulbs,
-and the §12 transcript result line). Every other `dim` role in this table is unaffected.
 
 ## 10. Credits economy
 
