@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "claude-slots",
+  "name": "slots",
   "displayName": "Claude Slots",
-  "version": "0.1.0",
-  "description": "Replaces the spinner with an animated ASCII slot machine: pull the lever on every prompt, watch the reels spin while Claude works, cash in when the turn completes.",
+  "version": "1.0.0",
+  "description": "Replaces the spinner with a small pixel-art slot machine in a neon cyberpunk style: pull the trigger on every prompt, the reels keep turning while Claude works, and you might win a FEATURE, a CLIENT, or a LIFE.",
   "author": {
     "name": "Danylo Vorvul"
   },
@@ -13,44 +13,25 @@
   "keywords": [
     "slot-machine",
     "spinner",
-    "ascii-art",
+    "pixel-art",
     "fun",
-    "statusline",
     "ui",
     "easter-egg"
   ],
   "userConfig": {
-    "size": {
-      "type": "string",
-      "title": "Machine size",
-      "description": "One of: auto, compact, standard, grand. \"auto\" (default) picks compact/standard/grand from the terminal's column count. NOTE: userConfig's `options` (a dropdown of preset values) needs Claude Code v2.1.271+; this plugin targets 2.1.263, so the allowed values are documented here in prose instead — any other value is treated as \"auto\".",
-      "default": "auto"
-    },
-    "idle": {
-      "type": "string",
-      "title": "Idle machine (Tier 1 only)",
-      "description": "One of: off, compact, full. What the AbovePrompt band shows between turns: off (nothing), compact (default, one line), or full (attract-mode machine + credits + last result).",
-      "default": "compact"
-    },
-    "theme": {
-      "type": "string",
-      "title": "Symbol theme",
-      "description": "One of: classic, emoji. \"classic\" (default) uses the single-width glyph set (★ ♦ ♣ ☼ BAR ✻ ◆C◆); \"emoji\" swaps in the opt-in emoji theme from docs/ART-SPEC.md §14.",
-      "default": "classic"
+    "startCredits": {
+      "type": "number",
+      "title": "Starting credits",
+      "description": "Credit balance a brand-new install starts with. 1 credit is spent per spin.",
+      "default": 100,
+      "min": 0,
+      "max": 100000
     },
     "sound": {
       "type": "string",
       "title": "Sound effects",
-      "description": "One of: off, on. Play the bundled lever/coin/jackpot sounds via $.audio.play (Tier 1 only). Off by default.",
+      "description": "One of: off, on. Play the bundled lever/coin/jackpot sounds via $.audio.play. Off by default.",
       "default": "off"
-    },
-    "startCredits": {
-      "type": "number",
-      "title": "Starting credits",
-      "description": "Credit balance a brand-new session starts with. 1 credit is spent per spin.",
-      "default": 100,
-      "min": 0,
-      "max": 100000
     }
   }
 }

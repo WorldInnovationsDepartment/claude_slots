@@ -1,28 +1,25 @@
-# Dependencies (this project has none — zero runtime deps — but ignore
-# node_modules in case a dev tool adds one locally).
+# The plugin itself has zero runtime dependencies; the Remotion art project
+# under art/ has its own (ignored) node_modules and render output.
 node_modules/
+art/node_modules/
+art/out/
 
 # Editor / OS cruft.
 .DS_Store
 *.swp
 *.swo
 
-# Python cache from scripts/dev/pty-smoke.py and friends.
+# Python cache from scripts/dev/pty-smoke.py.
 __pycache__/
 *.pyc
-
-# Backups written by bin/claude-slots-setup.js when it patches settings.json
-# (only ever alongside a settings file, never inside this repo, but ignored
-# here too in case someone points --settings-path at a repo-local file).
-*.claude-slots.bak-*
 
 # Local scratch/test output some contributors keep next to the repo.
 /.local-test/
 *.log
 
-# Runtime pointer file: bin/claude-slots-hook.js records the real
-# CLAUDE_PLUGIN_DATA directory here so bin/claude-slots-statusline.js (which
-# never receives that env var — it's a plain settings.json command, not a
-# plugin hook) can find the same session/economy files. Machine-specific
-# runtime state, never checked in.
-/.claude-slots-runtime/
+# Rendered launch-video artefacts (regenerable: npm run make-music, then
+# art/ `npm run render:launch` and scripts/dev/verify-launch.py). Kept out of
+# the repo so a marketplace install stays small.
+docs/launch.mp4
+docs/review/
+art/public/launch-track.wav

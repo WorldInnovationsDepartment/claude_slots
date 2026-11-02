@@ -1,18 +1,18 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "claude-slots-local",
+  "name": "slots-local",
   "owner": {
     "name": "Danylo Vorvul"
   },
-  "description": "Local marketplace that ships exactly one plugin: Claude Slots, an ASCII slot-machine spinner replacement.",
-  "version": "0.1.0",
+  "description": "Local marketplace that ships exactly one plugin: Claude Slots, a pixel-art slot-machine spinner replacement.",
+  "version": "1.0.0",
   "plugins": [
     {
-      "name": "claude-slots",
+      "name": "slots",
       "displayName": "Claude Slots",
-      "description": "Replaces the spinner with an animated ASCII slot machine: pull the lever on every prompt, watch the reels spin while Claude works, cash in when the turn completes.",
+      "description": "Replaces the spinner with a small pixel-art slot machine in a neon cyberpunk style: pull the trigger on every prompt, the reels keep turning while Claude works, and you might win a FEATURE, a CLIENT, or a LIFE.",
       "source": "./",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "author": {
         "name": "Danylo Vorvul"
       },
@@ -23,9 +23,8 @@
       "keywords": [
         "slot-machine",
         "spinner",
-        "ascii-art",
-        "fun",
-        "statusline"
+        "pixel-art",
+        "fun"
       ],
       "defaultEnabled": true
     }

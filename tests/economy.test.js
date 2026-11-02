@@ -32,20 +32,20 @@ test('credits never go negative — spins are ON THE HOUSE at 0 and never blocke
 test('applyOutcome credits a payout, sets lastWin, tracks jackpots and streaks', () => {
   const e = createEconomy({ startCredits: 100 });
   applySpinStart(e);
-  applyOutcome(e, { outcomeClass: 'TRIPLE', payout: 40, paylineSymbols: ['TOOL', 'TOOL', 'TOOL'] });
-  assert.equal(e.credits, 99 + 40);
-  assert.equal(e.lastWin, 40);
-  assert.equal(e.stats.winsByClass.TRIPLE, 1);
+  applyOutcome(e, { outcomeClass: 'FEATURE', payout: 5, symbols: ['FEATURE', 'FEATURE', 'FEATURE'] });
+  assert.equal(e.credits, 99 + 5);
+  assert.equal(e.lastWin, 5);
+  assert.equal(e.stats.winsByClass.FEATURE, 1);
   assert.equal(e.stats.streak, 1);
   assert.equal(e.stats.bestStreak, 1);
 
   applySpinStart(e);
-  applyOutcome(e, { outcomeClass: 'JACKPOT', payout: 250, paylineSymbols: ['CLAUDE', 'CLAUDE', 'CLAUDE'] });
+  applyOutcome(e, { outcomeClass: 'LIFE', payout: 100, symbols: ['LIFE', 'LIFE', 'LIFE'] });
   assert.equal(e.stats.jackpots, 1);
   assert.equal(e.stats.streak, 2);
 
   applySpinStart(e);
-  applyOutcome(e, { outcomeClass: 'LOSE', payout: 0, paylineSymbols: ['FILE', 'TEST', 'DIFF'] });
+  applyOutcome(e, { outcomeClass: 'LOSE', payout: 0, symbols: ['SKULL', 'EDDIES', 'CHIP'] });
   assert.equal(e.lastWin, 0);
   assert.equal(e.stats.streak, 0); // broken by the loss
   assert.equal(e.stats.bestStreak, 2); // best streak persists
@@ -73,14 +73,14 @@ test('stats.recent holds up to 3 entries, most-recent-first, with paylines for r
     applySpinStart(e);
     applyOutcome(e, outcome);
   };
-  spin({ outcomeClass: 'DOUBLE', payout: 1, paylineSymbols: ['PROSE', 'FILE', 'PROSE'] });
+  spin({ outcomeClass: 'CLIENT', payout: 20, symbols: ['CLIENT', 'CLIENT', 'CLIENT'] });
   spin({ outcomeClass: 'ABORTED' });
-  spin({ outcomeClass: 'JACKPOT', payout: 250, paylineSymbols: ['CLAUDE', 'CLAUDE', 'CLAUDE'] });
-  spin({ outcomeClass: 'LOSE', payout: 0, paylineSymbols: ['FILE', 'TEST', 'DIFF'] });
+  spin({ outcomeClass: 'LIFE', payout: 100, symbols: ['LIFE', 'LIFE', 'LIFE'] });
+  spin({ outcomeClass: 'LOSE', payout: 0, symbols: ['SKULL', 'EDDIES', 'CHIP'] });
   assert.equal(e.stats.recent.length, 3);
   assert.equal(e.stats.recent[0].outcomeClass, 'LOSE');
-  assert.deepEqual(e.stats.recent[0].symbols, ['FILE', 'TEST', 'DIFF']);
-  assert.equal(e.stats.recent[1].outcomeClass, 'JACKPOT');
+  assert.deepEqual(e.stats.recent[0].symbols, ['SKULL', 'EDDIES', 'CHIP']);
+  assert.equal(e.stats.recent[1].outcomeClass, 'LIFE');
   assert.equal(e.stats.recent[2].outcomeClass, 'ABORTED');
   assert.equal(e.stats.recent[2].symbols, null);
 });

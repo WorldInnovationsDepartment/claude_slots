@@ -1,0 +1,49 @@
+# Tasks
+
+## 1. Checkpoint and rename
+
+- [x] 1.1 Commit the current working tree (17 modified files from the amber retheme) as a checkpoint commit; verify `git status --short` shows only the untracked `openspec/`, `.agents/`, `.claude/` and `skills-lock.json` entries afterwards
+- [x] 1.2 Rename the plugin to `slots` in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` (marketplace `slots-local`), `package.json`, and command frontmatter; trim `userConfig` to `startCredits` and `sound`; verify `claude plugin validate .` no longer reports the reserved-name error
+- [x] 1.3 Delete Tier 2: `bin/claude-slots-hook.js`, `bin/claude-slots-statusline.js`, `bin/claude-slots-setup.js`, `commands/setup.md`, `commands/teardown.md`, `tests/tier2.test.js`, `tests/setup.test.js`, `.claude-slots-runtime/`; strip the `hooks` block from `hooks/hooks.json` leaving only `modules`; verify `node --test tests/*.test.js` runs with no reference to deleted files and `claude plugin validate .` reports no hooks.json error other than the module scanner
+- [x] 1.4 Port `hooks/slots.js` to the 2.1.316 contract: `turn.step` as `async function*` that yields every chunk and returns the result; accept the `requesting` spinner mode; remove the `AbovePrompt` hook, `idle`/`size`/`theme` options and all gate references; verify `claude plugin validate .` reports zero errors
+
+## 2. Remotion art project
+
+- [x] 2.1 Scaffold `art/` as its own npm project (`remotion`, `@remotion/cli`, `react`, `react-dom`, `zod`), add `art/node_modules` and `art/out` to `.gitignore`, copy and adapt the motion-graphics skill's theme into `art/src/theme.ts` with the ≤24-colour neon palette and export it; verify `npx remotion compositions src/index.ts` lists compositions and the palette export has at most 24 entries
+- [x] 2.2 Build the machine components on a 40 × 20 unit grid with a `scale` prop: `Cabinet` (three reel windows, readout position, seeded grain variant, scanlines), `ReelStrip` (six symbols FEATURE, CLIENT, LIFE, SKULL, EDDIES, CHIP, each 8 units tall), `Digits` (3 × 5 glyphs 0–9), `Overlay` sequences (win-feature, win-client, win-life, lose, abort, error); verify in Remotion Studio and with `npx remotion still` renders of each at scale 1 and scale 27
+- [x] 2.3 Register sprite `Still`s and overlay `Composition`s in `art/src/Root.tsx` with native 40 × 20 (strip: window width × 48) dimensions and `crispEdges`; verify `npx remotion render --frames` writes PNGs of the expected pixel dimensions for every layer
+- [x] 2.4 Write `scripts/dev/build-sprites.js`: renders every layer via the Remotion CLI, decodes PNGs with a pure-JS reader, quantises to palette indices (exact match required, error on any off-palette pixel), writes `lib/sprites.json` and `docs/sprites-contact.png`; verify two consecutive runs produce byte-identical `lib/sprites.json` under 400 KB and the contact sheet shows every layer
+- [x] 2.5 Add `tests/sprites.test.js` covering geometry (40 × 20, 10 rows × 40 cells), palette membership (≤ 24, all from theme), strip seam continuity, declared symbol offsets centring each symbol in a window, grain differing between cabinet variants while the outline is identical, and overlay transparency; verify the tests pass against the committed sheet
+
+## 3. Engine and mod
+
+- [x] 3.1 Write `lib/sprite-frame.js`: composes a `Frame` from sheet + state (cabinet variant by tick, scrolled reel windows by pixel offset, balance digits clamped to 999, active overlay frame) using `▀` cells with both colours always set and runs coalesced per identical colour pair; verify unit tests check no cell lacks `color`/`bg`, digit placement, and that scrolling by a full strip height reproduces the same frame
+- [x] 3.2 Rewrite `lib/machine.js` to drive reel offsets from phase timing (constant velocity in SPINNING, eased deceleration to each reel's target offset in STOPPING at +0/+300/+600 ms, overlay phase per outcome, JAM/MALFUNCTION) and remove all glyph art; update `lib/symbols.js` to the six-symbol set with FEATURE/CLIENT/LIFE win classes, payouts and probabilities mirrored from `docs/ART-SPEC.md`; verify `tests/machine.test.js` covers phase transitions and landing offsets and `tests/rng.test.js` keeps the 100000-roll distribution within 10 % relative error
+- [x] 3.3 Delete `lib/art.js`, `lib/art-storyboards.js`, `tests/art-storyboards.test.js`, `tests/golden.test.js`, `tests/golden/`, `scripts/dev/art-gen/`, `scripts/dev/build-preview.js`, `scripts/dev/preview-template.html`, `docs/preview.html`, `previews/`; verify `node --test tests/*.test.js` passes with the remaining suites
+- [x] 3.4 Wire `hooks/slots.js` to the sprite engine: Spinner renders the composed Frame via `renderTree`, narrow viewport (< 40 columns) returns the one-line fallback, TurnDuration binds by `durationMs` and shows the animated frame then the result line (`◈ <outcome>  ±N cr  balance NNN`), `turn.complete` settles the economy and persists to `$.store` under `slots.*`, abort/error post `$.ui.status("INTERRUPTED · refunded" | "MALFUNCTION · refunded")` cleared after 3 s, ticker stops when the overlay ends; verify `claude plugin validate .` is clean and a unit test on the pure helpers covers result-line text and refund paths
+- [x] 3.5 Rewrite `bin/claude-slots-demo.js` as `bin/demo.js` (phase or outcome argument, 10 fps ANSI playback via `render-ansi.js`) and update `commands/demo.md` and `commands/stats.md` to the new names and store keys; verify `node bin/demo.js --outcome=life` plays through win-life and `node bin/claude-slots-stats.js` reads the new store keys
+- [x] 3.6 Live PTY verification: run `scripts/dev/pty-smoke.py --tier 1` in default and fullscreen TUI (update the script to drop Tier 2 options and use the sprite's top-left marker), with a prompt that streams many lines; verify the sprite appears only while the turn runs, the result line lands in the transcript, and a pyte reconstruction shows no stale text inside the 40 × 10 rectangle
+- [x] 3.7 Rewrite `docs/ARCHITECTURE.md` and `docs/ART-SPEC.md` (palette, symbols, payouts, probabilities, sheet layout, timing) and `README.md` (new name, install, Tier 2 removal and migration note, how to rebuild sprites, how to render the video); add `.claude-plugin/icon.png` rendered from the cabinet still; verify `claude plugin validate .` shows no icon warning and every command named in the README runs as written
+
+## 4. Launch video
+
+- [x] 4.1 Create `art/src/timeline.json` (BPM 140, scene start frames, reel-stop frames for each pull) and `scripts/dev/make-music.js` extending the `make-fx.js` WAV writer to a 60 s stereo track (kick on beats, side-chained saw bass with soft clip, detuned-square 16th arpeggio, noise riser before stops, accent hit at each reel-stop frame) written to `art/public/launch-track.wav`; verify the script runs offline, the WAV duration matches the timeline, and `ffmpeg -af silencedetect` finds no gap over 2 s
+- [x] 4.2 Build the `Launch` composition (1920 × 1080, 30 fps, 60 s) with the five-layer stack and spring/staggered motion: title cold open, mock-terminal scene compositing the real sprite layers, a losing pull, FEATURE pull, CLIENT pull, LIFE pull with deadpan payoff card, `<Audio>` from the synthesized track with stops aligned to `timeline.json`; verify in Remotion Studio that each reel stop lands on its timeline frame
+- [x] 4.3 Render `docs/launch.mp4` (`--codec h264 --crf 17`), extract PNGs at every scene start and reel stop into `docs/review/`, and inspect them; verify `ffprobe` reports 1920x1080, 30 fps, h264 + aac, 45–75 s, no frame shows a white background or clipped text, and each reel stop coincides with an audio accent within 50 ms
+
+## 5. Integration check
+
+- [x] 5.1 Full gate: `claude plugin validate .`, `node --test tests/*.test.js`, `node scripts/dev/build-sprites.js` (byte-identical), `node bin/demo.js` for every outcome, the PTY smoke run from 3.6, and a fresh `claude --plugin-dir .` session with two real prompts; verify every step passes and record the balance before/after the two prompts in the task notes
+- [x] 5.2 Write the project memory note and a short launch summary for the user with paths to `docs/launch.mp4`, `docs/review/`, and `docs/sprites-contact.png`; verify the paths exist
+
+## Workflow follow-up
+
+- Archive the change after the user has reviewed the video and the live machine.
+
+## Task notes (2026-11-02)
+
+- 5.1 gate: `claude plugin validate .` passed with zero errors and no icon warning; `node --test tests/*.test.js` 75/75; `node scripts/dev/build-sprites.js` run four times, `lib/sprites.json` and `lib/sprites.js` byte-identical each time; `node bin/demo.js --outcome=<life|client|feature|lose|aborted|error>` all play through to RESULT; PTY smoke in default and fullscreen TUI (7 clean 40×10 snapshots per turn, no dirty rectangle, result line in the transcript, no sprite after the turn).
+- 5.1 live session (`claude --plugin-dir .`, haiku, two prompts, default TUI): balance **98 before → 96 after**, spins 2 → 4, both turns resolved `no match −1 cr` (store file `~/.claude/plugins/store/slots_inline-*.json`, key `slots.economy`).
+- 4.3: `scripts/dev/verify-launch.py` → 1920x1080, 30 fps, h264 + aac, 60.01 s; 20 frames in `docs/review/` (every scene start, every reel stop, end), none white; no silence over 2 s; every reel stop has an 11–23× onset at 0 ms that dominates ±240 ms.
+- 3.7: the README's `npx remotion studio` command is interactive and was not run; every other command named in the README was run as written (the video render was run through `art/node_modules/.bin/remotion`, which is what `npx remotion` resolves to in `art/`).
+- Observed, not fixed: the user's old marketplace install of `claude-slots` (0.1.0) still prints a "hooks module did not load" line at session start; the README's migration section tells how to remove it.

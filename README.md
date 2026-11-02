@@ -1,296 +1,233 @@
 # Claude Slots
 
-A Claude Code plugin that replaces the spinner ("Working…", "Thinking…") with an animated ASCII
-slot machine. Pull the lever when you submit a prompt, watch the reels spin while Claude works,
-and cash in when the turn completes.
+A Claude Code plugin that replaces the spinner with a small pixel-art slot
+machine in a neon cyberpunk style. Every prompt pulls the trigger,
+the reels keep turning for as long as Claude works, and when the turn ends
+they land on your outcome: you might win a **FEATURE**, a **CLIENT**, or
+**A LIFE**.
+
+<p align="center"><img src=".claude-plugin/icon.png" width="256" alt="the machine"></p>
+
+What you see while a turn runs (40 columns × 10 rows, truecolor half-block
+pixels):
+
+- three reels scrolling a six-symbol strip (FEATURE ◆, CLIENT 💼, LIFE ♥,
+  SKULL, EDDIES, CHIP) with grain flicker and scanlines on the cabinet
+- the credit balance, and nothing else: no verbs, no timers, no token counts
+
+When the turn completes the reels stop left to right, an outcome overlay
+flashes, and the turn's closing line in the transcript reads like
 
 ```
-╔══════════════ Lucky Prompt ═══════════════╗
-║   ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ●  ║
-║  ▐  ✻     BAR     ★  ▌  [ 1.2k tok ]     ║
-║   ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ●  ║
-║  CREDITS: 097   LAST WIN: 008            ║
-╚═══════════════════════════════════════════╝
+◈ no match  −1 cr  balance 096
+◈ CLIENT  +19 cr  balance 119
 ```
-*(a compact sketch of the idle machine — see `docs/ART-SPEC.md` for the literal, golden frames.)*
 
-## Screenshots
+Interrupting a turn (Esc) or an API error jams the machine, refunds the spin
+and shows `INTERRUPTED · refunded` / `MALFUNCTION · refunded` under the
+prompt for three seconds.
 
-Open `docs/preview.html` in any browser for a live, in-browser preview of the machine (the
-unmodified `lib/` engine running client-side — no build step, no network requests, nothing
-installed). It has size/outcome/seed/FPS controls, a "play all outcomes" demo, and a scrolling
-transcript of past results — the fastest way to see every storyboard without a live Claude Code
-session.
+## Requirements
 
-_TODO: capture and embed a GIF/asciicast of a live spin (`hooks/slots.js` and
-`bin/claude-slots-statusline.js` are both implemented now; only the recording itself is
-outstanding)._
+- Claude Code **2.1.287 or newer** (mods are on by default; no environment
+  variable). Validated against 2.1.316.
+- A terminal with truecolor and a font that draws `▀` (U+2580) with full-cell
+  coverage: iTerm2, Terminal.app, VS Code's terminal, kitty, WezTerm all do.
+- At least 40 columns. Narrower viewports get a one-line readout
+  `[ ◈ SPINNING · 097 cr ]` instead of the sprite.
 
-## How it works — two tiers, one engine
-
-| Tier | Surface | When it's active | Frame rate |
-|---|---|---|---|
-| **Tier 1** | Function hooks (`ui.render` replacing `Spinner`/`TurnDuration`/`AbovePrompt`) | `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` | ~10 fps, full animation |
-| **Tier 2** | `statusLine` + classic command hooks | Always available, the fallback | 1 fps, still animated |
-
-Both tiers share one pure engine (`lib/`: symbols, RNG, the state machine, chassis art, and the
-Frame → tree/ANSI renderers) — see `docs/ARCHITECTURE.md` for the full design and
-`docs/ART-SPEC.md` for every symbol, strip, probability, and golden frame. The outcome of a spin
-is rolled the instant the lever is pulled; every phase after that (spin-up, spinning, reels
-locking one by one, reveal, the outcome-specific animation) is a deterministic function of that
-outcome plus elapsed time, so a 10 fps renderer and a 1 fps renderer are just sampling the same
-state machine at different rates — they never disagree about what should be on screen.
-
-The lever is pulled on `prompt.submit` / `UserPromptSubmit`. The reels spin for as long as the
-model is working. When the turn completes, the reels stop, a combo is revealed, and a
-combo-specific animation plays (coin rain for a win, a lever-jam "INTERRUPTED" state if you hit
-Esc, credits refunded either way for an aborted or errored turn).
+The plugin has **zero runtime dependencies**. Remotion (used to author the
+art) lives only under `art/` and is never loaded by Claude Code.
 
 ## Install
 
-### Option A — from GitHub (recommended)
-
-This repo doubles as a one-plugin marketplace (`.claude-plugin/marketplace.json`, name
-`claude-slots-local`) at
-[`WorldInnovationsDepartment/claude_slots`](https://github.com/WorldInnovationsDepartment/claude_slots).
-From inside Claude Code:
+### From GitHub (recommended)
 
 ```
 /plugin marketplace add WorldInnovationsDepartment/claude_slots
-/plugin install claude-slots@claude-slots-local
+/plugin install slots@slots-local
 ```
 
-(the full URL form `/plugin marketplace add https://github.com/WorldInnovationsDepartment/claude_slots`
-works too). `/claude-slots:setup`, `/claude-slots:teardown`, `/claude-slots:stats`,
-`/claude-slots:demo` become available once the install finishes.
-
-For a non-interactive install (e.g. rolling this out via a shared `settings.json`), add:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "claude-slots-local": {
-      "source": { "source": "github", "repo": "WorldInnovationsDepartment/claude_slots" }
-    }
-  },
-  "enabledPlugins": {
-    "claude-slots@claude-slots-local": true
-  }
-}
-```
-
-to `~/.claude/settings.json` (user-wide) or `.claude/settings.json` (project-scoped).
-
-### Option B — point Claude Code straight at a local checkout
+### From a local checkout
 
 ```bash
 git clone https://github.com/WorldInnovationsDepartment/claude_slots.git
 claude --plugin-dir /path/to/claude_slots
 ```
 
-Everything works immediately: the plugin loads inline, hooks fire, and the same
-`/claude-slots:*` commands are all available.
-
-### Option C — as a local marketplace
-
-Same as Option A, but pointed at a local clone instead of GitHub:
+or register the checkout as a local marketplace:
 
 ```
 /plugin marketplace add /path/to/claude_slots
-/plugin install claude-slots@claude-slots-local
+/plugin install slots@slots-local
 ```
 
-## Enabling Tier 1 (the real animated spinner)
-
-Tier 1 is early-access and gated behind an environment variable:
-
-```bash
-export CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1
-```
-
-Add that to your shell profile (`~/.zshrc` or `~/.bashrc`) and restart Claude Code. With it set,
-`hooks/hooks.json`'s `"modules": ["./slots.js"]` loads as a function-hooks module and the machine
-replaces the built-in `Spinner`/`TurnDuration`/`AbovePrompt` components directly in the terminal
-UI at up to ~10 fps. Without it, the module has zero effect (verified: gating a live run with the
-flag unset produces byte-identical output to the built-in spinner) and you're on Tier 2 only.
-`node bin/claude-slots-setup.js` also detects and reports which tier is active.
-
-## Setting up Tier 2 (the statusLine fallback)
-
-Tier 2 needs `~/.claude/settings.json`'s `statusLine` pointed at this plugin's renderer. Run:
-
-```
-/claude-slots:setup
-```
-
-which shells out to `bin/claude-slots-setup.js`. **By default it only prints a dry-run diff and
-changes nothing.** Re-run with `--apply` (`/claude-slots:setup --apply`, or
-`node bin/claude-slots-setup.js --apply`) to actually install it. Setup:
-
-- backs up your current `~/.claude/settings.json` to `<path>.claude-slots.bak-<ISO timestamp>`,
-- saves your previous `statusLine` / `spinnerVerbs` / `spinnerTipsEnabled` into
-  `${CLAUDE_PLUGIN_DATA}/config.json` so they can be restored later,
-- points `statusLine` at `node <plugin root>/bin/claude-slots-statusline.js` with
-  `refreshInterval: 1` (the lowest the host allows),
-- replaces `spinnerVerbs` with ten slot-themed phrases ("Pulling the lever", "Spinning the
-  reels", "Reels whirring", "Chasing sevens", "Feeling lucky", …), and
-- turns off `spinnerTipsEnabled` so the tip line doesn't fight the machine for the same row.
-
-If you had your own `statusLine` command already, Tier 2's renderer runs it first and prints its
-output as line 1, so your existing status line is preserved above the machine, not replaced by it.
-
-Undo everything with:
-
-```
-/claude-slots:teardown
-```
-
-which restores the exact `statusLine` / `spinnerVerbs` / `spinnerTipsEnabled` you had before (or
-removes the keys entirely if you never had them) and deletes the saved config. Setup/teardown are
-idempotent: running `--apply` twice in a row does not overwrite the *original* saved values with
-the plugin's own, and running `--restore` with nothing to restore is a safe no-op.
-
-Useful flags on `bin/claude-slots-setup.js`: `--dry-run` (default), `--apply`, `--restore`,
-`--no-statusline`, `--no-verbs`, `--settings-path <path>` (point at a different settings file,
-mainly for testing).
+Submit any prompt: the machine appears in place of the spinner.
 
 ## Commands
 
-| Command | Does |
-|---|---|
-| `/claude-slots:setup [--apply] [--dry-run] [--no-statusline] [--no-verbs]` | Install (or preview installing) the Tier 2 statusLine fallback |
-| `/claude-slots:teardown` | Restore your previous `statusLine`/`spinnerVerbs`/`spinnerTipsEnabled` |
-| `/claude-slots:stats` | Show credits, spins, wins, and jackpots from whichever tier has data |
-| `/claude-slots:demo [outcome] [size]` | Render a one-off spin animation in the transcript, no real turn or credits involved — good for previewing art (`outcome` ∈ jackpot/medallion/triple/double/near-miss/lose, `size` ∈ compact/standard/grand) |
+| Command | What it does |
+| --- | --- |
+| `/slots:demo [life\|client\|feature\|lose\|aborted\|error\|spinning]` | Plays one spin (or loops one phase) in the transcript using the same engine and sprite sheet, without touching your credits. |
+| `/slots:stats` | Prints balance, spins, wins by class, streaks and the last three outcomes from the persisted store. Read-only. |
+
+Both can be run directly: `node bin/demo.js --outcome=life`,
+`node bin/claude-slots-stats.js`.
 
 ## Options
 
-Configured via Claude Code's plugin `userConfig` (`/plugin` UI, or
-`pluginConfigs["claude-slots"].options` in settings). `register(on, options)` in `hooks/slots.js`
-receives them as `options.<key>` — **Tier 1 only**. Tier 2's command hooks and `bin/` scripts do
-not currently read `userConfig` at all (there is no `CLAUDE_PLUGIN_OPTION_<KEY>` mechanism — Tier 2
-always auto-sizes from `COLUMNS`, starts new sessions at the default 100 credits, and uses the
-classic theme regardless of what's configured for Tier 1; `idle` and `sound` don't apply to Tier 2
-in the first place, since it has no `AbovePrompt` band or `$.audio.play`). If you need Tier 2 to
-honor `size`/`startCredits`, that's open follow-up work, not something to expect today.
+Set under the plugin's `userConfig` (Claude Code's plugin settings UI, or the
+`pluginConfigs` block of your settings):
 
-> Note: `userConfig`'s `options` field (a dropdown of preset values in the config UI) requires
-> Claude Code v2.1.271+. This plugin targets the verified baseline, 2.1.263, so every option here
-> is a free-text `string`/`number` field with the allowed values documented in its description —
-> `claude plugin validate` rejects an `options` array at this version.
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `startCredits` | `100` | Balance a brand-new install starts with (0 to 100000). |
+| `sound` | `off` | `on` plays the bundled lever / coin / jackpot clips through `$.audio.play`. |
 
-| Option | Type | Default | Values |
-|---|---|---|---|
-| `size` | string | `auto` | `auto` \| `compact` \| `standard` \| `grand` — chassis size; `auto` picks from the terminal's column count (≥90 → grand if enabled, ≥62 → standard, else compact) |
-| `idle` | string | `compact` | `off` \| `compact` \| `full` — what the `AbovePrompt` band shows between turns (Tier 1 only) |
-| `theme` | string | `classic` | `classic` \| `emoji` — glyph set (`docs/ART-SPEC.md` §14 covers the emoji theme) |
-| `sound` | string | `off` | `off` \| `on` — play the bundled `fx/*.wav` clips via `$.audio.play` (Tier 1 only) |
-| `startCredits` | number | `100` | starting credit balance for a new session (1 credit spent per spin, never blocks a spin — see `docs/ART-SPEC.md` §10) |
+## The economy
+
+| Outcome | Probability | Pays | Net per spin |
+| --- | --- | --- | --- |
+| A LIFE (♥ ♥ ♥) | 1 % | 100 | +99 |
+| CLIENT (💼 💼 💼) | 4 % | 20 | +19 |
+| FEATURE (◆ ◆ ◆) | 10 % | 5 | +4 |
+| no match | 85 % | 0 | −1 |
+
+Each prompt costs 1 credit, charged when the spin starts. At 0 credits the
+spin still runs, costs nothing, and the result line says `on the house`.
+Interrupted and errored turns are refunded and count as neither win nor loss.
+Balance and statistics persist across sessions in the plugin's key-value
+store under `slots.economy`. Outcomes are rolled once per turn
+from a seed of session id, turn count and time, so the reels always land on
+the outcome that was decided when the spin started.
+
+## Upgrading from `claude-slots` (the old name)
+
+Version 0.x was called `claude-slots`. Claude Code 2.1.316 refuses that name
+(the `claude-` prefix is reserved), so the plugin was renamed and old installs
+no longer load; you will see a dim `claude-slots: hooks module did not load`
+line until you remove it:
+
+```
+/plugin uninstall claude-slots@claude-slots-local
+/plugin marketplace remove claude-slots-local
+```
+
+The old **Tier 2** statusline fallback (`/claude-slots:setup`,
+`/claude-slots:teardown`, `bin/claude-slots-statusline.js`) is gone: mods are
+on by default now, so there is nothing for it to fall back from. If you ran
+the old setup, delete the `statusLine` entry it wrote from
+`~/.claude/settings.json` (the setup script left a `*.claude-slots.bak-*`
+backup beside it). Old credits were stored under a different key and are not
+migrated; a fresh install starts at `startCredits`.
 
 ## Repository layout
 
 ```
-.claude-plugin/plugin.json        manifest: name, version, userConfig, etc.
-.claude-plugin/marketplace.json   makes this repo a one-plugin local marketplace
-hooks/hooks.json                  {"modules":["./slots.js"], "hooks":{...tier-2 command hooks...}}
-hooks/slots.js                    Tier 1 module — the only file that touches `$`
-lib/*.js                          the shared engine (pure ESM: runs in Node, a browser, or the
-                                   hooks worker unchanged — no Node/DOM APIs)
-bin/*.js                          Tier 2 scripts + setup/teardown/stats/demo (Node ≥18, ESM)
-commands/*.md                     /claude-slots:setup, :teardown, :stats, :demo
-fx/*.wav                          tiny generated sound effects (lever click, coin ding, jackpot chord)
-tests/*.test.js                   node:test — rng, rectangularity, renderers, scanner-compat
-scripts/dev/pty-smoke.py          live pseudo-terminal smoke test, both tiers, one CLI
-scripts/dev/make-fx.js            regenerates fx/*.wav (pure Node PCM synthesis, no deps)
-scripts/dev/build-preview.js      rebuilds docs/preview.html from the unmodified lib/ engine
-docs/preview.html                 self-contained, in-browser preview (see Screenshots above)
-docs/ARCHITECTURE.md              the design (read this first)
-docs/ART-SPEC.md                  every symbol, strip, probability, chassis frame, storyboard (golden)
-jsconfig.json                     lets editors type-check hooks/slots.js against .claude/types
+.claude-plugin/     plugin.json, marketplace.json, icon.png
+hooks/hooks.json    "modules": ["./slots.js"]
+hooks/slots.js      the mod: the only file that touches `$` / `on` / `next`
+lib/
+  machine.js        time-driven state machine: phases, reel offsets, result line
+  sprite-frame.js   sheet + state -> Frame of ▀ cells (both colours always set)
+  sprites.json      the sprite sheet (built, committed, ≤ 400 KB)
+  sprites.js        the same sheet as a module (the mod loader imports code only)
+  symbols.js        symbols, probabilities, payouts (mirrors docs/ART-SPEC.md)
+  rng.js            seeded outcome roll
+  economy.js        credits, payouts, refunds
+  frame.js, render-tree.js, render-ansi.js, width.js
+  mod-helpers.js    pure helpers for hooks/slots.js (testable from Node)
+bin/demo.js         terminal demo player (ANSI, 10 fps)
+bin/claude-slots-stats.js
+commands/           /slots:demo, /slots:stats
+fx/                 optional sound clips (scripts/dev/make-fx.js)
+art/                the Remotion project: single source of the machine art + launch video
+scripts/dev/
+  build-sprites.js  art/ -> lib/sprites.json + lib/sprites.js + docs/sprites-contact.png
+  make-music.js     synthesizes the launch video's soundtrack (no licensed audio)
+  pty-smoke.py      live verification in a real terminal
+docs/               ARCHITECTURE.md, ART-SPEC.md, sprites-contact.png, launch.mp4, review/
+tests/              node --test
 ```
 
-## Development / testing
-
-Zero runtime dependencies, plain Node ESM (`package.json` has `"type": "module"`).
+## Development
 
 ```bash
-node --test                            # unit tests: rng, frame rectangularity, renderers
-# (equivalently: npm test, which runs `node --test tests/*.test.js`. On some Node builds,
-#  passing the bare directory — `node --test tests/` — misresolves it as a CJS module path
-#  instead of a test root; the glob form and the no-args form both avoid that.)
-node scripts/dev/make-fx.js            # regenerate fx/*.wav
-node bin/claude-slots-setup.js --dry-run --settings-path /tmp/some-settings.json
+claude plugin validate .          # manifest, marketplace and mod module: must pass with zero errors
+node --test tests/*.test.js       # engine, sprite sheet, economy, rng, renderers
+node bin/demo.js --outcome=life   # watch a spin in your terminal
 ```
 
-Live end-to-end smoke test (drives a real `claude` process through a PTY, both tiers):
+### Rebuilding the sprite sheet
+
+The art is authored once, in `art/src/machine/`, as a Remotion composition.
+The terminal sprite sheet and the launch video are two renders of it. After
+changing anything there:
 
 ```bash
-python3 scripts/dev/pty-smoke.py --tier 1 --tui default \
-  --prompt "Count to 10." --seconds 20 --out /tmp/run1
-
-python3 scripts/dev/pty-smoke.py --tier 2 --tui fullscreen \
-  --prompt "Count to 10." --seconds 20 --out /tmp/run2
+cd art && npm install && cd ..          # once; installs Remotion + its headless Chromium under art/
+node scripts/dev/build-sprites.js       # renders every layer, quantises to the 24-colour palette
+node --test tests/*.test.js             # the sheet tests guard geometry, palette, seams, overlays
 ```
 
-Each run writes `<out>.bin` (raw capture), `<out>.stripped.txt` (ANSI stripped), and
-`<out>.timeline.json` (event timeline), and prints a head/tail excerpt plus a count of lines
-containing the `╔` chassis corner glyph as a quick tier-agnostic "did it actually render" signal.
-Always pass `--model haiku` for these (the script defaults to it) and make sure no stray `claude`
-process from a prior run is still alive:
+The build is deterministic (two runs produce byte-identical `lib/sprites.json`)
+and refuses any pixel that is not exactly in the palette. If Chromium cannot
+be downloaded, pass `--browser-executable=<path>`.
+
+`docs/sprites-contact.png` is a contact sheet of every layer for review, and
+Remotion Studio shows the components live:
 
 ```bash
-pkill -f "claude --plugin-dir /path/to/claude_slot"
+cd art && npx remotion studio src/index.ts
 ```
 
-Verification gates this plugin is held to (`docs/ARCHITECTURE.md` §7):
+### Rendering the launch video
 
-1. `node --test` green — probabilities sum to 1 (200k-roll tolerance check), every frame for every
-   (size × phase × outcome × time sample) is a true rectangle within its width budget, the tree
-   renderer only ever emits allow-listed props, the ANSI renderer round-trips to the same visible
-   text.
-2. `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1 claude plugin validate .` passes (scanner + manifest).
-3. Live PTY run, Tier 1: the machine replaces the spinner during a turn; a result line closes the
-   turn; Esc mid-turn produces the JAM/"INTERRUPTED" state and a refund.
-4. Live PTY run, Tier 2 (flag off, `statusLine` pointed at the script): the machine renders in the
-   status line at 1 fps; hooks drive lever/stop; a pre-existing user status line is preserved as
-   line 1 above it.
-5. Adversarial review: API compliance, scanner compliance, 40-column terminals, reduced-motion,
-   `/clear`, concurrent sessions, budget limits (toasts, store size).
+```bash
+node scripts/dev/make-music.js                                   # -> art/public/launch-track.wav (synthesized, offline)
+cd art && npx remotion render src/index.ts Launch ../docs/launch.mp4 --codec h264 --crf 17 --overwrite
+```
+
+The soundtrack script and the `Launch` composition share `art/src/timeline.json`
+(BPM, scene starts, reel-stop frames), so the accents land on the reel stops.
+
+### Live verification in a real terminal
+
+```bash
+python3 scripts/dev/pty-smoke.py --tui default    --out /tmp/run1
+python3 scripts/dev/pty-smoke.py --tui fullscreen --out /tmp/run2
+```
+
+Each run drives a real `claude --plugin-dir .` session through a PTY, sends a
+prompt, and counts `▀` rows; with `pyte` installed it also reconstructs the
+screen twice a second and checks that the 40 × 10 sprite rectangle is fully
+painted (no stale transcript text inside it) and disappears after the turn.
 
 ## Troubleshooting
 
-- **Nothing changed, spinner looks the same.** Check which tier you expect: Tier 1 needs
-  `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` set *and Claude Code restarted*; Tier 2 needs
-  `/claude-slots:setup --apply` to have actually run (dry-run alone changes nothing).
-- **My old status line disappeared.** It should be preserved as line 1 above the machine. If it
-  isn't, check `${CLAUDE_PLUGIN_DATA}/config.json` — your original `statusLine` command is saved
-  there and `/claude-slots:teardown` will put it straight back.
-- **I ran setup twice and I'm worried I lost my real settings.** You didn't: `--apply` only saves
-  the *original* values into `config.json` on the *first* run; a second `--apply` re-applies the
-  plugin's own values on top without touching the saved originals. Every `--apply`/`--restore`
-  also leaves a timestamped `settings.json.claude-slots.bak-<ISO>` backup next to your settings
-  file regardless.
-- **Setup/teardown exits with "contains invalid JSON".** `claude-slots-setup.js` refuses to guess
-  at a `settings.json`/`config.json` it can't parse (a stray hand-edit, or a half-written file left
-  over from an earlier crash) — it leaves the file untouched and exits non-zero rather than
-  crashing or overwriting it. Fix or remove the named file and re-run.
-- **`claude plugin validate` fails.** Run it with `--json` for a structured report; the most
-  common cause during development is a `userConfig` field using an unsupported schema key for
-  your Claude Code version (see the Options note above about `options` needing v2.1.271+).
-- **A hook seems to hang or error.** Every hook body is wrapped so a throw falls back to `next(e)`
-  (Tier 1) or a silent `exit 0` (Tier 2 command hooks) — a broken plugin should never block a
-  prompt or crash a session. If you see otherwise, please file an issue with the debug log
-  (`~/.claude/debug/<session-id>.txt`, read-only, never touched by this plugin).
+- **The built-in spinner shows, not the machine.** Run
+  `claude plugin validate .` in the plugin directory and
+  `claude --plugin-dir . --debug`; a mod that fails to load prints one dim
+  line naming the reason. The most common cause is a Claude Code older than
+  2.1.287.
+- **Colours look flat or wrong.** The terminal is not advertising truecolor;
+  set `COLORTERM=truecolor`. The ANSI demo falls back to 256 colours.
+- **Rows of `▀` look like gaps.** The font does not cover the full cell with
+  U+2580; switch the terminal font (any of the fonts bundled with the
+  terminals listed above work).
+- **No result line after an interrupted turn.** Expected: Claude Code draws
+  no closing line for aborted turns, so the refund notice goes under the
+  prompt instead.
 
 ## Uninstall
 
-1. `/claude-slots:teardown` (or `node bin/claude-slots-setup.js --restore`) to put back your
-   original `statusLine`/`spinnerVerbs`/`spinnerTipsEnabled`.
-2. Remove the plugin: `/plugin uninstall claude-slots@claude-slots-local` (marketplace install) or
-   simply stop passing `--plugin-dir` (inline install).
-3. Optionally remove `${CLAUDE_PLUGIN_DATA}` (`~/.claude/plugins/data/claude-slots*/`) and any
-   `~/.claude/plugins/store/claude-slots*.json` files to clear saved credits/stats.
+```
+/plugin uninstall slots@slots-local
+```
+
+or stop passing `--plugin-dir`. Persisted credits live in
+`~/.claude/plugins/store/slots*.json`; delete that file to reset.
 
 ## License
 
-MIT — see `LICENSE`.
+MIT.
