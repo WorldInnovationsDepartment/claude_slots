@@ -3,7 +3,7 @@
   "name": "slots",
   "displayName": "Claude Slots",
   "version": "1.0.0",
-  "description": "Replaces the spinner with a small pixel-art slot machine in a neon cyberpunk style: pull the trigger on every prompt, the reels keep turning while Claude works, and you might win a FEATURE, a CLIENT, or a LIFE.",
+  "description": "Pins a small pixel-art slot machine in a neon cyberpunk style to the bottom-right of the screen, above the prompt: pull the trigger on every prompt, the reels keep turning while Claude works, and you might win a FEATURE, a CLIENT, or a LIFE.",
   "author": {
     "name": "Danylo Vorvul"
   },

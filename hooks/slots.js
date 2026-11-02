@@ -1,7 +1,10 @@
 // Claude Slots — the mod module (hooks/slots.js)
 //
-// Replaces the built-in Spinner with the pixel-art slot machine while a turn
-// runs and draws the one-line result in TurnDuration (docs/ARCHITECTURE.md).
+// Draws the pixel-art slot machine in the AbovePrompt band, pinned to the
+// bottom-right of the screen for the whole session (idle between turns,
+// spinning while one runs, outcome overlay when it ends), and draws the
+// one-line result in TurnDuration (docs/ARCHITECTURE.md). The built-in
+// Spinner is left alone.
 // This is the ONLY file in the plugin allowed to touch `$` / `on` / `next`;
 // the static scanner behind `claude plugin validate` enforces that:
 //
@@ -38,7 +41,8 @@ import {
   soundAssetFor,
   refundNotice,
   SpinQueue,
-  isNarrow,
+  bandFitsSprite,
+  bandTree,
 } from '../lib/mod-helpers.js';
 
 // ---------------------------------------------------------------------------
@@ -126,7 +130,7 @@ async function pollTickerStop($, gen) {
     return;
   }
   stopTickerNow();
-  tick($); // one last redraw so TurnDuration settles on the static result line
+  tick($); // one last redraw so the band settles on the landed reels
 }
 
 function clearStatus($) {
@@ -233,20 +237,18 @@ async function handleTurnComplete($, e) {
   pollTickerStop($, spinGeneration);
 }
 
-async function renderSpinner($, e) {
+/** The band: the machine itself, right-aligned, or the one-line readout where the band is too small for it. */
+async function renderBand($, e) {
   const now = await $.clock.now();
-  if (isNarrow(e.viewport)) return renderTree(machine.fallbackLine(liveState, now));
-  return renderTree(machine.frame(liveState, now));
+  const inner = bandFitsSprite(e.props)
+    ? renderTree(machine.frame(liveState, now))
+    : renderTree(machine.fallbackLine(liveState, now));
+  return bandTree(inner, e.props.bodyColumns);
 }
 
-async function renderTurnDuration($, e, spin) {
-  const now = await $.clock.now();
-  const state = spin.resultSnapshot;
-  if (machine.isAnimating(state, now)) {
-    if (isNarrow(e.viewport)) return renderTree(machine.fallbackLine(state, now));
-    return renderTree(machine.frame(state, now));
-  }
-  return renderTree(machine.resultLine(state));
+/** The transcript keeps only the one-line result; the animation lives in the band. */
+function renderTurnDuration(spin) {
+  return renderTree(machine.resultLine(spin.resultSnapshot));
 }
 
 // ---------------------------------------------------------------------------
@@ -261,6 +263,7 @@ export function register(on, options) {
     try {
       resetTransientState();
       liveState = await initSession($);
+      tick($); // the band may have drawn before the state existed; show the idle machine now
       return next(e);
     } catch (err) {
       return next(e);
@@ -310,14 +313,15 @@ export function register(on, options) {
     return next(e);
   });
 
-  on('ui.render', { component: 'Spinner' }, async ($, e, next) => {
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     try {
       if (e.surface !== 'terminal') return next(e);
-      if (!liveState || liveState.leverAt == null) return next(e);
+      if (e.props.hasSurvey) return next(e); // a survey owns the band; yield to it
+      if (!liveState) return next(e);
       // Ticker lifecycle is owned solely by prompt.submit/turn.complete; a
       // render hook must never restart it (an unrelated invalidate after a
       // scheduled stop would otherwise resurrect a ticker nobody stops).
-      return await renderSpinner($, e);
+      return await renderBand($, e);
     } catch (err) {
       return next(e);
     }
@@ -328,7 +332,7 @@ export function register(on, options) {
       if (e.surface !== 'terminal') return next(e);
       const spin = spins.resolve(e.requestId, e.props.durationMs);
       if (!spin) return next(e);
-      return await renderTurnDuration($, e, spin);
+      return renderTurnDuration(spin);
     } catch (err) {
       return next(e);
     }

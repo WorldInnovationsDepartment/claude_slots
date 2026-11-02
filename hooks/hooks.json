@@ -1,4 +1,4 @@
 {
-  "description": "Claude Slots: a mod module that replaces the Spinner with a pixel-art slot machine while a turn runs and draws a one-line result in TurnDuration.",
+  "description": "Claude Slots: a mod module that pins a pixel-art slot machine to the band above the prompt (bottom-right of the screen) and draws a one-line result in TurnDuration.",
   "modules": ["./slots.js"]
 }

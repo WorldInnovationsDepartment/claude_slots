@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveOptions, mergeStoredEconomy, SpinQueue, isNarrow, refundNotice, outcomeSoundKind, STORE_KEY, cloneJson } from '../lib/mod-helpers.js';
+import { resolveOptions, mergeStoredEconomy, SpinQueue, isNarrow, refundNotice, outcomeSoundKind, STORE_KEY, cloneJson, bandFitsSprite, bandTree, MIN_SPRITE_ROWS } from '../lib/mod-helpers.js';
 import * as M from '../lib/machine.js';
 
 test('resolveOptions: only sound and startCredits, with safe defaults', () => {
@@ -75,4 +75,23 @@ test('cloneJson produces a detached copy of machine state', () => {
   M.stop(st, 1000, 'answer');
   assert.equal(copy.stopAt, null);
   assert.deepEqual(copy.outcome, st.outcome);
+});
+
+test('bandFitsSprite needs 40 columns and 10 rows of band', () => {
+  assert.equal(MIN_SPRITE_ROWS, 10);
+  assert.ok(bandFitsSprite({ bodyColumns: 115, maxRows: 40 }));
+  assert.ok(bandFitsSprite({ bodyColumns: 40, maxRows: 10 }));
+  assert.ok(!bandFitsSprite({ bodyColumns: 39, maxRows: 40 }));
+  assert.ok(!bandFitsSprite({ bodyColumns: 115, maxRows: 9 }));
+  assert.ok(!bandFitsSprite(null));
+  assert.ok(!bandFitsSprite({}));
+});
+
+test('bandTree right-aligns the given tree in a row Box as wide as the band', () => {
+  const inner = { type: 'Box', props: { flexDirection: 'column' }, children: [] };
+  const t = bandTree(inner, 115);
+  assert.equal(t.type, 'Box');
+  assert.deepEqual(t.props, { flexDirection: 'row', justifyContent: 'flex-end', width: 115 });
+  assert.equal(t.children[0], inner);
+  assert.deepEqual(bandTree(inner, undefined).props, { flexDirection: 'row', justifyContent: 'flex-end' });
 });

@@ -1,17 +1,18 @@
 # Architecture
 
 Claude Slots is a Claude Code **mod**: a hooks module (`hooks/slots.js`)
-that takes over the `Spinner` render site while a turn runs and the
-`TurnDuration` site when it ends. Everything else is a dependency-free,
+that draws the machine in the `AbovePrompt` band, pinned to the
+bottom-right of the screen for the whole session, and takes over the
+`TurnDuration` site for the one-line result when a turn ends. Everything else is a dependency-free,
 time-driven engine in `lib/` and a Remotion project in `art/` that is the
 single source of the machine's pixels.
 
 ```
 prompt.submit ──► pullLever(now, seed) ──► ticker $.clock.every(100ms) ──► $.ui.invalidate('ui.render')
                                                                                   │
-ui.render Spinner ◄──────────── machine.frame(state, now) ◄── sprite-frame.js ◄───┘
+ui.render AbovePrompt ◄──────── machine.frame(state, now) ◄── sprite-frame.js ◄───┘
 turn.complete ──► stop(now, reason) ──► economy settles ──► $.store.set('slots.economy')
-ui.render TurnDuration ──► animated frame while isAnimating ──► resultLine()
+ui.render TurnDuration ──► resultLine()
 ```
 
 ## 1. The mod module (`hooks/slots.js`)
@@ -31,12 +32,12 @@ Hooks registered:
 
 | Event | What it does |
 | --- | --- |
-| `session.start` | Resets transient state, loads the persisted economy from `$.store`. |
+| `session.start` | Resets transient state, loads the persisted economy from `$.store`, invalidates once so the band shows the idle machine. |
 | `prompt.submit` | Awaits `next(e)` first; unless the chain dropped the prompt, pulls the lever (seed = session id : turn count : now) and starts the 100 ms ticker. |
 | `turn.step` | Streams every chunk through unchanged; timestamps a tool pulse. Ignored for subagent loops (`e.agentId`). |
 | `turn.complete` | `machine.stop(now, reason)`, snapshot for TurnDuration, persist, toast on A LIFE, `$.ui.status` refund notice on abort/error (cleared after 3 s), poll until the animation ends and stop the ticker. Ignored for subagent loops. |
-| `ui.render Spinner` | Terminal surface only. Draws `machine.frame` through `renderTree`, or the one-line fallback below 40 columns. Passes through before the first lever pull. |
-| `ui.render TurnDuration` | Binds the instance to the finished spin by `durationMs` (its `requestId` is fresh per mount), draws the frame while the reels stop and the overlay plays, then the static result line. |
+| `ui.render AbovePrompt` | Terminal surface only; yields to a survey. Draws `machine.frame` through `renderTree` inside a full-width row Box with `justifyContent: flex-end`, so the sprite sits at the band's right edge; below 40 columns or 10 rows of band it draws the one-line fallback instead. Always on: idle at rest between turns, spinning during one, outcome overlay when it ends. The built-in Spinner is untouched. |
+| `ui.render TurnDuration` | Binds the instance to the finished spin by `durationMs` (its `requestId` is fresh per mount) and draws the static result line. |
 
 Platform facts this build relies on (Claude Code 2.1.316):
 

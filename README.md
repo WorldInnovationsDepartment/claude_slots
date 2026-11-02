@@ -1,15 +1,16 @@
 # Claude Slots
 
-A Claude Code plugin that replaces the spinner with a small pixel-art slot
-machine in a neon cyberpunk style. Every prompt pulls the trigger,
+A Claude Code plugin that pins a small pixel-art slot machine in a neon
+cyberpunk style to the bottom-right of the screen, just above the prompt.
+Every prompt pulls the trigger,
 the reels keep turning for as long as Claude works, and when the turn ends
 they land on your outcome: you might win a **FEATURE**, a **CLIENT**, or
 **A LIFE**.
 
 <p align="center"><img src=".claude-plugin/icon.png" width="256" alt="the machine"></p>
 
-What you see while a turn runs (40 columns × 10 rows, truecolor half-block
-pixels):
+What you see at the bottom-right of the screen (40 columns × 10 rows,
+truecolor half-block pixels; idle between turns, turning during one):
 
 - three reels scrolling a six-symbol strip (FEATURE ◆, CLIENT 💼, LIFE ♥,
   SKULL, EDDIES, CHIP) with grain flicker and scanlines on the cabinet
@@ -62,7 +63,9 @@ or register the checkout as a local marketplace:
 /plugin install slots@slots-local
 ```
 
-Submit any prompt: the machine appears in place of the spinner.
+The machine sits above the prompt from the first draw; submit any prompt
+and the reels start turning. `ctrl+x ctrl+a` collapses the band if you
+want it out of the way.
 
 ## Commands
 
@@ -205,7 +208,7 @@ painted (no stale transcript text inside it) and disappears after the turn.
 
 ## Troubleshooting
 
-- **The built-in spinner shows, not the machine.** Run
+- **No machine above the prompt.** Run
   `claude plugin validate .` in the plugin directory and
   `claude --plugin-dir . --debug`; a mod that fails to load prints one dim
   line naming the reason. The most common cause is a Claude Code older than

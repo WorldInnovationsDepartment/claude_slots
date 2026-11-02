@@ -4,13 +4,13 @@
   "owner": {
     "name": "Danylo Vorvul"
   },
-  "description": "Local marketplace that ships exactly one plugin: Claude Slots, a pixel-art slot-machine spinner replacement.",
+  "description": "Local marketplace that ships exactly one plugin: Claude Slots, a pixel-art slot machine pinned above the prompt.",
   "version": "1.0.0",
   "plugins": [
     {
       "name": "slots",
       "displayName": "Claude Slots",
-      "description": "Replaces the spinner with a small pixel-art slot machine in a neon cyberpunk style: pull the trigger on every prompt, the reels keep turning while Claude works, and you might win a FEATURE, a CLIENT, or a LIFE.",
+      "description": "Pins a small pixel-art slot machine in a neon cyberpunk style to the bottom-right of the screen, above the prompt: pull the trigger on every prompt, the reels keep turning while Claude works, and you might win a FEATURE, a CLIENT, or a LIFE.",
       "source": "./",
       "version": "1.0.0",
       "author": {
