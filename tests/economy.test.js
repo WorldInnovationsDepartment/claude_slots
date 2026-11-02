@@ -45,7 +45,7 @@ test('applyOutcome credits a payout, sets lastWin, tracks jackpots and streaks',
   assert.equal(e.stats.streak, 2);
 
   applySpinStart(e);
-  applyOutcome(e, { outcomeClass: 'LOSE', payout: 0, symbols: ['SKULL', 'EDDIES', 'CHIP'] });
+  applyOutcome(e, { outcomeClass: 'LOSE', payout: 0, symbols: ['PILLS', 'GUN', 'AGENT'] });
   assert.equal(e.lastWin, 0);
   assert.equal(e.stats.streak, 0); // broken by the loss
   assert.equal(e.stats.bestStreak, 2); // best streak persists
@@ -76,10 +76,10 @@ test('stats.recent holds up to 3 entries, most-recent-first, with paylines for r
   spin({ outcomeClass: 'CLIENT', payout: 20, symbols: ['CLIENT', 'CLIENT', 'CLIENT'] });
   spin({ outcomeClass: 'ABORTED' });
   spin({ outcomeClass: 'LIFE', payout: 100, symbols: ['LIFE', 'LIFE', 'LIFE'] });
-  spin({ outcomeClass: 'LOSE', payout: 0, symbols: ['SKULL', 'EDDIES', 'CHIP'] });
+  spin({ outcomeClass: 'LOSE', payout: 0, symbols: ['PILLS', 'GUN', 'AGENT'] });
   assert.equal(e.stats.recent.length, 3);
   assert.equal(e.stats.recent[0].outcomeClass, 'LOSE');
-  assert.deepEqual(e.stats.recent[0].symbols, ['SKULL', 'EDDIES', 'CHIP']);
+  assert.deepEqual(e.stats.recent[0].symbols, ['PILLS', 'GUN', 'AGENT']);
   assert.equal(e.stats.recent[1].outcomeClass, 'LIFE');
   assert.equal(e.stats.recent[2].outcomeClass, 'ABORTED');
   assert.equal(e.stats.recent[2].symbols, null);

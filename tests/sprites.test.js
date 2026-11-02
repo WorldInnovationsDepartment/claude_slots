@@ -80,7 +80,7 @@ test('layer inventory: 4+ cabinet variants, 3 windows, a readout, 6 symbol offse
     assert.ok(win.x >= 0 && win.x + win.w <= W && win.y >= 0 && win.y + win.h <= H);
   }
   assert.ok(Number.isInteger(sheet.cabinet.readout.x) && Number.isInteger(sheet.cabinet.readout.y));
-  assert.deepEqual(sheet.strip.symbols, ['FEATURE', 'CLIENT', 'LIFE', 'SKULL', 'EDDIES', 'CHIP']);
+  assert.deepEqual(sheet.strip.symbols, ['FEATURE', 'CLIENT', 'LIFE', 'PILLS', 'GUN', 'AGENT', 'DECK', 'BLADE']);
   for (const s of sheet.strip.symbols) assert.ok(Number.isInteger(sheet.strip.offsets[s]), `offset for ${s}`);
   assert.equal(sheet.digits.glyphs.length, 10);
   assert.deepEqual(Object.keys(sheet.overlays).sort(), ['abort', 'error', 'lose', 'win-client', 'win-feature', 'win-life']);

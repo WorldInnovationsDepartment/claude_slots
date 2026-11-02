@@ -31,10 +31,10 @@ export const PALETTE: readonly PaletteEntry[] = [
   { name: "magentaPale", hex: "#FF9BEA" }, // 17 magenta tint
   { name: "white", hex: "#F4F4F8" }, // 18 white
   { name: "grey", hex: "#9A9AAE" }, // 19 grey
-  { name: "red", hex: "#FF2A4A" }, // 20 red (error, skull eyes)
+  { name: "red", hex: "#FF2A4A" }, // 20 red (error, blade tip)
   { name: "redDark", hex: "#8A0F22" }, // 21 red shade
   { name: "green", hex: "#39FF88" }, // 22 chip green
-  { name: "orange", hex: "#FF8A00" }, // 23 eddies accent
+  { name: "orange", hex: "#FF8A00" }, // 23 orange accent
 ];
 
 export const PALETTE_INDEX: Readonly<Record<string, number>> = Object.fromEntries(

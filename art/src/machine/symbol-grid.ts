@@ -1,12 +1,13 @@
-// symbols.ts — the six reel symbols, 10 × 8 pixel maps each.
+// symbol-grid.ts — the eight reel symbols, 10 × 8 pixel maps each.
 //
-// FEATURE, CLIENT and LIFE are the three win classes (LIFE is the jackpot);
-// SKULL, EDDIES and CHIP are fillers. Order here is the strip order.
+// FEATURE, CLIENT and LIFE are the three win classes (LIFE is the jackpot),
+// drawn as street-market goods: an optic implant, a banknote, a casino token.
+// PILLS, GUN, AGENT, DECK and BLADE are fillers. Order here is the strip order.
 import { PALETTE_INDEX as P } from "../palette.ts";
 import { parseMap, type Grid } from "./grid.ts";
 import { WINDOW_W, SYMBOL_H } from "./layout.ts";
 
-export const SYMBOL_IDS = ["FEATURE", "CLIENT", "LIFE", "SKULL", "EDDIES", "CHIP"] as const;
+export const SYMBOL_IDS = ["FEATURE", "CLIENT", "LIFE", "PILLS", "GUN", "AGENT", "DECK", "BLADE"] as const;
 export type SymbolId = (typeof SYMBOL_IDS)[number];
 
 const L: Readonly<Record<string, number>> = {
@@ -32,71 +33,93 @@ const L: Readonly<Record<string, number>> = {
 };
 
 const MAPS: Readonly<Record<SymbolId, readonly string[]>> = {
-  // a cyan gem: the shiny new thing you shipped
+  // an optic implant, cyan iris in a steel socket: the new chrome you shipped
   FEATURE: [
-    "....CC....",
-    "...CkkC...",
-    "..CkkkkC..",
-    ".CkkWWkkC.",
-    ".CkkWWkkC.",
-    "..cckkcc..",
-    "...cccc...",
-    "....cc....",
+    "..........",
+    "...SSSS...",
+    ".SSCCCCSS.",
+    "SCCCkICCCS",
+    "SCCCIICCCS",
+    ".SSCCCCSS.",
+    "...SSSS...",
+    "..........",
   ],
-  // a magenta briefcase: somebody who pays
+  // a green banknote with an E watermark: somebody who pays
   CLIENT: [
-    "...MMMM...",
-    "...M..M...",
-    "MMMMMMMMMM",
-    "MnnnnnnnnM",
-    "MmmmmmmmmM",
-    "MmmmWWmmmM",
-    "MmmmmmmmmM",
-    "MMMMMMMMMM",
+    "..........",
+    "EEEEEEEEEE",
+    "EIEYYYYEIE",
+    "EEEYEEEEEE",
+    "EEEYYYEEEE",
+    "EEEYEEEEEE",
+    "EIEYYYYEIE",
+    "EEEEEEEEEE",
   ],
-  // an acid-yellow heart: the jackpot
+  // a casino token, cyan notches: the chip you finally cash out
   LIFE: [
-    "..YY..YY..",
-    ".YppYYppY.",
-    "YppYYYYYpY",
-    "YYYYYYYYYY",
-    ".YYYYYYYY.",
-    "..yYYYYy..",
-    "...yYYy...",
-    "....yy....",
-  ],
-  // the thing Night City hands out for free
-  SKULL: [
     "...WWWW...",
-    "..WWWWWW..",
+    "..WCWWCW..",
     ".WWWWWWWW.",
-    ".WRRWWRRW.",
-    ".WRRWWRRW.",
-    "..WWWGWW..",
-    "...GWGWG..",
-    "...WWWWW..",
+    ".CWWkkWWC.",
+    ".CWWkkWWC.",
+    ".WWWWWWWW.",
+    "..WCWWCW..",
+    "...WWWW...",
   ],
-  // eurodollars: a coin with an E cut into it
-  EDDIES: [
-    "...OOOO...",
-    "..OYYYYO..",
-    ".OYyyyyYO.",
-    ".OYyYYYYO.",
-    ".OYyyyYYO.",
-    ".OYyYYYYO.",
-    "..OyyyyO..",
-    "...OOOO...",
+  // a two-tone capsule and a loose tablet
+  PILLS: [
+    "..........",
+    ".MMMMCCCC.",
+    "MnMMMMkCCc",
+    "MMMMMMCCCc",
+    ".mmmmcccc.",
+    ".......YYY",
+    "......YpYy",
+    ".......yyy",
   ],
-  // a chip: green silicon on a steel package
-  CHIP: [
-    ".s..ss..s.",
+  // a compact pistol, magenta grip panel
+  GUN: [
+    "..........",
+    ".sSSSSSSSS",
+    ".SsssssssS",
+    ".SSSSSSSs.",
+    "..SSSS....",
+    "..SMMS....",
+    "..SMMS....",
+    "..SSS.....",
+  ],
+  // a fixer: dark hair, cyan visor, magenta tie
+  AGENT: [
+    "...IIII...",
+    "..IIIIII..",
+    ".IGGGGGGI.",
+    ".IGCCCCGI.",
+    ".IGGGGGGI.",
+    "..IGGGGI..",
+    "..SSSSSS..",
+    ".SSSMMSSS.",
+  ],
+  // a cyberdeck: magenta screen over a key row
+  DECK: [
+    ".SSSSSSSS.",
+    ".SMMMMMMS.",
+    ".SMnMMMMS.",
+    ".SMMMMMMS.",
     "SSSSSSSSSS",
-    "SEEEEEEEES",
-    "SEIEEEEIES",
-    "SEIEEEEIES",
-    "SEEEEEEEES",
+    "SsIsIsIsIS",
+    "SIsIsIsIsS",
     "SSSSSSSSSS",
-    ".s..ss..s.",
+  ],
+  // a drawn blade, red at the tip
+  BLADE: [
+    "........RR",
+    ".......RWs",
+    "......WWs.",
+    ".....WWs..",
+    "....WWs...",
+    "...WWs....",
+    "..SSS.....",
+    ".SSS......",
   ],
 };
 

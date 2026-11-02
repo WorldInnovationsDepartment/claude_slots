@@ -5,8 +5,8 @@ import { SYMBOL_IDS, WIN_CLASSES, OUTCOME_ORDER, OUTCOME_PROBABILITIES, PAYTABLE
 
 const sheet = JSON.parse(fs.readFileSync(new URL('../lib/sprites.json', import.meta.url), 'utf8'));
 
-test('six symbols in strip order, matching the sprite sheet', () => {
-  assert.deepEqual([...SYMBOL_IDS], ['FEATURE', 'CLIENT', 'LIFE', 'SKULL', 'EDDIES', 'CHIP']);
+test('eight symbols in strip order, matching the sprite sheet', () => {
+  assert.deepEqual([...SYMBOL_IDS], ['FEATURE', 'CLIENT', 'LIFE', 'PILLS', 'GUN', 'AGENT', 'DECK', 'BLADE']);
   assert.deepEqual([...SYMBOL_IDS], sheet.strip.symbols);
   assert.deepEqual([...WIN_CLASSES], ['FEATURE', 'CLIENT', 'LIFE']);
   for (const c of WIN_CLASSES) assert.ok(isWinClass(c));

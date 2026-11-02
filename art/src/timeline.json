@@ -16,14 +16,14 @@
     "reelSpeed": [44, 50, 56],
     "stoppingStaggerMs": 300,
     "stopMs": 600,
-    "minStopTravelPx": 48,
+    "minStopTravelPx": 64,
     "overlayFrameMs": 100
   },
   "pulls": [
-    { "id": "lose", "outcome": "LOSE", "symbols": ["LIFE", "SKULL", "EDDIES"], "leverFrame": 465, "stopFrame": 570, "reelStops": [588, 597, 606], "balanceBefore": 100, "payout": 0 },
+    { "id": "lose", "outcome": "LOSE", "symbols": ["LIFE", "GUN", "PILLS"], "leverFrame": 465, "stopFrame": 570, "reelStops": [588, 597, 606], "balanceBefore": 100, "payout": 0 },
     { "id": "feature", "outcome": "FEATURE", "symbols": ["FEATURE", "FEATURE", "FEATURE"], "leverFrame": 735, "stopFrame": 840, "reelStops": [858, 867, 876], "balanceBefore": 99, "payout": 5 },
     { "id": "client", "outcome": "CLIENT", "symbols": ["CLIENT", "CLIENT", "CLIENT"], "leverFrame": 1005, "stopFrame": 1110, "reelStops": [1128, 1137, 1146], "balanceBefore": 103, "payout": 20 },
     { "id": "life", "outcome": "LIFE", "symbols": ["LIFE", "LIFE", "LIFE"], "leverFrame": 1275, "stopFrame": 1440, "reelStops": [1458, 1467, 1476], "balanceBefore": 122, "payout": 100 }
   ],
-  "terminal": { "id": "terminal", "outcome": "LOSE", "symbols": ["EDDIES", "CHIP", "SKULL"], "leverFrame": 165, "stopFrame": 300, "reelStops": [318, 327, 336], "balanceBefore": 100, "payout": 0 }
+  "terminal": { "id": "terminal", "outcome": "LOSE", "symbols": ["PILLS", "GUN", "AGENT"], "leverFrame": 165, "stopFrame": 300, "reelStops": [318, 327, 336], "balanceBefore": 100, "payout": 0 }
 }

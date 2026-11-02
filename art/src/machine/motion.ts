@@ -41,7 +41,7 @@ export type Pull = {
   rest?: readonly [number, number, number];
 };
 
-const DEFAULT_REST: readonly [number, number, number] = [symbolOffset("SKULL"), symbolOffset("EDDIES"), symbolOffset("CHIP")];
+const DEFAULT_REST: readonly [number, number, number] = [symbolOffset("PILLS"), symbolOffset("GUN"), symbolOffset("AGENT")];
 
 /** Reel offsets at absolute time `now` (ms), identical to lib/machine.js reelOffsets. */
 export function reelOffsetsAt(pull: Pull, now: number): [number, number, number] {

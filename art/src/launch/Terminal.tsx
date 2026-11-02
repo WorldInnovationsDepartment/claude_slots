@@ -25,7 +25,7 @@ export const Terminal: React.FC<{ durationInFrames: number; leverFrame: number; 
   const { fps } = useVideoConfig();
   const absFrame = sceneStart + frame;
   const nowMs = (absFrame / fps) * 1000;
-  const pull = { leverAt: (leverFrame / fps) * 1000, stopAt: (stopFrame / fps) * 1000, symbols: ["EDDIES", "CHIP", "SKULL"] as const };
+  const pull = { leverAt: (leverFrame / fps) * 1000, stopAt: (stopFrame / fps) * 1000, symbols: ["PILLS", "GUN", "AGENT"] as const };
   const offsets = reelOffsetsAt(pull, nowMs);
   const overlay = overlayAt(pull, "lose", nowMs);
   const variant = Math.floor(nowMs / 100) % 4;

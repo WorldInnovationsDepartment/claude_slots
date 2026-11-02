@@ -12,8 +12,10 @@ they land on your outcome: you might win a **FEATURE**, a **CLIENT**, or
 What you see at the bottom-right of the screen (40 columns × 10 rows,
 truecolor half-block pixels; idle between turns, turning during one):
 
-- three reels scrolling a six-symbol strip (FEATURE ◆, CLIENT 💼, LIFE ♥,
-  SKULL, EDDIES, CHIP) with grain flicker and scanlines on the cabinet
+- three reels scrolling an eight-symbol strip: an optic implant (FEATURE), a
+  banknote (CLIENT), a casino token (LIFE), and five fillers (pills, a
+  pistol, a fixer, a deck, a blade), with grain flicker and scanlines on
+  the cabinet
 - the credit balance, and nothing else: no verbs, no timers, no token counts
 
 When the turn completes the reels stop left to right, an outcome overlay

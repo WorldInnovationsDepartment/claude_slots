@@ -35,12 +35,12 @@ agent works.
 | 15 | magenta | `#FF2BD6` | CLIENT, right neon tube |
 | 16 | magentaDark | `#9A1682` | magenta shade |
 | 17 | magentaPale | `#FF9BEA` | magenta tint |
-| 18 | white | `#F4F4F8` | skull, gem core, briefcase clasp |
-| 19 | grey | `#9A9AAE` | skull teeth, "no match" |
-| 20 | red | `#FF2A4A` | skull eyes, error |
+| 18 | white | `#F4F4F8` | token body, blade edge |
+| 19 | grey | `#9A9AAE` | fixer face, "no match" |
+| 20 | red | `#FF2A4A` | blade tip, error |
 | 21 | redDark | `#8A0F22` | error speckle |
-| 22 | green | `#39FF88` | CHIP |
-| 23 | orange | `#FF8A00` | EDDIES rim |
+| 22 | green | `#39FF88` | banknote |
+| 23 | orange | `#FF8A00` | reserved (unused by the current symbols) |
 
 Every pixel of the sheet is one of these; the build fails on anything else.
 Pixel strings in the sheet use one base-36 character per pixel (`0`–`9`,
@@ -51,7 +51,7 @@ Pixel strings in the sheet use one base-36 character per pixel (`0`–`9`,
 - Sprite: **40 × 20 px**, shown as **10 rows × 40 cells** of `▀` (top pixel
   = foreground colour, bottom pixel = background colour).
 - Reel windows (x, y, w, h): `(3,3,10,8)`, `(15,3,10,8)`, `(27,3,10,8)`.
-- Strip: 10 px wide, 48 px tall, six symbols of 8 px each in strip order.
+- Strip: 10 px wide, 64 px tall, eight symbols of 8 px each in strip order.
   A window at pixel offset `o` shows strip rows `o … o+7` (wrapping), so a
   symbol is centred when `o` equals its declared offset.
 - Readout: three 3 × 5 digits at stride 4 starting at `(15, 13)`, inside a
@@ -66,12 +66,14 @@ Pixel strings in the sheet use one base-36 character per pixel (`0`–`9`,
 
 | id | offset | what it is |
 | --- | --- | --- |
-| FEATURE | 0 | a cyan gem with a white core: the shiny thing you shipped |
-| CLIENT | 8 | a magenta briefcase: somebody who pays |
-| LIFE | 16 | an acid-yellow heart: the jackpot |
-| SKULL | 24 | white skull, red eyes: what Night City hands out for free |
-| EDDIES | 32 | an orange-rimmed coin with an E cut into it |
-| CHIP | 40 | a green chip on a steel package |
+| FEATURE | 0 | an optic implant, cyan iris in a steel socket: the new chrome you shipped |
+| CLIENT | 8 | a green banknote with an E watermark: somebody who pays |
+| LIFE | 16 | a casino token, cyan notches: the chip you finally cash out (the jackpot) |
+| PILLS | 24 | a two-tone capsule and a loose tablet (filler) |
+| GUN | 32 | a compact pistol with a magenta grip panel (filler) |
+| AGENT | 40 | a fixer: dark hair, cyan visor, magenta tie (filler) |
+| DECK | 48 | a cyberdeck: magenta screen over a key row (filler) |
+| BLADE | 56 | a drawn blade, red at the tip (filler) |
 
 ## 5. Outcomes, probabilities, payouts (`lib/symbols.js`)
 
@@ -99,7 +101,7 @@ sequential seeds against it within 10 % relative error.
 | reel speed | 44 / 50 / 56 px per second (reels 1–3), offsets decrease (symbols travel down) |
 | stop stagger | reel 1 at +0 ms, reel 2 at +300 ms, reel 3 at +600 ms after `stop()` |
 | stop duration | 600 ms per reel, ease-out cubic onto the target offset |
-| minimum stop travel | 48 px (one full strip) |
+| minimum stop travel | 64 px (one full strip) |
 | all reels stopped | 1200 ms after `stop()` |
 | overlay | 100 ms per frame, frame counts in §5 |
 | abort / error | reels freeze at `stop()`, the glitch overlay plays at once |
@@ -122,7 +124,7 @@ grey for 8 frames; `abort` tears cyan/magenta bars across random rows with a
 ```
 { "palette": ["#07070B", …],  "w": 40, "h": 20,
   "cabinet": { "frames": [<800 chars> ×4], "windows": [{x,y,w,h} ×3], "readout": {x,y} },
-  "strip":   { "symbols": [6 ids], "symbolH": 8, "w": 10, "h": 48, "offsets": {id: px}, "pixels": <480 chars> },
+  "strip":   { "symbols": [8 ids], "symbolH": 8, "w": 10, "h": 64, "offsets": {id: px}, "pixels": <640 chars> },
   "digits":  { "w": 3, "h": 5, "stride": 4, "glyphs": [<15 chars> ×10] },
   "overlays": { "win-feature": [<800 chars> ×15], "win-client": [×15], "win-life": [×20],
                 "lose": [×10], "abort": [×12], "error": [×12] } }
@@ -143,7 +145,7 @@ Budget 400 KB; the committed sheet is about 72 KB.
 ## 10. Launch video (`art/src/Launch.tsx`, `art/src/timeline.json`)
 
 1920 × 1080, 30 fps, 60 s, H.264 + AAC, written to `docs/launch.mp4`. Scenes
-in order: Night City title cold open, a mock terminal showing the real sprite
+in order: a title cold open, a mock terminal showing the real sprite
 composition while an agent works, a losing pull, a FEATURE pull, a CLIENT
 pull, and a LIFE pull with a deadpan payoff card. The soundtrack is
 synthesized by `scripts/dev/make-music.js` (140 BPM, four-on-the-floor kick,
