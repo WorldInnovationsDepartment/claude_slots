@@ -1,10 +1,10 @@
-# Spec Delta
+# launch-demo-video Specification
 
 ## Purpose
 
-Defines the satirical launch video that demonstrates the plugin: its scenes, length, format, synthesized Cyberpunk-2077-inspired soundtrack, and the verification it must pass before it is shown to the user.
+Defines the satirical launch video that demonstrates the plugin: its scenes, length, format, synthesized industrial-synthwave soundtrack, and the verification it must pass before it is shown to the user.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Video is a satire built around the trigger pull
 The video SHALL tell one joke: pull the trigger, wait, and you might win a FEATURE, a CLIENT, or a LIFE. It SHALL contain, in order, a cold open on a Night City-styled title, a real terminal-style scene of the machine spinning while an agent works, at least one losing pull, one pull landing on FEATURE, one on CLIENT, and a final pull on LIFE with a deadpan payoff card.

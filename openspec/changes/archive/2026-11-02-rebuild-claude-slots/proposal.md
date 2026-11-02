@@ -20,7 +20,7 @@ The current plugin no longer loads on the installed Claude Code (2.1.316): `clau
 ## Capabilities
 
 ### New Capabilities
-- `spinner-slot-machine`: what the terminal shows while a turn runs and how it resolves: the sprite machine in the Spinner site, continuous reel motion, the credit readout, the TurnDuration result line, and abort/error presentation.
+- `slot-machine`: what the terminal shows while a turn runs and how it resolves: the sprite machine in the Spinner site, continuous reel motion, the credit readout, the TurnDuration result line, and abort/error presentation.
 - `credit-economy`: the balance rules (start, cost per spin, payouts, refunds), persistence across sessions, and the deterministic outcome roll.
 - `sprite-art-pipeline`: the contract of the art build: a Remotion composition rendered to a half-block sprite sheet with fixed dimensions, phases, palette, and determinism, plus the preview/verification commands.
 - `launch-demo-video`: the satirical launch video deliverable: scenes, duration, format, synthesized soundtrack, and frame-level verification.
