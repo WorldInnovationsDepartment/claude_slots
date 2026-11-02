@@ -85,7 +85,6 @@ Set under the plugin's `userConfig` (Claude Code's plugin settings UI, or the
 | Option | Default | Meaning |
 | --- | --- | --- |
 | `startCredits` | `100` | Balance a brand-new install starts with (0 to 100000). |
-| `sound` | `off` | `on` plays the bundled lever / coin / jackpot clips through `$.audio.play`. |
 
 ## The economy
 
@@ -143,7 +142,6 @@ lib/
 bin/demo.js         terminal demo player (ANSI, 10 fps)
 bin/claude-slots-stats.js
 commands/           /slots:demo, /slots:stats
-fx/                 optional sound clips (scripts/dev/make-fx.js)
 art/                the Remotion project: single source of the machine art + launch video
 scripts/dev/
   build-sprites.js  art/ -> lib/sprites.json + lib/sprites.js + docs/sprites-contact.png

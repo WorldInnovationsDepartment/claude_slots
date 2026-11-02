@@ -3,8 +3,8 @@
 //
 // Synthesizes a 60 s stereo industrial-synthwave track from code alone (no
 // samples, no licensed audio, no network), driven by art/src/timeline.json
-// so the accents land exactly on the reel-stop frames. Extends the WAV
-// writer approach of make-fx.js to stereo.
+// so the accents land exactly on the reel-stop frames. Writes a plain
+// 16-bit stereo WAV from node:fs alone.
 //
 //   kick        four-on-the-floor sine drop on every beat
 //   bass        saw at the bar's root, side-chained to the kick, soft-clipped

@@ -26,12 +26,6 @@
       "default": 100,
       "min": 0,
       "max": 100000
-    },
-    "sound": {
-      "type": "string",
-      "title": "Sound effects",
-      "description": "One of: off, on. Play the bundled lever/coin/jackpot sounds via $.audio.play. Off by default.",
-      "default": "off"
     }
   }
 }

@@ -1,15 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveOptions, mergeStoredEconomy, SpinQueue, isNarrow, refundNotice, outcomeSoundKind, STORE_KEY, cloneJson, bandFitsSprite, bandTree, MIN_SPRITE_ROWS } from '../lib/mod-helpers.js';
+import { resolveOptions, mergeStoredEconomy, SpinQueue, isNarrow, refundNotice, STORE_KEY, cloneJson, bandFitsSprite, bandTree, MIN_SPRITE_ROWS } from '../lib/mod-helpers.js';
 import * as M from '../lib/machine.js';
 
-test('resolveOptions: only sound and startCredits, with safe defaults', () => {
-  assert.deepEqual(resolveOptions(undefined), { sound: 'off', startCredits: 100 });
-  assert.deepEqual(resolveOptions({ sound: 'on', startCredits: 500, size: 'grand', idle: 'full' }), { sound: 'on', startCredits: 500 });
+test('resolveOptions: only startCredits, with safe defaults', () => {
+  assert.deepEqual(resolveOptions(undefined), { startCredits: 100 });
+  assert.deepEqual(resolveOptions({ sound: 'on', startCredits: 500, size: 'grand', idle: 'full' }), { startCredits: 500 });
   assert.equal(resolveOptions({ startCredits: -4 }).startCredits, 100);
   assert.equal(resolveOptions({ startCredits: 'abc' }).startCredits, 100);
   assert.equal(resolveOptions({ startCredits: 200000 }).startCredits, 100);
-  assert.equal(resolveOptions({ sound: 'loud' }).sound, 'off');
 });
 
 test('store key lives in the slots namespace', () => {
@@ -53,13 +52,9 @@ test('isNarrow: below 40 columns falls back to the one-line readout', () => {
   assert.equal(isNarrow(undefined), false);
 });
 
-test('refund paths: notice text, no sound, and the machine result line', () => {
+test('refund paths: notice text and the machine result line', () => {
   assert.equal(refundNotice('aborted'), 'INTERRUPTED · refunded');
   assert.equal(refundNotice('error'), 'MALFUNCTION · refunded');
-  assert.equal(outcomeSoundKind('ABORTED'), null);
-  assert.equal(outcomeSoundKind('LOSE'), null);
-  assert.equal(outcomeSoundKind('LIFE'), 'jackpot');
-  assert.equal(outcomeSoundKind('FEATURE'), 'coin');
   const st = M.pullLever(M.createState({ startCredits: 97 }), 0, 1);
   M.stop(st, 500, 'aborted');
   assert.equal(M.resultText(st), '◈ interrupted  refunded  balance 097');

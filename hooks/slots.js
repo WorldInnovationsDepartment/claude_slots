@@ -37,8 +37,6 @@ import {
   resolveOptions,
   cloneJson,
   mergeStoredEconomy,
-  outcomeSoundKind,
-  soundAssetFor,
   refundNotice,
   SpinQueue,
   bandFitsSprite,
@@ -51,7 +49,6 @@ import {
 // stats) survives, via `$.store`.
 // ---------------------------------------------------------------------------
 
-const SOUND_BUDGET_PER_SESSION = 500;
 const NOTICE_STATUS_MS = 3000;
 const TICK_MS = machine.TIMINGS.tickMs;
 const TICKER_POLL_MS = 200;
@@ -75,9 +72,6 @@ let spinGeneration = 0;
 /** Finished spins waiting for / bound to their TurnDuration instance. */
 const spins = new SpinQueue();
 
-/** `$.audio.play` calls made this session (defensive cap). */
-let soundPlaysThisSession = 0;
-
 /** The pending timer that will clear the status line set by the most recent setTimedStatus() call. */
 let statusClearHandle = null;
 
@@ -89,7 +83,6 @@ function resetTransientState() {
   }
   spins.clear();
   toolPulseAt = 0;
-  soundPlaysThisSession = 0;
   spinGeneration += 1;
 }
 
@@ -150,18 +143,6 @@ function setTimedStatus($, text, ms) {
   });
 }
 
-function playSoundAsset($, kind) {
-  $.audio.play({ asset: soundAssetFor(kind) }).catch(() => {});
-}
-
-/** Fire-and-forget: never awaited, so a slow or failed clip never delays the hook that triggered it. */
-function maybePlaySound($, kind) {
-  if (cfg.sound !== 'on' || !kind) return;
-  if (soundPlaysThisSession >= SOUND_BUDGET_PER_SESSION) return;
-  soundPlaysThisSession += 1;
-  playSoundAsset($, kind);
-}
-
 function notifyJackpot($, amount) {
   $.ui.toast(`A LIFE! +${amount} credits`);
 }
@@ -212,7 +193,6 @@ async function maybePullLever($) {
   machine.pullLever(liveState, now, seed);
   spinGeneration += 1;
   startTicker($);
-  maybePlaySound($, 'lever');
 }
 
 async function handleTurnComplete($, e) {
@@ -232,7 +212,6 @@ async function handleTurnComplete($, e) {
   } else if (cls === 'LIFE') {
     notifyJackpot($, liveState.economy.lastWin);
   }
-  maybePlaySound($, outcomeSoundKind(cls));
 
   pollTickerStop($, spinGeneration);
 }
