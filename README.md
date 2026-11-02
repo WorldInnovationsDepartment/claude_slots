@@ -5,7 +5,7 @@ slot machine. Pull the lever when you submit a prompt, watch the reels spin whil
 and cash in when the turn completes.
 
 ```
-╔════════════════════ ✻ ════════════════════╗
+╔══════════════ Lucky Prompt ═══════════════╗
 ║   ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ●  ║
 ║  ▐  ✻     BAR     ★  ▌  [ 1.2k tok ]     ║
 ║   ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ● ●  ║

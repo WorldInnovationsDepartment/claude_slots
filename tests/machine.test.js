@@ -161,8 +161,8 @@ test("frame(): auto size picks compact/standard/grand from columns", () => {
   // terminal (regression coverage for the "COMPACT hardcoded to 40 cols"
   // fix; see tests/frame.test.js for the fuller matrix).
   assert.equal(M.frame(st, 0, { size: 'auto', columns: 30 }).width, 30);
-  assert.equal(M.frame(st, 0, { size: 'auto', columns: 62 }).width, 60);
-  assert.equal(M.frame(st, 0, { size: 'auto', columns: 90 }).width, 80);
+  assert.equal(M.frame(st, 0, { size: 'auto', columns: 62 }).width, 50);
+  assert.equal(M.frame(st, 0, { size: 'auto', columns: 90 }).width, 58);
 });
 
 test('resultLine(): produces a 1-line Frame with the payout and elapsed seconds', () => {

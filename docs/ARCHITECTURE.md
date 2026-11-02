@@ -90,7 +90,7 @@ Event wiring:
 | `prompt.submit` | `const result = await next(e)` FIRST, then only if `!result.drop`: `machine.pullLever(now, seed)`; start ticker `$.clock.every(100, tick)`; `return result` (a downstream hook can legitimately stop the turn with `{drop}`, in which case `turn.start`/`turn.complete` never fire — pulling the lever unconditionally beforehand would wedge the machine in SPINNING forever with no time cap) |
 | `turn.start` | remember `turnId` |
 | `turn.step` | optional: brief sparkle pulse per tool use |
-| `ui.render {component:'Spinner'}` | `return renderTree(machine.frame(state, now, {columns: e.viewport?.columns, mode: e.props.mode, ...}))` — includes info strip: elapsed, mode label, credits, "esc to interrupt" |
+| `ui.render {component:'Spinner'}` | `return renderTree(machine.frame(state, now, {columns: e.viewport?.columns, mode: e.props.mode, ...}))` — includes info strip: elapsed, mode label, credits |
 | `turn.complete` | `machine.stop(now, e.reason)`; queue this spin's result for the next unbound `TurnDuration`; apply payout, persist to `$.store`; keep ticker alive until OUTCOME ends (+~4 s) then cancel; jackpot → `$.ui.toast`; `return next(e)` |
 | `ui.render {component:'TurnDuration'}` | bind `e.requestId` → pending spin (match `e.props.durationMs` to `turn.complete.durationMs`, else FIFO); while animating return the full machine frame (STOPPING→REVEAL→OUTCOME), afterwards the compact 1–2 line **result line** (stays in the transcript). Unbound instance → `return next(e)` |
 | `ui.render {component:'AbovePrompt'}` | optional idle machine (option `idle: off|compact|full`, default `compact`): attract mode + credits + last result while idle; `return next(e)` when a survey holds the band |

@@ -20,7 +20,7 @@ test('golden: STANDARD idle (§8.1 IDLE-A)', () => {
   assert.equal(frameToPlainText(fr), golden('standard-idle.txt'));
 });
 
-test('golden: GRAND idle, with the RECENT field (§7.3)', () => {
+test('golden: GRAND idle (§7.3)', () => {
   const economy = {
     credits: 346, lastWin: 250,
     stats: { recent: [{ outcomeClass: 'JACKPOT', symbols: ['CLAUDE', 'CLAUDE', 'CLAUDE'] }, { outcomeClass: 'DOUBLE', symbols: ['TOOL', 'TOOL', 'DIFF'] }, null] },

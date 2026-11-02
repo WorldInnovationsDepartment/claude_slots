@@ -7,20 +7,23 @@ and every frame is assert_rect()-checked before being returned, so an
 import failure means a frame in this spec would not have been rectangular.
 """
 
-STD_W = 60
-STD_INT = STD_W - 2  # 58
+STD_W = 48
+STD_INT = STD_W - 2  # 46
 
 CELL_W = 5
 GCELL_W = 7
 
 REEL_GAP = 1
 LEFT_MARGIN_STD = 10
-LEVER_GAP_STD = 4
 
-GRAND_W = 80
-GRAND_INT = GRAND_W - 2  # 78
+GRAND_W = 56
+GRAND_INT = GRAND_W - 2  # 54
 LEFT_MARGIN_GRAND = 14
-LEVER_GAP_GRAND = 4
+
+# Extra columns appended OUTSIDE the chassis's right border for the lever
+# arm — reads as its own mounted mechanism, not part of the boxed interior
+# (mirrors lib/art.js's LEVER_BAY_WIDTH).
+LEVER_BAY_WIDTH = 2  # 1 gap column + 1 rod/knob column
 
 COMPACT_W = 40
 
@@ -82,6 +85,14 @@ def lever_glyphs(knob_row):
     return g
 
 
+def lever_bay(glyph=" "):
+    """2-column bay appended OUTSIDE the chassis's right border for the
+    lever arm, instead of placed inside the interior — mirrors lib/art.js's
+    leverBaySpans(). Always exactly LEVER_BAY_WIDTH columns whether or not a
+    glyph is present, so every line in the frame stays the same total width."""
+    return " " + glyph
+
+
 def std_frame(marquee_text, bulbs_left, bulbs_right,
               top_syms, pay_syms, bot_syms,
               hot_cols, knob_row, info_left, info_right):
@@ -91,33 +102,33 @@ def std_frame(marquee_text, bulbs_left, bulbs_right,
     sep = "╠" + "═" * STD_INT + "╣"
 
     marquee_full = f"{bulbs_left}  {marquee_text}  {bulbs_right}"
-    lines.append(top_border)
-    lines.append("║" + center(marquee_full, STD_INT) + "║")
-    lines.append(sep)
+    lines.append(top_border + lever_bay())
+    lines.append("║" + center(marquee_full, STD_INT) + "║" + lever_bay())
+    lines.append(sep + lever_bay())
 
     lever = lever_glyphs(knob_row)
 
     def body(kind, syms, lever_glyph):
         reel = reel_bay_row(kind, syms, hot_cols, payline=False)
-        content = (" " * LEFT_MARGIN_STD) + reel + (" " * LEVER_GAP_STD) + lever_glyph
+        content = (" " * LEFT_MARGIN_STD) + reel
         content = content + " " * (STD_INT - len(content))
-        return "║" + content + "║"
+        return "║" + content + "║" + lever_bay(lever_glyph)
 
     lines.append(body("top", [None] * 3, lever[0]))
     lines.append(body("mid", top_syms, lever[1]))
     row_pay = reel_bay_row("mid", pay_syms, hot_cols, payline=True)
-    content = (" " * LEFT_MARGIN_STD) + row_pay + (" " * LEVER_GAP_STD) + lever[2]
+    content = (" " * LEFT_MARGIN_STD) + row_pay
     content = content + " " * (STD_INT - len(content))
-    lines.append("║" + content + "║")
+    lines.append("║" + content + "║" + lever_bay(lever[2]))
     lines.append(body("mid", bot_syms, lever[3]))
     lines.append(body("bot", [None] * 3, lever[4]))
 
-    lines.append(sep)
+    lines.append(sep + lever_bay())
     info = ljust_rjust(info_left, info_right, STD_INT)
-    lines.append("║" + info + "║")
-    lines.append(bot_border)
+    lines.append("║" + info + "║" + lever_bay())
+    lines.append(bot_border + lever_bay())
 
-    assert_rect(lines, STD_W, "STANDARD:" + marquee_text[:12])
+    assert_rect(lines, STD_W + LEVER_BAY_WIDTH, "STANDARD:" + marquee_text[:12])
     return lines
 
 
@@ -129,30 +140,30 @@ def grand_frame(marquee_text, bulbs_left, bulbs_right,
     bot_border = "╚" + "═" * GRAND_INT + "╝"
     sep = "╠" + "═" * GRAND_INT + "╣"
     marquee_full = f"{bulbs_left}  {marquee_text}  {bulbs_right}"
-    lines.append(top_border)
-    lines.append("║" + center(marquee_full, GRAND_INT) + "║")
-    lines.append(sep)
+    lines.append(top_border + lever_bay())
+    lines.append("║" + center(marquee_full, GRAND_INT) + "║" + lever_bay())
+    lines.append(sep + lever_bay())
     lever = lever_glyphs(knob_row)
 
     def body(kind, syms, lever_glyph):
         reel = reel_bay_row(kind, syms, hot_cols, payline=False, w=GCELL_W)
-        content = (" " * LEFT_MARGIN_GRAND) + reel + (" " * LEVER_GAP_GRAND) + lever_glyph
+        content = (" " * LEFT_MARGIN_GRAND) + reel
         content = content + " " * (GRAND_INT - len(content))
-        return "║" + content + "║"
+        return "║" + content + "║" + lever_bay(lever_glyph)
 
     lines.append(body("top", [None] * 3, lever[0]))
     lines.append(body("mid", top_syms, lever[1]))
     row_pay = reel_bay_row("mid", pay_syms, hot_cols, payline=True, w=GCELL_W)
-    content = (" " * LEFT_MARGIN_GRAND) + row_pay + (" " * LEVER_GAP_GRAND) + lever[2]
+    content = (" " * LEFT_MARGIN_GRAND) + row_pay
     content = content + " " * (GRAND_INT - len(content))
-    lines.append("║" + content + "║")
+    lines.append("║" + content + "║" + lever_bay(lever[2]))
     lines.append(body("mid", bot_syms, lever[3]))
     lines.append(body("bot", [None] * 3, lever[4]))
-    lines.append(sep)
+    lines.append(sep + lever_bay())
     info = ljust_rjust(info_left, info_right, GRAND_INT)
-    lines.append("║" + info + "║")
-    lines.append(bot_border)
-    assert_rect(lines, GRAND_W, "GRAND:" + marquee_text[:12])
+    lines.append("║" + info + "║" + lever_bay())
+    lines.append(bot_border + lever_bay())
+    assert_rect(lines, GRAND_W + LEVER_BAY_WIDTH, "GRAND:" + marquee_text[:12])
     return lines
 
 
@@ -182,7 +193,7 @@ BULB_ALL_LIT = ("●●●●●", "●●●●●")
 BULB_DARK = ("○○○○○", "○○○○○")
 BULB_BLUR = ("▓▓▓▓▓", "▓▓▓▓▓")
 
-TITLE = "✻"
+TITLE = "Lucky Prompt"
 
 
 def md_block(lines):

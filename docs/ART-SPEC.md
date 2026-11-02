@@ -207,123 +207,123 @@ This applies **per reel-cell-column** (all three symbols in a hot reel's box go 
 
 ## 7. Chassis art — STANDARD / COMPACT / GRAND
 
-All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the brand mark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → lever column pinned to the right → separator → 1-line info strip → bottom border. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
+All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the brand mark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → separator → 1-line info strip → bottom border, with a 2-column lever bay mounted immediately outside the right border on every reel-bay row — its own mounted mechanism, not part of the boxed interior. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
 
-### 7.1 STANDARD — 60 cols × 11 rows (well under the 62-col ceiling)
+### 7.1 STANDARD — 50 cols × 11 rows (48-col chassis + 2-col lever bay; well under the 62-col ceiling)
 
 **STANDARD, idle**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌                         ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 097   LAST WIN: 008              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║  
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║  
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 097   LAST WIN: 008                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
-Anatomy notes: reel cells are 5-char interior (`┌─────┐`), a single space separates adjacent boxes, the lever track is a 1-char column 4 spaces right of the reel bay. `▐`/`▌` replace the outermost wall characters of the payline row only — internal cell walls (`│`/`║`) are untouched, so "which row is the payline" is legible from the row's silhouette alone, with zero color and at 1fps.
+Anatomy notes: reel cells are 5-char interior (`┌─────┐`), a single space separates adjacent boxes; the lever track is a 1-char rod/knob column inside its own 2-column bay mounted immediately outside the chassis's right border, not inside the boxed interior. `▐`/`▌` replace the outermost wall characters of the payline row only — internal cell walls (`│`/`║`) are untouched, so "which row is the payline" is legible from the row's silhouette alone, with zero color and at 1fps.
 
 ### 7.2 COMPACT — ≤ 40 cols, 1–2 lines, no border (narrow terminals / minimal mode)
 
 **COMPACT — idle**
 ```
 ✻   ♦ BAR ✻   cr:097                    
-win:008              esc to interrupt   
+win:008                                 
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
 
 **COMPACT — ON THE HOUSE (0 credits)**
 ```
 ✻   ♦ BAR ✻   cr:000                    
-ON THE HOUSE         esc to interrupt   
+ON THE HOUSE                            
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
 
 **COMPACT — spinning**
 ```
 ✻  [▓▓▓ spinning]  cr:096               
-0:07  1.2k tok      esc to interrupt    
+0:07  1.2k tok                          
 ```
 *verified: line lengths [40, 40] (COMPACT budget: 40)*
 
 **ULTRA-COMPACT — idle (≤36 cols)**
 ```
-♦ BAR ✻ * cr:097 win:008 * esc:x        
+♦ BAR ✻ * cr:097 win:008 *              
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
 **ULTRA-COMPACT — spinning (≤36 cols)**
 ```
-[spinning 0:07 1.2k tok] cr:096 esc:x   
+[spinning 0:07 1.2k tok] cr:096         
 ```
 *verified: line lengths [40] (COMPACT budget: 40)*
 
-No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the brand mark, hint text always rightmost — a stable reading position regardless of what's inside.
+No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the brand mark — a stable reading position regardless of what's inside.
 
-### 7.3 GRAND — 80 cols × 11 rows (under the 80-col / 9–11-row ceiling)
+### 7.3 GRAND — 58 cols × 11 rows (56-col chassis + 2-col lever bay; well under the 80-col / 9–11-row ceiling)
 
 **GRAND, idle**
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                            ★●○●○●○★  ✻  ★●○●○●○★                             ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║              ┌───────┐ ┌───────┐ ┌───────┐    ●                              ║
-║              │   ♦   │ │   ♣   │ │   ☼   │                                   ║
-║              ▐   ★   │ │  BAR  │ │   ♥   ▌                                   ║
-║              │   ♥   │ │   ♦   │ │   ♣   │                                   ║
-║              └───────┘ └───────┘ └───────┘                                   ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║CREDITS: 0346   LAST WIN: 0250   RECENT: ✻✻✻ BAR-BAR-♦ ---    esc to interrupt║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════╗  
+║           ★●○●○●○★  Lucky Prompt  ★●○●○●○★           ║  
+╠══════════════════════════════════════════════════════╣  
+║              ┌───────┐ ┌───────┐ ┌───────┐           ║ ●
+║              │   ♦   │ │   ♣   │ │   ☼   │           ║  
+║              ▐   ★   │ │  BAR  │ │   ♥   ▌           ║  
+║              │   ♥   │ │   ♦   │ │   ♣   │           ║  
+║              └───────┘ └───────┘ └───────┘           ║  
+╠══════════════════════════════════════════════════════╣  
+║CREDITS: 0346   LAST WIN: 0250                        ║  
+╚══════════════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 80 cols, every line equal width*
+*verified: 11 lines x 58 cols, every line equal width*
 
-Same anatomy, 7-char reel cells (room for `BAR`/`◆C◆` to breathe), wider bulb train with `★` corner sentinels, and a fourth info-strip field (`RECENT:` — last three results) folded into the same single info line via left/right-justify, never a 12th row. GRAND is a straight scale-up of every STANDARD storyboard beat in §8 — implementers re-run the identical state machine against the wider chassis rather than design a second animation system; two worked GRAND examples (SPINNING, JACKPOT) are given at the end of §8 to demonstrate the substitution.
+Same anatomy, 7-char reel cells (room for `BAR`/`◆C◆` to breathe), and a wider bulb train with `★` corner sentinels. GRAND is a straight scale-up of every STANDARD storyboard beat in §8 — implementers re-run the identical state machine against the wider chassis rather than design a second animation system; two worked GRAND examples (SPINNING, JACKPOT) are given at the end of §8 to demonstrate the substitution.
 
 ## 8. Storyboards
 
-All frames in this section are STANDARD (60×11) unless labeled GRAND. Every frame is generated + `assert_rect`-verified at build time (see the caption under each block); nothing here was hand-typed.
+All frames in this section are STANDARD (50×11) unless labeled GRAND. Every frame is generated + `assert_rect`-verified at build time (see the caption under each block); nothing here was hand-typed.
 
 ### 8.1 IDLE (attract mode)
 
 **IDLE — frame A**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌                         ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 097   LAST WIN: 008              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║  
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║  
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 097   LAST WIN: 008                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _hold ~600ms_
 **IDLE — frame B (bulbs swap, loop A/B)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ○●○●○  ✻  ○●○●○                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌                         ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 097   LAST WIN: 008              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ○●○●○  Lucky Prompt  ○●○●○          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║  
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║  
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 097   LAST WIN: 008                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _hold ~600ms, then back to A_
 
@@ -331,19 +331,19 @@ _hold ~600ms, then back to A_
 
 **IDLE — ON THE HOUSE (0 credits)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌                         ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 000 · ON THE HOUSE               esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║  
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║  
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 000 · ON THE HOUSE                   ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 ### 8.2 LEVER PULL (message submitted; ≤ 1.0s total, 5 key frames ~180–225ms apart)
 
@@ -351,134 +351,134 @@ Credits already decremented at t=0 (spin cost is charged the instant the lever i
 
 **LEVER PULL — t=0.00s grip**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │                         ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌                         ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 008                           ...║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ♦♣☼♠♥  Lucky Prompt  ♦♣☼♠♥          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║  
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║  
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 008               ...║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **LEVER PULL — t=0.20s**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │    ●                    ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌                         ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 008                           ...║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ♦♣☼♠♥  Lucky Prompt  ♦♣☼♠♥          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║ ●
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║  
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 008               ...║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **LEVER PULL — t=0.40s**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │    │                    ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌    ●                    ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 008                           ...║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ♦♣☼♠♥  Lucky Prompt  ♦♣☼♠♥          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║ │
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║ ●
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 008               ...║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **LEVER PULL — t=0.60s**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │    │                    ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌    │                    ║
-║          │  ♥  │ │  ♦  │ │  ♣  │    ●                    ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 008                           ...║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ♦♣☼♠♥  Lucky Prompt  ♦♣☼♠♥          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║ │
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║ │
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║ ●
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 008               ...║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **LEVER PULL — t=0.80s yank!**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ♦♣☼♠♥  ✻  ♦♣☼♠♥                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ♦  │ │  ♣  │ │  ☼  │    │                    ║
-║          ▐  ★  │ │ BAR │ │  ♥  ▌    │                    ║
-║          │  ♥  │ │  ♦  │ │  ♣  │    │                    ║
-║          └─────┘ └─────┘ └─────┘    ●                    ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 008                           ...║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ♦♣☼♠♥  Lucky Prompt  ♦♣☼♠♥          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ♦  │ │  ♣  │ │  ☼  │             ║ │
+║          ▐  ★  │ │ BAR │ │  ♥  ▌             ║ │
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║ │
+║          └─────┘ └─────┘ └─────┘             ║ ●
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 008               ...║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 Marquee bulbs scatter to raw symbol glyphs (`♦♣☼♠♥`) during the pull — a one-beat 'wind-up' cue distinct from both attract-mode and spin-mode lighting.
 ### 8.3 SPIN-UP (~0.3–0.6s, reels wind up staggered left→right, lever springs back)
 
 **SPIN-UP — reel 1 winds up**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ▓▒░▒▓  ✻  ▓▒░▒▓                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ▒  │ │  ▒  │ │  ▒  │    │                    ║
-║          ▐  ▓  │ │  ▓  │ │  ▓  ▌    │                    ║
-║          │  ▒  │ │  ▒  │ │  ▒  │    │                    ║
-║          └─────┘ └─────┘ └─────┘    ●                    ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  0:00   0 tok                 esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ▓▒░▒▓  Lucky Prompt  ▓▒░▒▓          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ▒  │ │  ▒  │ │  ▒  │             ║ │
+║          ▐  ▓  │ │  ▓  │ │  ▓  ▌             ║ │
+║          │  ▒  │ │  ▒  │ │  ▒  │             ║ │
+║          └─────┘ └─────┘ └─────┘             ║ ●
+╠══════════════════════════════════════════════╣  
+║SPINNING...  0:00   0 tok                     ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **SPIN-UP — reel 2 winds up**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ▒░▓░▒  ✻  ▒░▓░▒                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ▓  │ │  ▒  │ │  ▒  │    │                    ║
-║          ▐  ▓  │ │  ▓  │ │  ▓  ▌    │                    ║
-║          │  ▓  │ │  ▒  │ │  ▒  │    │                    ║
-║          └─────┘ └─────┘ └─────┘    ●                    ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  0:00   0 tok                 esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ▒░▓░▒  Lucky Prompt  ▒░▓░▒          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ▓  │ │  ▒  │ │  ▒  │             ║ │
+║          ▐  ▓  │ │  ▓  │ │  ▓  ▌             ║ │
+║          │  ▓  │ │  ▒  │ │  ▒  │             ║ │
+║          └─────┘ └─────┘ └─────┘             ║ ●
+╠══════════════════════════════════════════════╣  
+║SPINNING...  0:00   0 tok                     ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **SPIN-UP — reel 3 winds up; lever springs back to rest**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ░▓▒▓░  ✻  ░▓▒▓░                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
-║          ▐  ▓  │ │  ▓  │ │  ▓  ▌                         ║
-║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  0:00   0 tok                 esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ░▓▒▓░  Lucky Prompt  ░▓▒▓░          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ▓  │ │  ▓  │ │  ▓  │             ║  
+║          ▐  ▓  │ │  ▓  │ │  ▓  ▌             ║  
+║          │  ▓  │ │  ▓  │ │  ▓  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SPINNING...  0:00   0 tok                     ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 Each reel accelerates crisp → `░` → `▒` → `▓`, staggered ~150–200ms apart — a mechanical wind-up, not all three reels blurring in lockstep.
 ### 8.4 SPINNING (variable duration — 2s or 5 minutes; must never look stuck)
@@ -487,170 +487,170 @@ The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must 
 
 **SPINNING — steady blur (main loop state)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ▓▓▓▓▓  ✻  ▓▓▓▓▓                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
-║          ▐  ▓  │ │  ▓  │ │  ▓  ▌                         ║
-║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  0:07   1.2k tok              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ▓▓▓▓▓  Lucky Prompt  ▓▓▓▓▓          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ▓  │ │  ▓  │ │  ▓  │             ║  
+║          ▐  ▓  │ │  ▓  │ │  ▓  ▌             ║  
+║          │  ▓  │ │  ▓  │ │  ▓  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SPINNING...  0:07   1.2k tok                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **SPINNING — speed-ease variant (brief 'catch', every 4-8s)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ▒▓▒▓▒  ✻  ▒▓▒▓▒                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ▒  │ │  ▓  │ │  ▒  │                         ║
-║          ▐  ▒  │ │  ▓  │ │  ▒  ▌                         ║
-║          │  ▒  │ │  ▓  │ │  ▒  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  0:23   4.8k tok              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ▒▓▒▓▒  Lucky Prompt  ▒▓▒▓▒          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ▒  │ │  ▓  │ │  ▒  │             ║  
+║          ▐  ▒  │ │  ▓  │ │  ▒  ▌             ║  
+║          │  ▒  │ │  ▓  │ │  ▒  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SPINNING...  0:23   4.8k tok                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **Glint scan-line sweep** (graft #4): a `░▒▓█`-family gradient travels left→right across the three reel cells once every 6–10s, ~0.5s total, purely cosmetic — it never predicts the outcome. Three sub-frames shown (the sweep occupies reel 1, then reel 2, then reel 3):
 
 **SPINNING — glint sweep 1/3 (~170ms each)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ░  │ │  ▓  │ │  ▓  │                         ║
-║          ▐  ▒  │ │  ▓  │ │  ▓  ▌                         ║
-║          │  ░  │ │  ▓  │ │  ▓  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  1:01   3.1k tok              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ░  │ │  ▓  │ │  ▓  │             ║  
+║          ▐  ▒  │ │  ▓  │ │  ▓  ▌             ║  
+║          │  ░  │ │  ▓  │ │  ▓  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SPINNING...  1:01   3.1k tok                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **SPINNING — glint sweep 2/3 (~170ms each)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ▓  │ │  ▒  │ │  ▓  │                         ║
-║          ▐  ▓  │ │  ░  │ │  ▓  ▌                         ║
-║          │  ▓  │ │  ▒  │ │  ▓  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  1:02   6.2k tok              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ▓  │ │  ▒  │ │  ▓  │             ║  
+║          ▐  ▓  │ │  ░  │ │  ▓  ▌             ║  
+║          │  ▓  │ │  ▒  │ │  ▓  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SPINNING...  1:02   6.2k tok                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **SPINNING — glint sweep 3/3 (~170ms each)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ▓  │ │  ▓  │ │  ░  │                         ║
-║          ▐  ▓  │ │  ▓  │ │  ▒  ▌                         ║
-║          │  ▓  │ │  ▓  │ │  ░  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  1:03   9.3k tok              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ▓  │ │  ▓  │ │  ░  │             ║  
+║          ▐  ▓  │ │  ▓  │ │  ▒  ▌             ║  
+║          │  ▓  │ │  ▓  │ │  ░  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SPINNING...  1:03   9.3k tok                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **SPINNING — long-run state (>1 min): ticker keeps counting, never looks stuck**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ▓▓▓▓▓  ✻  ▓▓▓▓▓                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
-║          ▐  ▓  │ │  ▓  │ │  ▓  ▌                         ║
-║          │  ▓  │ │  ▓  │ │  ▓  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SPINNING...  4:47   62.0k tok             esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ▓▓▓▓▓  Lucky Prompt  ▓▓▓▓▓          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ▓  │ │  ▓  │ │  ▓  │             ║  
+║          ▐  ▓  │ │  ▓  │ │  ▓  ▌             ║  
+║          │  ▓  │ │  ▓  │ │  ▓  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SPINNING...  4:47   62.0k tok                 ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 ### 8.5 STOPPING (model finished; reels lock one by one, ~0.3s stagger)
 
 **STOPPING — reel 1 locks (★ TEST)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●●●●●  ✻  ●●●●●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ▓  │ │  ▓  │                         ║
-║          ▐  ★  │ │  ▓  │ │  ▓  ▌                         ║
-║          │  ♥  │ │  ▓  │ │  ▓  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║WORKING...  DONE.  locking reel 1                         ║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●●●●●  Lucky Prompt  ●●●●●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ▓  │ │  ▓  │             ║  
+║          ▐  ★  │ │  ▓  │ │  ▓  ▌             ║  
+║          │  ♥  │ │  ▓  │ │  ▓  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║WORKING...  DONE.  locking reel 1             ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **STOPPING — reel 2 locks (BAR TOOL) — two match, tension rises**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●●●●●  ✻  ●●●●●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │ BAR │ │  ▓  │                         ║
-║          ▐  ★  │ │ BAR │ │  ▓  ▌                         ║
-║          │  ♥  │ │ BAR │ │  ▓  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║WORKING...  DONE.  locking reel 2                         ║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●●●●●  Lucky Prompt  ●●●●●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │ BAR │ │  ▓  │             ║  
+║          ▐  ★  │ │ BAR │ │  ▓  ▌             ║  
+║          │  ♥  │ │ BAR │ │  ▓  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║WORKING...  DONE.  locking reel 2             ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 The near-miss overshoot (§5) slots in here specifically — this example resolves to `★ ★ ☼` (TEST/TEST/TOKEN), so reel 3 first flashes the illusory `★ ★ ★`, then snaps to its true, settled neighbor:
 
 **STOPPING (near-miss) — reel 3 OVERSHOOTS: illusory ★★★ for one frame**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●●●●●  ✻  ●●●●●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♦  │ │  ▒  │                         ║
-║          ▐  ★  │ │  ★  │ │  ★  ▌                         ║
-║          │  ♥  │ │  ♥  │ │  ▒  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║WORKING...  DONE.  locking reel 3                         ║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●●●●●  Lucky Prompt  ●●●●●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♦  │ │  ▒  │             ║  
+║          ▐  ★  │ │  ★  │ │  ★  ▌             ║  
+║          │  ♥  │ │  ♥  │ │  ▒  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║WORKING...  DONE.  locking reel 3             ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _single ~80ms overshoot frame_
 **STOPPING (near-miss) — reel 3 SNAPS one stop further: settles ★★☼**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●●●●●  ✻  ●●●●●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♦  │ │  ★  │                         ║
-║          ▐  ★  │ │  ★  │ │  ☼  ▌                         ║
-║          │  ♥  │ │  ♥  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●●●●●  Lucky Prompt  ●●●●●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♦  │ │  ★  │             ║  
+║          ▐  ★  │ │  ★  │ │  ☼  ▌             ║  
+║          │  ♥  │ │  ♥  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _snap in 1 frame, hold ~300ms_ — this is also REVEAL for the NEAR MISS branch; see §8.11 for the outcome beat that follows.
 ### 8.6 REVEAL (settled grid, static beat before the outcome animation, ~250–400ms hold)
@@ -659,88 +659,88 @@ Matched reel cells go hot (§6) the instant REVEAL renders — the hot-state and
 
 **REVEAL — TRIPLE BAR (hot immediately)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ★●★●★  ✻  ★●★●★                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║                         ║
-║          ▐ BAR ║ ║ BAR ║ ║ BAR ▌                         ║
-║          ║  ♣  ║ ║  ☼  ║ ║  ♦  ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ★●★●★  Lucky Prompt  ★●★●★          ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║             ║  
+║          ▐ BAR ║ ║ BAR ║ ║ BAR ▌             ║  
+║          ║  ♣  ║ ║  ☼  ║ ║  ♦  ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 ### 8.7 OUTCOME — JACKPOT (`✻ ✻ ✻`) — total ~2.8s, graft #6 (coin-rain + progressive payout)
 
 **JACKPOT — frame 1: flash (marquee snaps to banner, reels go hot)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║        ★★★★★  * * *  J A C K P O T  * * *  ★★★★★         ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║                         ║
-║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌                         ║
-║          ║ BAR ║ ║ BAR ║ ║ BAR ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║  ★★★★★  * * *  J A C K P O T  * * *  ★★★★★   ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║             ║  
+║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌             ║  
+║          ║ BAR ║ ║ BAR ║ ║ BAR ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.00s, 1 frame_
 **JACKPOT — frame 2: coin rain begins (● re-seeds columns every ~100ms)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║            ●   ●  J A C K P O T ! ! !  ●   ●             ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║                         ║
-║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌                         ║
-║          ║ BAR ║ ║ BAR ║ ║ BAR ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║      ●   ●  J A C K P O T ! ! !  ●   ●       ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║             ║  
+║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌             ║  
+║          ║ BAR ║ ║ BAR ║ ║ BAR ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.10-0.90s_
 **JACKPOT — frame 3: payout ticks 000→060→150→250 while coins keep falling**
 ```
-╔══════════════════════════════════════════════════════════╗
-║             ●  ●   J A C K P O T ! ! !   ●  ●            ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║                         ║
-║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌                         ║
-║          ║ BAR ║ ║ BAR ║ ║ BAR ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 130                *** PAYOUT ***║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║       ●  ●   J A C K P O T ! ! !   ●  ●      ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║             ║  
+║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌             ║  
+║          ║ BAR ║ ║ BAR ║ ║ BAR ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 130    *** PAYOUT ***║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.90-1.90s, counter increments every ~80ms_
 **JACKPOT — frame 4: coins settle, banner steady, payout holds**
 ```
-╔══════════════════════════════════════════════════════════╗
-║              ●    J A C K P O T ! ! !    ●               ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║                         ║
-║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌                         ║
-║          ║ BAR ║ ║ BAR ║ ║ BAR ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 346   LAST WIN: 250              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║        ●    J A C K P O T ! ! !    ●         ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♥  ║ ║  ♦  ║ ║  ♣  ║             ║  
+║          ▐  ✻  ║ ║  ✻  ║ ║  ✻  ▌             ║  
+║          ║ BAR ║ ║ BAR ║ ║ BAR ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 346   LAST WIN: 250                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+1.90-2.80s, hold, then → IDLE (last combo stays parked on the reels, per §8.15)_
 ### 8.8 OUTCOME — MEDALLION (`◆C◆ ◆C◆ ◆C◆`) — total ~2.1s, the special rarity tier between JACKPOT and TRIPLE
@@ -749,104 +749,104 @@ Note the dressing rows: `♥ ♥ ♥` above / `BAR BAR BAR` below — §3's neig
 
 **MEDALLION — frame 1: lock, marquee renames itself, reels go hot**
 ```
-╔══════════════════════════════════════════════════════════╗
-║       ☆●☆●☆  S I G N A T U R E   C O M B O  ☆●☆●☆        ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♦  ║ ║  ☼  ║ ║  ♣  ║                         ║
-║          ▐ ◆C◆ ║ ║ ◆C◆ ║ ║ ◆C◆ ▌                         ║
-║          ║  ♥  ║ ║  ✻  ║ ║ BAR ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║ ☆●☆●☆  S I G N A T U R E   C O M B O  ☆●☆●☆  ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♦  ║ ║  ☼  ║ ║  ♣  ║             ║  
+║          ▐ ◆C◆ ║ ║ ◆C◆ ║ ║ ◆C◆ ▌             ║  
+║          ║  ♥  ║ ║  ✻  ║ ║ BAR ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.00s_
 **MEDALLION — frame 2: sunburst sweep, payout snaps to 077**
 ```
-╔══════════════════════════════════════════════════════════╗
-║               ☆      C L A U D E !      ☆                ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♦  ║ ║  ☼  ║ ║  ♣  ║                         ║
-║          ▐ ◆C◆ ║ ║ ◆C◆ ║ ║ ◆C◆ ▌                         ║
-║          ║  ♥  ║ ║  ✻  ║ ║ BAR ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 077              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║         ☆      C L A U D E !      ☆          ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♦  ║ ║  ☼  ║ ║  ♣  ║             ║  
+║          ▐ ◆C◆ ║ ║ ◆C◆ ║ ║ ◆C◆ ▌             ║  
+║          ║  ♥  ║ ║  ✻  ║ ║ BAR ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 077                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.20-1.20s_
 **MEDALLION — frame 3: hold, steady glow**
 ```
-╔══════════════════════════════════════════════════════════╗
-║       ☆★☆★☆  S I G N A T U R E   C O M B O  ☆★☆★☆        ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♦  ║ ║  ☼  ║ ║  ♣  ║                         ║
-║          ▐ ◆C◆ ║ ║ ◆C◆ ║ ║ ◆C◆ ▌                         ║
-║          ║  ♥  ║ ║  ✻  ║ ║ BAR ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 173   LAST WIN: 077              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║ ☆★☆★☆  S I G N A T U R E   C O M B O  ☆★☆★☆  ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♦  ║ ║  ☼  ║ ║  ♣  ║             ║  
+║          ▐ ◆C◆ ║ ║ ◆C◆ ║ ║ ◆C◆ ▌             ║  
+║          ║  ♥  ║ ║  ✻  ║ ║ BAR ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 173   LAST WIN: 077                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+1.20-2.10s, then → IDLE_
 ### 8.9 OUTCOME — TRIPLE (worked example: BAR / tool call) — 1.5-2.2s
 
 **TRIPLE BAR — frame 1: bright pulse (matched boxes flip hot)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║                         ║
-║          ▐ BAR ║ ║ BAR ║ ║ BAR ▌                         ║
-║          ║  ♣  ║ ║  ☼  ║ ║  ♦  ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║             ║  
+║          ▐ BAR ║ ║ BAR ║ ║ BAR ▌             ║  
+║          ║  ♣  ║ ║  ☼  ║ ║  ♦  ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **TRIPLE BAR — frame 2: dim pulse (alternates w/ frame 1, 3-4 cycles)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♥  │ │  ♦  │ │  ✻  │                         ║
-║          ▐ BAR │ │ BAR │ │ BAR ▌                         ║
-║          │  ♣  │ │  ☼  │ │  ♦  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♥  │ │  ♦  │ │  ✻  │             ║  
+║          ▐ BAR │ │ BAR │ │ BAR ▌             ║  
+║          │  ♣  │ │  ☼  │ │  ♦  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **TRIPLE BAR — frame 3: payout ticks 000→015→040, glow settles hot**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●●●●●  ✻  ●●●●●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ╔═════╗    ●                    ║
-║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║                         ║
-║          ▐ BAR ║ ║ BAR ║ ║ BAR ▌                         ║
-║          ║  ♣  ║ ║  ☼  ║ ║  ♦  ║                         ║
-║          ╚═════╝ ╚═════╝ ╚═════╝                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 136   LAST WIN: 040              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●●●●●  Lucky Prompt  ●●●●●          ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ╔═════╗             ║ ●
+║          ║  ♥  ║ ║  ♦  ║ ║  ✻  ║             ║  
+║          ▐ BAR ║ ║ BAR ║ ║ BAR ▌             ║  
+║          ║  ♣  ║ ║  ☼  ║ ║  ♦  ║             ║  
+║          ╚═════╝ ╚═════╝ ╚═════╝             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 136   LAST WIN: 040                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _Tier notes (same 3-frame shape, timing/payout scale down): TRIPLE TEST(★) ~1.9s/pay 35 · TRIPLE TOKEN(☼) ~1.7s/pay 25 · TRIPLE FILE(♣) ~1.6s/pay 18 · TRIPLE DIFF(♦) ~1.5s/pay 12 · TRIPLE PROSE(♥) ~1.5s/pay 8 — fewer glow cycles and a smaller counter jump on the lower tiers._
 
@@ -854,142 +854,142 @@ _Tier notes (same 3-frame shape, timing/payout scale down): TRIPLE TEST(★) ~1.
 
 **DOUBLE — frame 1: the two ♥ boxes flip hot for one pulse**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ╔═════╗ ╔═════╗ ┌─────┐    ●                    ║
-║          ║  ♣  ║ ║  ♦  ║ │  ☼  │                         ║
-║          ▐  ♥  ║ ║  ♥  ║ │ BAR ▌                         ║
-║          ║  ✻  ║ ║  ♣  ║ │  ♦  │                         ║
-║          ╚═════╝ ╚═════╝ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ╔═════╗ ╔═════╗ ┌─────┐             ║ ●
+║          ║  ♣  ║ ║  ♦  ║ │  ☼  │             ║  
+║          ▐  ♥  ║ ║  ♥  ║ │ BAR ▌             ║  
+║          ║  ✻  ║ ║  ♣  ║ │  ♦  │             ║  
+║          ╚═════╝ ╚═════╝ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.00-0.30s, 1 pulse only, no repeat_
 **DOUBLE — frame 2: settles, payout appears (no tick-up), holds**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♣  │ │  ♦  │ │  ☼  │                         ║
-║          ▐  ♥  │ │  ♥  │ │ BAR ▌                         ║
-║          │  ✻  │ │  ♣  │ │  ♦  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 097   LAST WIN: 001              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♣  │ │  ♦  │ │  ☼  │             ║  
+║          ▐  ♥  │ │  ♥  │ │ BAR ▌             ║  
+║          │  ✻  │ │  ♣  │ │  ♦  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 097   LAST WIN: 001                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.30-1.50s, hold, then → IDLE_. Still the smallest of the five winning classes — the 1.5s is a calm, static hold rather than more motion, so JACKPOT/MEDALLION/TRIPLE still read as escalating in spectacle. Other DOUBLE tiers reuse this exact 2-frame shape with only the symbol and payout changed.
 ### 8.11 OUTCOME — NEAR MISS — ~1.8s (continues directly from the STOPPING overshoot in §8.5)
 
 **NEAR MISS — frame 1: hold, the neighbor symbol sits plainly visible**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●●●●●  ✻  ●●●●●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♦  │ │  ★  │                         ║
-║          ▐  ★  │ │  ★  │ │  ☼  ▌                         ║
-║          │  ♥  │ │  ♥  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●●●●●  Lucky Prompt  ●●●●●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♦  │ │  ★  │             ║  
+║          ▐  ★  │ │  ★  │ │  ☼  ▌             ║  
+║          │  ♥  │ │  ♥  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.00-0.45s_
 **NEAR MISS — frame 2: bulbs dim, info strip whispers 'SO CLOSE...'**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ○○○○○  ✻  ○○○○○                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♦  │ │  ★  │                         ║
-║          ▐  ★  │ │  ★  │ │  ☼  ▌                         ║
-║          │  ♥  │ │  ♥  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║SO CLOSE...                               esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ○○○○○  Lucky Prompt  ○○○○○          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♦  │ │  ★  │             ║  
+║          ▐  ★  │ │  ★  │ │  ☼  ▌             ║  
+║          │  ♥  │ │  ♥  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║SO CLOSE...                                   ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.45-1.35s, hold_
 **NEAR MISS — frame 3: fades back to normal idle lighting**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♦  │ │  ♦  │ │  ★  │                         ║
-║          ▐  ★  │ │  ★  │ │  ☼  ▌                         ║
-║          │  ♥  │ │  ♥  │ │  ♣  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♦  │ │  ♦  │ │  ★  │             ║  
+║          ▐  ★  │ │  ★  │ │  ☼  ▌             ║  
+║          │  ♥  │ │  ♥  │ │  ♣  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+1.35-1.80s, then → IDLE. No payout — the entire point is tension without reward._
 ### 8.12 OUTCOME — LOSE — ~1.6s, quick and gentle, never punishing
 
 **LOSE — frame 1: marquee bulbs dark, symbols render dim**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ○○○○○  ✻  ○○○○○                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♣  │ │  ★  │ │  ♦  │                         ║
-║          ▐  ♥  │ │ BAR │ │  ☼  ▌                         ║
-║          │  ♦  │ │  ♣  │ │  ★  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ○○○○○  Lucky Prompt  ○○○○○          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♣  │ │  ★  │ │  ♦  │             ║  
+║          ▐  ♥  │ │ BAR │ │  ☼  ▌             ║  
+║          │  ♦  │ │  ♣  │ │  ★  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.00-0.50s_
 **LOSE — frame 2: a tiny wistful mark for a beat**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ○○○○○  ✻  ○○○○○                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♣  │ │  ★  │ │  ♦  │                         ║
-║          ▐  ♥  │ │ BAR │ │  ☼  ▌                         ║
-║          │  ♦  │ │  ♣  │ │  ★  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║no dice, spin again?  o_o                                 ║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ○○○○○  Lucky Prompt  ○○○○○          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♣  │ │  ★  │ │  ♦  │             ║  
+║          ▐  ♥  │ │ BAR │ │  ☼  ▌             ║  
+║          │  ♦  │ │  ♣  │ │  ★  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║no dice, spin again?  o_o                     ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.50-1.10s_
 **LOSE — frame 3: bulbs relight, back to normal**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♣  │ │  ★  │ │  ♦  │                         ║
-║          ▐  ♥  │ │ BAR │ │  ☼  ▌                         ║
-║          │  ♦  │ │  ♣  │ │  ★  │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   LAST WIN: 000              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♣  │ │  ★  │ │  ♦  │             ║  
+║          ▐  ♥  │ │ BAR │ │  ☼  ▌             ║  
+║          │  ♦  │ │  ♣  │ │  ★  │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   LAST WIN: 000                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+1.10-1.60s, then → IDLE. Credits already reflect the 1-credit spin cost._
 ### 8.13 OUTCOME — ABORTED (user pressed Esc mid-spin)
@@ -998,36 +998,36 @@ Not present in any source design — the reel bank does not simply vanish; it vi
 
 **ABORTED — frame 1: brake/jam (asymmetric blur, lever mid-track)**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                       ▓▒░  ✻  ░▒▓                        ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ▓  │ │  ░  │ │  ▒  │    │                    ║
-║          ▐  ▒  │ │  ▓  │ │  ░  ▌    │                    ║
-║          │  ░  │ │  ▒  │ │  ▓  │    ●                    ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║esc pressed — brake engaged...                            ║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║            ▓▒░  Lucky Prompt  ░▒▓            ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ▓  │ │  ░  │ │  ▒  │             ║ │
+║          ▐  ▒  │ │  ▓  │ │  ░  ▌             ║ │
+║          │  ░  │ │  ▒  │ │  ▓  │             ║ ●
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║esc pressed — brake engaged...                ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.00-0.30s_
 **ABORTED — frame 2: settled, marquee reads INTERRUPTED, credit refunded**
 ```
-╔══════════════════════════════════════════════════════════╗
-║             ◆ ◆  I N T E R R U P T E D  ◆ ◆              ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  —  │ │  —  │ │  —  │    │                    ║
-║          ▐  —  │ │  —  │ │  —  ▌    │                    ║
-║          │  —  │ │  —  │ │  —  │    │                    ║
-║          └─────┘ └─────┘ └─────┘    ●                    ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 097   spin refunded              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║       ◆ ◆  I N T E R R U P T E D  ◆ ◆        ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  —  │ │  —  │ │  —  │             ║ │
+║          ▐  —  │ │  —  │ │  —  ▌             ║ │
+║          │  —  │ │  —  │ │  —  │             ║ │
+║          └─────┘ └─────┘ └─────┘             ║ ●
+╠══════════════════════════════════════════════╣  
+║CREDITS: 097   spin refunded                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _t+0.30-0.60s, hold ~0.4s, then → IDLE_
 ### 8.14 OUTCOME — ERROR (the turn itself errored)
@@ -1036,35 +1036,35 @@ Same brake mechanic as ABORTED (the reel bank should never look fundamentally di
 
 **ERROR — frame 1: void blur (dim, uniform — reads as 'wrong', not 'stopped')**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                       ▓▒░  ✻  ░▒▓                        ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  ░  │ │  ░  │ │  ░  │    │                    ║
-║          ▐  ░  │ │  ░  │ │  ░  ▌    │                    ║
-║          │  ░  │ │  ░  │ │  ░  │    ●                    ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║hmm, something jammed...                                  ║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║            ▓▒░  Lucky Prompt  ░▒▓            ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  ░  │ │  ░  │ │  ░  │             ║ │
+║          ▐  ░  │ │  ░  │ │  ░  ▌             ║ │
+║          │  ░  │ │  ░  │ │  ░  │             ║ ●
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║hmm, something jammed...                      ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 **ERROR — frame 2: settled, marquee reads ERROR, credit refunded**
 ```
-╔══════════════════════════════════════════════════════════╗
-║            ░ ░  * * *  E R R O R  * * *  ░ ░             ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    │                    ║
-║          │  —  │ │  —  │ │  —  │    │                    ║
-║          ▐  —  │ │  —  │ │  —  ▌    │                    ║
-║          │  —  │ │  —  │ │  —  │    │                    ║
-║          └─────┘ └─────┘ └─────┘    ●                    ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 096   spin refunded              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║      ░ ░  * * *  E R R O R  * * *  ░ ░       ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ │
+║          │  —  │ │  —  │ │  —  │             ║ │
+║          ▐  —  │ │  —  │ │  —  ▌             ║ │
+║          │  —  │ │  —  │ │  —  │             ║ │
+║          └─────┘ └─────┘ └─────┘             ║ ●
+╠══════════════════════════════════════════════╣  
+║CREDITS: 096   spin refunded                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 _hold ~0.4s, then → IDLE_
 ### 8.15 RETURN TO IDLE
@@ -1073,19 +1073,19 @@ Every outcome hands off to the ordinary IDLE loop (§8.1) with two persistent ch
 
 **IDLE (post-JACKPOT) — last combo parked, credits updated, attract-mode resumes**
 ```
-╔══════════════════════════════════════════════════════════╗
-║                     ●○●○●  ✻  ●○●○●                      ║
-╠══════════════════════════════════════════════════════════╣
-║          ┌─────┐ ┌─────┐ ┌─────┐    ●                    ║
-║          │  ♥  │ │  ♦  │ │  ♣  │                         ║
-║          ▐  ✻  │ │  ✻  │ │  ✻  ▌                         ║
-║          │ BAR │ │ BAR │ │ BAR │                         ║
-║          └─────┘ └─────┘ └─────┘                         ║
-╠══════════════════════════════════════════════════════════╣
-║CREDITS: 346   LAST WIN: 250              esc to interrupt║
-╚══════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗  
+║          ●○●○●  Lucky Prompt  ●○●○●          ║  
+╠══════════════════════════════════════════════╣  
+║          ┌─────┐ ┌─────┐ ┌─────┐             ║ ●
+║          │  ♥  │ │  ♦  │ │  ♣  │             ║  
+║          ▐  ✻  │ │  ✻  │ │  ✻  ▌             ║  
+║          │ BAR │ │ BAR │ │ BAR │             ║  
+║          └─────┘ └─────┘ └─────┘             ║  
+╠══════════════════════════════════════════════╣  
+║CREDITS: 346   LAST WIN: 250                  ║  
+╚══════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 60 cols, every line equal width*
+*verified: 11 lines x 50 cols, every line equal width*
 
 ### 8.16 GRAND-size worked examples
 
@@ -1093,35 +1093,35 @@ GRAND reuses the identical state machine; only the chassis substitution changes 
 
 **GRAND — SPINNING (steady blur)**
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                               ░▓▒▓░  ✻  ░▓▒▓░                                ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║              ┌───────┐ ┌───────┐ ┌───────┐    ●                              ║
-║              │   ▓   │ │   ▓   │ │   ▓   │                                   ║
-║              ▐   ▓   │ │   ▓   │ │   ▓   ▌                                   ║
-║              │   ▓   │ │   ▓   │ │   ▓   │                                   ║
-║              └───────┘ └───────┘ └───────┘                                   ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║SPINNING...  0:47   6.2k tok                                  esc to interrupt║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════╗  
+║              ░▓▒▓░  Lucky Prompt  ░▓▒▓░              ║  
+╠══════════════════════════════════════════════════════╣  
+║              ┌───────┐ ┌───────┐ ┌───────┐           ║ ●
+║              │   ▓   │ │   ▓   │ │   ▓   │           ║  
+║              ▐   ▓   │ │   ▓   │ │   ▓   ▌           ║  
+║              │   ▓   │ │   ▓   │ │   ▓   │           ║  
+║              └───────┘ └───────┘ └───────┘           ║  
+╠══════════════════════════════════════════════════════╣  
+║SPINNING...  0:47   6.2k tok                          ║  
+╚══════════════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 80 cols, every line equal width*
+*verified: 11 lines x 58 cols, every line equal width*
 
 **GRAND — JACKPOT (frame 1, flash)**
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║               ☆★☆★☆★☆  * * *   J A C K P O T   * * *  ☆★☆★☆★☆                ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║              ╔═══════╗ ╔═══════╗ ╔═══════╗    ●                              ║
-║              ║   ♥   ║ ║   ♦   ║ ║   ♣   ║                                   ║
-║              ▐   ✻   ║ ║   ✻   ║ ║   ✻   ▌                                   ║
-║              ║  BAR  ║ ║  BAR  ║ ║  BAR  ║                                   ║
-║              ╚═══════╝ ╚═══════╝ ╚═══════╝                                   ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║CREDITS: 0346   LAST WIN: 0250   coin rain                    esc to interrupt║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════╗  
+║   ☆★☆★☆★☆  * * *   J A C K P O T   * * *  ☆★☆★☆★☆    ║  
+╠══════════════════════════════════════════════════════╣  
+║              ╔═══════╗ ╔═══════╗ ╔═══════╗           ║ ●
+║              ║   ♥   ║ ║   ♦   ║ ║   ♣   ║           ║  
+║              ▐   ✻   ║ ║   ✻   ║ ║   ✻   ▌           ║  
+║              ║  BAR  ║ ║  BAR  ║ ║  BAR  ║           ║  
+║              ╚═══════╝ ╚═══════╝ ╚═══════╝           ║  
+╠══════════════════════════════════════════════════════╣  
+║CREDITS: 0346   LAST WIN: 0250   coin rain            ║  
+╚══════════════════════════════════════════════════════╝  
 ```
-*verified: 11 lines x 80 cols, every line equal width*
+*verified: 11 lines x 58 cols, every line equal width*
 
 ### 8.17 COMPACT-size worked examples (outcome classes)
 
@@ -1202,7 +1202,7 @@ All values are foreground colors on the machine's dark ground (`bg #1B1912` / 25
 | Coins `●` (jackpot rain, and the `☼` TOKEN reel symbol) | `#F6C67D` | 222 | bold |
 | Sunburst `☆` (MEDALLION) | `#FFFFFF` | 231 | bold |
 | Info strip text | `#BDBEA9` | 249 | — |
-| "esc to interrupt" hint | `#8A7C5E` | 101 | dim |
+| Info-strip hint/accent text (e.g. lever `...`, `*** PAYOUT ***`, the `—` placeholder) | `#8A7C5E` | 101 | dim |
 | LOSE state (all symbols) | desaturate ~40% | nearest neutral | dim |
 | NEAR MISS "SO CLOSE..." | `#E9BD7F` | 180 | dim |
 | ABORTED brake blur / "INTERRUPTED" | `#9C9686` cool steel-gray | 246 | dim |
@@ -1264,11 +1264,11 @@ The `▐…▌` payline marker survives all the way down to this single permanen
 
 ## 13. Width / alignment rules
 
-1. **Declared widths are hard limits, not targets.** STANDARD = 60 cols (58 interior), well inside the 62-col ceiling. GRAND = 80 cols (78 interior) at exactly 11 rows, inside the 80-col/9-11-row ceiling. COMPACT ≤ 40 cols (2-line) or ≤ 36 (1-line ultra-compact), no border.
+1. **Declared widths are hard limits, not targets.** STANDARD = 50 cols (48-col chassis + 2-col lever bay; 46 interior), well inside the 62-col ceiling. GRAND = 58 cols (56-col chassis + 2-col lever bay; 54 interior) at exactly 11 rows, well inside the 80-col/9-11-row ceiling. COMPACT ≤ 40 cols (2-line) or ≤ 36 (1-line ultra-compact), no border.
 2. **Every bordered frame is a true rectangle**: every line — border, marquee, separators, body rows, info strip — contains exactly the declared column count, achieved by centering/padding against the *interior* width (declared width minus 2 border columns), never by hand-counting spaces. This document's frames were built by `frames_lib.py` and every single one passed `assert_rect()` before being written here (§7 opening note).
 3. **Reel cells are fixed-width and glyph-agnostic**: 5-col interior STANDARD/COMPACT, 7-col GRAND. Every symbol string — `✻`, `♦`, `BAR`, `◆C◆` — is centered into that fixed width, never manually padded per symbol, so a symbol of any length up to the cell width never breaks alignment.
 4. **The payline row is the only row carrying the `▐…▌` block-bar flank** (replacing the outer box wall character only — internal cell walls are untouched). Every other row reserves the same width for a normal wall character, so the reel bank never shifts horizontally between rows or frames.
-5. **The lever column is a fixed single-glyph-wide vertical track**, 4 cols right of the reel bay (STANDARD/GRAND). Exactly one of its 5 rows shows the knob `●` at any instant; rows above it show the rod `│`; rows below show blank — a monotonic, easy-to-compute rule (§8.2).
+5. **The lever is a fixed single-glyph-wide rod/knob track mounted in its own 2-column bay immediately outside the chassis's right border** (STANDARD/GRAND) — its own mounted mechanism, not part of the boxed interior. Exactly one of its 5 rows shows the knob `●` at any instant; rows above it show the rod `│`; rows below show blank — a monotonic, easy-to-compute rule (§8.2).
 6. **Marquee and info-strip content are each one logical line**, produced by centering (marquee) or left/right-justify with a computed gap (info strip) against the interior width — never against the full bordered width, never by hand-typed spacing.
 7. **Only single-width glyphs appear inside a bordered cell.** Every glyph in this spec was checked with `unicodedata.east_asian_width()` and falls in {Na, N, A} — never {W, F}. CJK, most emoji, and combining marks must never appear in the default theme (§14 covers the opt-in exception).
 8. **COMPACT is exempt from the equal-line-width rule** (no border to break) but not from the single-width-glyph rule or its own column ceiling — every COMPACT/ULTRA-COMPACT line independently satisfies ≤40/≤36 columns.
@@ -1296,6 +1296,5 @@ Ship this behind a theme flag only, default OFF, and re-verify rectangularity ag
 - One shared frame model — a grid of `{glyph, fg, bold, dim}` cells — drives both renderers. Tier 1 (in-TUI, 8-12fps, invalidate floor 100ms) consumes it as a `Box`/`Text` element tree; Tier 2 (statusLine, 1fps, raw ANSI) samples the same grid less often and never interpolates between frames (§11).
 - The outcome is decided **before** rendering starts (§4) — "spinning" is a fixed-duration-or-model-duration animation over a grid whose final state is already known. This is what makes STOPPING's stagger, the near-miss overshoot, and REVEAL's exact combo trivial to implement and unit-test.
 - Elapsed time and token count are the only two values that must update every tick of SPINNING without exception — the real "is this thing alive" signal; blur glints and bulb chases are texture on top.
-- `esc to interrupt` is present in the info strip from LEVER PULL through STOPPING; it drops once REVEAL starts (the model has already finished) and is replaced by outcome-specific text.
 - Golden-frame testing: every frame in this document is reproducible byte-for-byte by `frames_lib.py` — wire a test that renders each named frame and diffs it against the fenced block here; a mismatch is either a spec update that forgot to regenerate this document, or a renderer bug.
 - Files alongside this spec: `frames_lib.py` (pure builders), `gen.py` (dumps every frame + a rectangularity/width-glyph audit), `build_spec.py` (assembles and writes this document). Regenerate with `python3 build_spec.py` (writes `FINAL-ART-SPEC.md` in the working directory).

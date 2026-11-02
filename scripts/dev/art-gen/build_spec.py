@@ -254,55 +254,55 @@ This applies **per reel-cell-column** (all three symbols in a hot reel's box go 
 # =============================================================================
 p("""## 7. Chassis art — STANDARD / COMPACT / GRAND
 
-All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the brand mark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → lever column pinned to the right → separator → 1-line info strip → bottom border. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
+All three sizes share one anatomy: double-line chrome shell (`╔═╗║╚╝╠╣`) → marquee (bulb-chase flanking the brand mark) → separator → 5-row reel bay (box-top / dressing-above / **payline** / dressing-below / box-bottom, 3 reel cells each) → separator → 1-line info strip → bottom border, with a 2-column lever bay mounted immediately outside the right border on every reel-bay row — its own mounted mechanism, not part of the boxed interior. The payline row is always flanked by solid block bars `▐ … ▌` in place of the outer box wall — present in every size, every phase, hot or cold — so the active row never depends on color alone (graft #1, judge-mandated).
 
-### 7.1 STANDARD — 60 cols × 11 rows (well under the 62-col ceiling)
+### 7.1 STANDARD — 50 cols × 11 rows (48-col chassis + 2-col lever bay; well under the 62-col ceiling)
 """)
 frame("STANDARD, idle", TITLE, *BULB_A, [DIFF, FILE, TOKEN], [TEST, TOOL, PROSE], [PROSE, DIFF, FILE],
-      [False,False,False], 0, "CREDITS: 097   LAST WIN: 008", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 097   LAST WIN: 008", "")
 
-p("""Anatomy notes: reel cells are 5-char interior (`┌─────┐`), a single space separates adjacent boxes, the lever track is a 1-char column 4 spaces right of the reel bay. `▐`/`▌` replace the outermost wall characters of the payline row only — internal cell walls (`│`/`║`) are untouched, so "which row is the payline" is legible from the row's silhouette alone, with zero color and at 1fps.
+p("""Anatomy notes: reel cells are 5-char interior (`┌─────┐`), a single space separates adjacent boxes; the lever track is a 1-char rod/knob column inside its own 2-column bay mounted immediately outside the chassis's right border, not inside the boxed interior. `▐`/`▌` replace the outermost wall characters of the payline row only — internal cell walls (`│`/`║`) are untouched, so "which row is the payline" is legible from the row's silhouette alone, with zero color and at 1fps.
 
 ### 7.2 COMPACT — ≤ 40 cols, 1–2 lines, no border (narrow terminals / minimal mode)
 """)
 cframe("COMPACT — idle", [compact("✻   ♦ BAR ✻   cr:097"),
-                          compact("win:008              esc to interrupt")])
+                          compact("win:008")])
 cframe("COMPACT — ON THE HOUSE (0 credits)", [compact("✻   ♦ BAR ✻   cr:000"),
-                                               compact("ON THE HOUSE         esc to interrupt")])
+                                               compact("ON THE HOUSE")])
 cframe("COMPACT — spinning", [compact("✻  [▓▓▓ spinning]  cr:096"),
-                               compact("0:07  1.2k tok      esc to interrupt")])
-cframe("ULTRA-COMPACT — idle (≤36 cols)", [compact("♦ BAR ✻ * cr:097 win:008 * esc:x")])
-cframe("ULTRA-COMPACT — spinning (≤36 cols)", [compact("[spinning 0:07 1.2k tok] cr:096 esc:x")])
+                               compact("0:07  1.2k tok")])
+cframe("ULTRA-COMPACT — idle (≤36 cols)", [compact("♦ BAR ✻ * cr:097 win:008 *")])
+cframe("ULTRA-COMPACT — spinning (≤36 cols)", [compact("[spinning 0:07 1.2k tok] cr:096")])
 
-p("""No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the brand mark, hint text always rightmost — a stable reading position regardless of what's inside.
+p("""No border at this size — the payline is denoted with `[ ]` brackets around the three symbols instead of `▐…▌` (block bars need the reel-box silhouette to read against; in a borderless one-liner, brackets do the same unambiguous job). Credits always leftmost after the brand mark — a stable reading position regardless of what's inside.
 
-### 7.3 GRAND — 80 cols × 11 rows (under the 80-col / 9–11-row ceiling)
+### 7.3 GRAND — 58 cols × 11 rows (56-col chassis + 2-col lever bay; well under the 80-col / 9–11-row ceiling)
 """)
 gframe("GRAND, idle", TITLE, "★●○●○●○★", "★●○●○●○★",
        [DIFF, FILE, TOKEN], [TEST, TOOL, PROSE], [PROSE, DIFF, FILE],
        [False,False,False], 0,
-       "CREDITS: 0346   LAST WIN: 0250   RECENT: ✻✻✻ BAR-BAR-♦ ---", "esc to interrupt")
-p("""Same anatomy, 7-char reel cells (room for `BAR`/`◆C◆` to breathe), wider bulb train with `★` corner sentinels, and a fourth info-strip field (`RECENT:` — last three results) folded into the same single info line via left/right-justify, never a 12th row. GRAND is a straight scale-up of every STANDARD storyboard beat in §8 — implementers re-run the identical state machine against the wider chassis rather than design a second animation system; two worked GRAND examples (SPINNING, JACKPOT) are given at the end of §8 to demonstrate the substitution.
+       "CREDITS: 0346   LAST WIN: 0250", "")
+p("""Same anatomy, 7-char reel cells (room for `BAR`/`◆C◆` to breathe), and a wider bulb train with `★` corner sentinels. GRAND is a straight scale-up of every STANDARD storyboard beat in §8 — implementers re-run the identical state machine against the wider chassis rather than design a second animation system; two worked GRAND examples (SPINNING, JACKPOT) are given at the end of §8 to demonstrate the substitution.
 """)
 
 # =============================================================================
 p("""## 8. Storyboards
 
-All frames in this section are STANDARD (60×11) unless labeled GRAND. Every frame is generated + `assert_rect`-verified at build time (see the caption under each block); nothing here was hand-typed.
+All frames in this section are STANDARD (50×11) unless labeled GRAND. Every frame is generated + `assert_rect`-verified at build time (see the caption under each block); nothing here was hand-typed.
 
 ### 8.1 IDLE (attract mode)
 """)
 frame("IDLE — frame A", TITLE, *BULB_A, [DIFF, FILE, TOKEN], [TEST, TOOL, PROSE], [PROSE, DIFF, FILE],
-      [False,False,False], 0, "CREDITS: 097   LAST WIN: 008", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 097   LAST WIN: 008", "")
 p("_hold ~600ms_")
 frame("IDLE — frame B (bulbs swap, loop A/B)", TITLE, *BULB_B, [DIFF, FILE, TOKEN], [TEST, TOOL, PROSE], [PROSE, DIFF, FILE],
-      [False,False,False], 0, "CREDITS: 097   LAST WIN: 008", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 097   LAST WIN: 008", "")
 p("""_hold ~600ms, then back to A_
 
 **ON THE HOUSE — idle wink at 0 credits** (graft #8): identical to IDLE-A/B, except the info-strip's left field swaps from `CREDITS: NNN LAST WIN: NNN` to a one-line comp banner. This is not a separate screen or a modal — it is IDLE's normal loop with one text substitution, so the machine never looks broken or blocked when the vanity counter bottoms out.
 """)
 frame("IDLE — ON THE HOUSE (0 credits)", TITLE, *BULB_A, [DIFF, FILE, TOKEN], [TEST, TOOL, PROSE], [PROSE, DIFF, FILE],
-      [False,False,False], 0, "CREDITS: 000 · ON THE HOUSE", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 000 · ON THE HOUSE", "")
 
 p("""### 8.2 LEVER PULL (message submitted; ≤ 1.0s total, 5 key frames ~180–225ms apart)
 
@@ -316,11 +316,11 @@ p("Marquee bulbs scatter to raw symbol glyphs (`♦♣☼♠♥`) during the pul
 p("""### 8.3 SPIN-UP (~0.3–0.6s, reels wind up staggered left→right, lever springs back)
 """)
 frame("SPIN-UP — reel 1 winds up", TITLE, "▓▒░▒▓", "▓▒░▒▓", ["▒","▒","▒"], ["▓","▓","▓"], ["▒","▒","▒"],
-      [False,False,False], 4, "SPINNING...  0:00   0 tok", "esc to interrupt")
+      [False,False,False], 4, "SPINNING...  0:00   0 tok", "")
 frame("SPIN-UP — reel 2 winds up", TITLE, "▒░▓░▒", "▒░▓░▒", ["▓","▒","▒"], ["▓","▓","▓"], ["▓","▒","▒"],
-      [False,False,False], 4, "SPINNING...  0:00   0 tok", "esc to interrupt")
+      [False,False,False], 4, "SPINNING...  0:00   0 tok", "")
 frame("SPIN-UP — reel 3 winds up; lever springs back to rest", TITLE, "░▓▒▓░", "░▓▒▓░", ["▓","▓","▓"], ["▓","▓","▓"], ["▓","▓","▓"],
-      [False,False,False], 0, "SPINNING...  0:00   0 tok", "esc to interrupt")
+      [False,False,False], 0, "SPINNING...  0:00   0 tok", "")
 p("Each reel accelerates crisp → `░` → `▒` → `▓`, staggered ~150–200ms apart — a mechanical wind-up, not all three reels blurring in lockstep.")
 
 p("""### 8.4 SPINNING (variable duration — 2s or 5 minutes; must never look stuck)
@@ -328,9 +328,9 @@ p("""### 8.4 SPINNING (variable duration — 2s or 5 minutes; must never look st
 The `elapsed / tokens` ticker is the load-bearing "still alive" signal and must update at least once per second regardless of render fps.
 """)
 frame("SPINNING — steady blur (main loop state)", TITLE, *BULB_BLUR, ["▓","▓","▓"], ["▓","▓","▓"], ["▓","▓","▓"],
-      [False,False,False], 0, "SPINNING...  0:07   1.2k tok", "esc to interrupt")
+      [False,False,False], 0, "SPINNING...  0:07   1.2k tok", "")
 frame("SPINNING — speed-ease variant (brief 'catch', every 4-8s)", TITLE, "▒▓▒▓▒", "▒▓▒▓▒", ["▒","▓","▒"], ["▒","▓","▒"], ["▒","▓","▒"],
-      [False,False,False], 0, "SPINNING...  0:23   4.8k tok", "esc to interrupt")
+      [False,False,False], 0, "SPINNING...  0:23   4.8k tok", "")
 
 p("""**Glint scan-line sweep** (graft #4): a `░▒▓█`-family gradient travels left→right across the three reel cells once every 6–10s, ~0.5s total, purely cosmetic — it never predicts the outcome. Three sub-frames shown (the sweep occupies reel 1, then reel 2, then reel 3):
 """)
@@ -341,11 +341,11 @@ sweeps = [
 ]
 for i, (t,m,b) in enumerate(sweeps, start=1):
     frame(f"SPINNING — glint sweep {i}/3 (~170ms each)", TITLE, *BULB_A, t, m, b,
-          [False,False,False], 0, f"SPINNING...  1:0{i}   {i*3}.{i}k tok", "esc to interrupt")
+          [False,False,False], 0, f"SPINNING...  1:0{i}   {i*3}.{i}k tok", "")
 
 frame("SPINNING — long-run state (>1 min): ticker keeps counting, never looks stuck", TITLE, *BULB_BLUR,
       ["▓","▓","▓"], ["▓","▓","▓"], ["▓","▓","▓"],
-      [False,False,False], 0, "SPINNING...  4:47   62.0k tok", "esc to interrupt")
+      [False,False,False], 0, "SPINNING...  4:47   62.0k tok", "")
 
 p("""### 8.5 STOPPING (model finished; reels lock one by one, ~0.3s stagger)
 """)
@@ -362,7 +362,7 @@ frame("STOPPING (near-miss) — reel 3 OVERSHOOTS: illusory ★★★ for one fr
 p("_single ~80ms overshoot frame_")
 frame("STOPPING (near-miss) — reel 3 SNAPS one stop further: settles ★★☼", TITLE, *BULB_ALL_LIT,
       [DIFF,DIFF,TEST], [TEST,TEST,TOKEN], [PROSE,PROSE,FILE],
-      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_snap in 1 frame, hold ~300ms_ — this is also REVEAL for the NEAR MISS branch; see §8.11 for the outcome beat that follows.")
 
 p("""### 8.6 REVEAL (settled grid, static beat before the outcome animation, ~250–400ms hold)
@@ -370,17 +370,17 @@ p("""### 8.6 REVEAL (settled grid, static beat before the outcome animation, ~25
 Matched reel cells go hot (§6) the instant REVEAL renders — the hot-state and the number on the info strip are not gated on the outcome animation; the animation is purely celebratory. Worked example: TRIPLE BAR (tool call).
 """)
 frame("REVEAL — TRIPLE BAR (hot immediately)", TITLE, *BULB_HOT, [PROSE,DIFF,CLAUDE], [TOOL,TOOL,TOOL], [FILE,TOKEN,DIFF],
-      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "")
 
 p("""### 8.7 OUTCOME — JACKPOT (`✻ ✻ ✻`) — total ~2.8s, graft #6 (coin-rain + progressive payout)
 """)
 frame("JACKPOT — frame 1: flash (marquee snaps to banner, reels go hot)", "* * *  J A C K P O T  * * *", "★★★★★", "★★★★★",
       [PROSE,DIFF,FILE], [CLAUDE,CLAUDE,CLAUDE], [TOOL,TOOL,TOOL],
-      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+0.00s, 1 frame_")
 frame("JACKPOT — frame 2: coin rain begins (● re-seeds columns every ~100ms)", "J A C K P O T ! ! !", "  ●   ●", "●   ●  ",
       [PROSE,DIFF,FILE], [CLAUDE,CLAUDE,CLAUDE], [TOOL,TOOL,TOOL],
-      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+0.10-0.90s_")
 frame("JACKPOT — frame 3: payout ticks 000→060→150→250 while coins keep falling", "J A C K P O T ! ! !", " ●  ● ", " ●  ●",
       [PROSE,DIFF,FILE], [CLAUDE,CLAUDE,CLAUDE], [TOOL,TOOL,TOOL],
@@ -388,7 +388,7 @@ frame("JACKPOT — frame 3: payout ticks 000→060→150→250 while coins keep 
 p("_t+0.90-1.90s, counter increments every ~80ms_")
 frame("JACKPOT — frame 4: coins settle, banner steady, payout holds", "J A C K P O T ! ! !", "  ●  ", "  ●  ",
       [PROSE,DIFF,FILE], [CLAUDE,CLAUDE,CLAUDE], [TOOL,TOOL,TOOL],
-      [True,True,True], 0, "CREDITS: 346   LAST WIN: 250", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 346   LAST WIN: 250", "")
 p("_t+1.90-2.80s, hold, then → IDLE (last combo stays parked on the reels, per §8.15)_")
 
 p("""### 8.8 OUTCOME — MEDALLION (`◆C◆ ◆C◆ ◆C◆`) — total ~2.1s, the special rarity tier between JACKPOT and TRIPLE
@@ -397,58 +397,58 @@ Note the dressing rows: `♥ ♥ ♥` above / `BAR BAR BAR` below — §3's neig
 """)
 frame("MEDALLION — frame 1: lock, marquee renames itself, reels go hot", "S I G N A T U R E   C O M B O", "☆●☆●☆", "☆●☆●☆",
       [DIFF,TOKEN,FILE], [MEDAL,MEDAL,MEDAL], [PROSE,CLAUDE,TOOL],
-      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+0.00s_")
 frame("MEDALLION — frame 2: sunburst sweep, payout snaps to 077", "C L A U D E !", "  ☆    ", "    ☆  ",
       [DIFF,TOKEN,FILE], [MEDAL,MEDAL,MEDAL], [PROSE,CLAUDE,TOOL],
-      [True,True,True], 0, "CREDITS: 096   LAST WIN: 077", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 096   LAST WIN: 077", "")
 p("_t+0.20-1.20s_")
 frame("MEDALLION — frame 3: hold, steady glow", "S I G N A T U R E   C O M B O", "☆★☆★☆", "☆★☆★☆",
       [DIFF,TOKEN,FILE], [MEDAL,MEDAL,MEDAL], [PROSE,CLAUDE,TOOL],
-      [True,True,True], 0, "CREDITS: 173   LAST WIN: 077", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 173   LAST WIN: 077", "")
 p("_t+1.20-2.10s, then → IDLE_")
 
 p("""### 8.9 OUTCOME — TRIPLE (worked example: BAR / tool call) — 1.5-2.2s
 """)
 frame("TRIPLE BAR — frame 1: bright pulse (matched boxes flip hot)", TITLE, *BULB_A, [PROSE,DIFF,CLAUDE], [TOOL,TOOL,TOOL], [FILE,TOKEN,DIFF],
-      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 096   LAST WIN: 000", "")
 frame("TRIPLE BAR — frame 2: dim pulse (alternates w/ frame 1, 3-4 cycles)", TITLE, *BULB_A, [PROSE,DIFF,CLAUDE], [TOOL,TOOL,TOOL], [FILE,TOKEN,DIFF],
-      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "")
 frame("TRIPLE BAR — frame 3: payout ticks 000→015→040, glow settles hot", TITLE, *BULB_ALL_LIT, [PROSE,DIFF,CLAUDE], [TOOL,TOOL,TOOL], [FILE,TOKEN,DIFF],
-      [True,True,True], 0, "CREDITS: 136   LAST WIN: 040", "esc to interrupt")
+      [True,True,True], 0, "CREDITS: 136   LAST WIN: 040", "")
 p("""_Tier notes (same 3-frame shape, timing/payout scale down): TRIPLE TEST(★) ~1.9s/pay 35 · TRIPLE TOKEN(☼) ~1.7s/pay 25 · TRIPLE FILE(♣) ~1.6s/pay 18 · TRIPLE DIFF(♦) ~1.5s/pay 12 · TRIPLE PROSE(♥) ~1.5s/pay 8 — fewer glow cycles and a smaller counter jump on the lower tiers._
 
 ### 8.10 OUTCOME — DOUBLE (worked example: ♥-pair / prose) — ~1.5s, deliberately the calmest of the five winning classes
 """)
 frame("DOUBLE — frame 1: the two ♥ boxes flip hot for one pulse", TITLE, *BULB_A, [FILE,DIFF,TOKEN], [PROSE,PROSE,TOOL], [CLAUDE,FILE,DIFF],
-      [True,True,False], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [True,True,False], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+0.00-0.30s, 1 pulse only, no repeat_")
 frame("DOUBLE — frame 2: settles, payout appears (no tick-up), holds", TITLE, *BULB_A, [FILE,DIFF,TOKEN], [PROSE,PROSE,TOOL], [CLAUDE,FILE,DIFF],
-      [False,False,False], 0, "CREDITS: 097   LAST WIN: 001", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 097   LAST WIN: 001", "")
 p("_t+0.30-1.50s, hold, then → IDLE_. Still the smallest of the five winning classes — the 1.5s is a calm, static hold rather than more motion, so JACKPOT/MEDALLION/TRIPLE still read as escalating in spectacle. Other DOUBLE tiers reuse this exact 2-frame shape with only the symbol and payout changed.")
 
 p("""### 8.11 OUTCOME — NEAR MISS — ~1.8s (continues directly from the STOPPING overshoot in §8.5)
 """)
 frame("NEAR MISS — frame 1: hold, the neighbor symbol sits plainly visible", TITLE, *BULB_ALL_LIT, [DIFF,DIFF,TEST], [TEST,TEST,TOKEN], [PROSE,PROSE,FILE],
-      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+0.00-0.45s_")
 frame("NEAR MISS — frame 2: bulbs dim, info strip whispers 'SO CLOSE...'", TITLE, *BULB_DARK, [DIFF,DIFF,TEST], [TEST,TEST,TOKEN], [PROSE,PROSE,FILE],
-      [False,False,False], 0, "SO CLOSE...", "esc to interrupt")
+      [False,False,False], 0, "SO CLOSE...", "")
 p("_t+0.45-1.35s, hold_")
 frame("NEAR MISS — frame 3: fades back to normal idle lighting", TITLE, *BULB_A, [DIFF,DIFF,TEST], [TEST,TEST,TOKEN], [PROSE,PROSE,FILE],
-      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+1.35-1.80s, then → IDLE. No payout — the entire point is tension without reward._")
 
 p("""### 8.12 OUTCOME — LOSE — ~1.6s, quick and gentle, never punishing
 """)
 frame("LOSE — frame 1: marquee bulbs dark, symbols render dim", TITLE, *BULB_DARK, [FILE,TEST,DIFF], [PROSE,TOOL,TOKEN], [DIFF,FILE,TEST],
-      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+0.00-0.50s_")
 frame("LOSE — frame 2: a tiny wistful mark for a beat", TITLE, *BULB_DARK, [FILE,TEST,DIFF], [PROSE,TOOL,TOKEN], [DIFF,FILE,TEST],
       [False,False,False], 0, "no dice, spin again?  o_o", "")
 p("_t+0.50-1.10s_")
 frame("LOSE — frame 3: bulbs relight, back to normal", TITLE, *BULB_A, [FILE,TEST,DIFF], [PROSE,TOOL,TOKEN], [DIFF,FILE,TEST],
-      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 096   LAST WIN: 000", "")
 p("_t+1.10-1.60s, then → IDLE. Credits already reflect the 1-credit spin cost._")
 
 p("""### 8.13 OUTCOME — ABORTED (user pressed Esc mid-spin)
@@ -459,7 +459,7 @@ frame("ABORTED — frame 1: brake/jam (asymmetric blur, lever mid-track)", TITLE
       [False,False,False], 3, "esc pressed — brake engaged...", "")
 p("_t+0.00-0.30s_")
 frame("ABORTED — frame 2: settled, marquee reads INTERRUPTED, credit refunded", "I N T E R R U P T E D", "◆ ◆", "◆ ◆", ["—","—","—"], ["—","—","—"], ["—","—","—"],
-      [False,False,False], 4, "CREDITS: 097   spin refunded", "esc to interrupt")
+      [False,False,False], 4, "CREDITS: 097   spin refunded", "")
 p("_t+0.30-0.60s, hold ~0.4s, then → IDLE_")
 
 p("""### 8.14 OUTCOME — ERROR (the turn itself errored)
@@ -469,7 +469,7 @@ Same brake mechanic as ABORTED (the reel bank should never look fundamentally di
 frame("ERROR — frame 1: void blur (dim, uniform — reads as 'wrong', not 'stopped')", TITLE, "▓▒░", "░▒▓", ["░","░","░"], ["░","░","░"], ["░","░","░"],
       [False,False,False], 3, "hmm, something jammed...", "")
 frame("ERROR — frame 2: settled, marquee reads ERROR, credit refunded", "* * *  E R R O R  * * *", "░ ░", "░ ░", ["—","—","—"], ["—","—","—"], ["—","—","—"],
-      [False,False,False], 4, "CREDITS: 096   spin refunded", "esc to interrupt")
+      [False,False,False], 4, "CREDITS: 096   spin refunded", "")
 p("_hold ~0.4s, then → IDLE_")
 
 p("""### 8.15 RETURN TO IDLE
@@ -478,17 +478,17 @@ Every outcome hands off to the ordinary IDLE loop (§8.1) with two persistent ch
 """)
 frame("IDLE (post-JACKPOT) — last combo parked, credits updated, attract-mode resumes", TITLE, *BULB_A,
       [PROSE,DIFF,FILE], [CLAUDE,CLAUDE,CLAUDE], [TOOL,TOOL,TOOL],
-      [False,False,False], 0, "CREDITS: 346   LAST WIN: 250", "esc to interrupt")
+      [False,False,False], 0, "CREDITS: 346   LAST WIN: 250", "")
 
 p("""### 8.16 GRAND-size worked examples
 
 GRAND reuses the identical state machine; only the chassis substitution changes (7-char cells, 14-space left margin, 4th info-strip field). Two examples to demonstrate the scale-up pattern:
 """)
 gframe("GRAND — SPINNING (steady blur)", TITLE, "░▓▒▓░", "░▓▒▓░", ["▓","▓","▓"], ["▓","▓","▓"], ["▓","▓","▓"],
-       [False,False,False], 0, "SPINNING...  0:47   6.2k tok", "esc to interrupt")
+       [False,False,False], 0, "SPINNING...  0:47   6.2k tok", "")
 gframe("GRAND — JACKPOT (frame 1, flash)", "* * *   J A C K P O T   * * *", "☆★☆★☆★☆", "☆★☆★☆★☆",
        [PROSE,DIFF,FILE], [CLAUDE,CLAUDE,CLAUDE], [TOOL,TOOL,TOOL],
-       [True,True,True], 0, "CREDITS: 0346   LAST WIN: 0250   coin rain", "esc to interrupt")
+       [True,True,True], 0, "CREDITS: 0346   LAST WIN: 0250   coin rain", "")
 
 p("""### 8.17 COMPACT-size worked examples (outcome classes)
 """)
@@ -531,7 +531,7 @@ All values are foreground colors on the machine's dark ground (`bg #1B1912` / 25
 | Coins `●` (jackpot rain, and the `☼` TOKEN reel symbol) | `#F6C67D` | 222 | bold |
 | Sunburst `☆` (MEDALLION) | `#FFFFFF` | 231 | bold |
 | Info strip text | `#BDBEA9` | 249 | — |
-| "esc to interrupt" hint | `#8A7C5E` | 101 | dim |
+| Info-strip hint/accent text (e.g. lever `...`, `*** PAYOUT ***`, the `—` placeholder) | `#8A7C5E` | 101 | dim |
 | LOSE state (all symbols) | desaturate ~40% | nearest neutral | dim |
 | NEAR MISS "SO CLOSE..." | `#E9BD7F` | 180 | dim |
 | ABORTED brake blur / "INTERRUPTED" | `#9C9686` cool steel-gray | 246 | dim |
@@ -601,11 +601,11 @@ The `▐…▌` payline marker survives all the way down to this single permanen
 # =============================================================================
 p("""## 13. Width / alignment rules
 
-1. **Declared widths are hard limits, not targets.** STANDARD = 60 cols (58 interior), well inside the 62-col ceiling. GRAND = 80 cols (78 interior) at exactly 11 rows, inside the 80-col/9-11-row ceiling. COMPACT ≤ 40 cols (2-line) or ≤ 36 (1-line ultra-compact), no border.
+1. **Declared widths are hard limits, not targets.** STANDARD = 50 cols (48-col chassis + 2-col lever bay; 46 interior), well inside the 62-col ceiling. GRAND = 58 cols (56-col chassis + 2-col lever bay; 54 interior) at exactly 11 rows, well inside the 80-col/9-11-row ceiling. COMPACT ≤ 40 cols (2-line) or ≤ 36 (1-line ultra-compact), no border.
 2. **Every bordered frame is a true rectangle**: every line — border, marquee, separators, body rows, info strip — contains exactly the declared column count, achieved by centering/padding against the *interior* width (declared width minus 2 border columns), never by hand-counting spaces. This document's frames were built by `frames_lib.py` and every single one passed `assert_rect()` before being written here (§7 opening note).
 3. **Reel cells are fixed-width and glyph-agnostic**: 5-col interior STANDARD/COMPACT, 7-col GRAND. Every symbol string — `✻`, `♦`, `BAR`, `◆C◆` — is centered into that fixed width, never manually padded per symbol, so a symbol of any length up to the cell width never breaks alignment.
 4. **The payline row is the only row carrying the `▐…▌` block-bar flank** (replacing the outer box wall character only — internal cell walls are untouched). Every other row reserves the same width for a normal wall character, so the reel bank never shifts horizontally between rows or frames.
-5. **The lever column is a fixed single-glyph-wide vertical track**, 4 cols right of the reel bay (STANDARD/GRAND). Exactly one of its 5 rows shows the knob `●` at any instant; rows above it show the rod `│`; rows below show blank — a monotonic, easy-to-compute rule (§8.2).
+5. **The lever is a fixed single-glyph-wide rod/knob track mounted in its own 2-column bay immediately outside the chassis's right border** (STANDARD/GRAND) — its own mounted mechanism, not part of the boxed interior. Exactly one of its 5 rows shows the knob `●` at any instant; rows above it show the rod `│`; rows below show blank — a monotonic, easy-to-compute rule (§8.2).
 6. **Marquee and info-strip content are each one logical line**, produced by centering (marquee) or left/right-justify with a computed gap (info strip) against the interior width — never against the full bordered width, never by hand-typed spacing.
 7. **Only single-width glyphs appear inside a bordered cell.** Every glyph in this spec was checked with `unicodedata.east_asian_width()` and falls in {Na, N, A} — never {W, F}. CJK, most emoji, and combining marks must never appear in the default theme (§14 covers the opt-in exception).
 8. **COMPACT is exempt from the equal-line-width rule** (no border to break) but not from the single-width-glyph rule or its own column ceiling — every COMPACT/ULTRA-COMPACT line independently satisfies ≤40/≤36 columns.
@@ -637,7 +637,6 @@ p("""## 15. Implementation notes
 - One shared frame model — a grid of `{glyph, fg, bold, dim}` cells — drives both renderers. Tier 1 (in-TUI, 8-12fps, invalidate floor 100ms) consumes it as a `Box`/`Text` element tree; Tier 2 (statusLine, 1fps, raw ANSI) samples the same grid less often and never interpolates between frames (§11).
 - The outcome is decided **before** rendering starts (§4) — "spinning" is a fixed-duration-or-model-duration animation over a grid whose final state is already known. This is what makes STOPPING's stagger, the near-miss overshoot, and REVEAL's exact combo trivial to implement and unit-test.
 - Elapsed time and token count are the only two values that must update every tick of SPINNING without exception — the real "is this thing alive" signal; blur glints and bulb chases are texture on top.
-- `esc to interrupt` is present in the info strip from LEVER PULL through STOPPING; it drops once REVEAL starts (the model has already finished) and is replaced by outcome-specific text.
 - Golden-frame testing: every frame in this document is reproducible byte-for-byte by `frames_lib.py` — wire a test that renders each named frame and diffs it against the fenced block here; a mismatch is either a spec update that forgot to regenerate this document, or a renderer bug.
 - Files alongside this spec: `frames_lib.py` (pure builders), `gen.py` (dumps every frame + a rectangularity/width-glyph audit), `build_spec.py` (assembles and writes this document). Regenerate with `python3 build_spec.py` (writes `FINAL-ART-SPEC.md` in the working directory).
 """)

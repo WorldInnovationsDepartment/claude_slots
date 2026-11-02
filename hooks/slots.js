@@ -200,12 +200,24 @@ function stopTickerNow() {
   tickerRunning = false;
 }
 
-/** Schedules a ticker-stop `ms` from now, but only actually stops it if no newer spin has started meanwhile. */
-function scheduleTickerStop($, ms) {
-  const gen = spinGeneration;
-  $.clock.after(ms, () => {
-    if (gen === spinGeneration) stopTickerNow();
-  });
+/**
+ * Keeps the ticker running until this spin's animation has genuinely
+ * finished (machine.isAnimating false), then stops it, instead of a
+ * fixed-ms guess. A fixed guess previously only counted OUTCOME's own
+ * duration and forgot the STOPPING+REVEAL time that precedes it (~0.9-1s),
+ * so the ticker died ~400-500ms before the reveal actually finished,
+ * freezing the last stretch of every win/loss animation on a stale frame.
+ * `gen` (the spin generation captured when this poll started) lets a newer
+ * spin's own poll silently take over — see spinGeneration's other use in
+ * maybePullLever.
+ */
+function pollTickerStop($, gen) {
+  if (gen !== spinGeneration) return; // a newer spin now owns the ticker
+  if (liveState && machine.isAnimating(liveState, $.clock.now())) {
+    $.clock.after(200, () => pollTickerStop($, gen));
+    return;
+  }
+  stopTickerNow();
 }
 
 /** The pending timer that will clear the status line set by the most recent setTimedStatus() call. */
@@ -221,7 +233,7 @@ function clearStatus($) {
  * calls within `ms` of each other can't race: without this, an earlier
  * call's deferred clear could fire *after* a later call set new text,
  * wiping it out early (same "untracked timer" class of bug `tickerHandle`
- * is already careful about — see scheduleTickerStop above).
+ * is already careful about — see pollTickerStop above).
  */
 function setTimedStatus($, text, ms) {
   if (statusClearHandle) {
@@ -314,7 +326,18 @@ async function initSession($) {
 async function maybePullLever($, e) {
   if (!liveState) liveState = machine.createState({ startCredits: cfg.startCredits, theme: cfg.theme, grandEnabled: cfg.size === 'grand' });
   const now = $.clock.now();
-  if (machine.isAnimating(liveState, now)) return; // mid-spin: a queued prompt must not restart the animation
+  // Only refuse when a turn is genuinely still in flight (stop() hasn't
+  // landed yet) — Claude Code never fires prompt.submit for a new turn
+  // while one is still running, so this only guards a defensive double-fire
+  // of the same in-flight turn. It deliberately does NOT check
+  // machine.isAnimating(): that also covers the OUTCOME reveal that plays
+  // for a couple of seconds *after* stop() — blocking a new spin during
+  // that window silently dropped the next turn's entire visual result (see
+  // handleTurnComplete's own stopAt-not-null guard below), which is what
+  // made fast back-to-back turns look "frozen" with no win/loss animation.
+  // Once a spin is stopped its economics are already final, so a new lever
+  // pull is always safe to cut its cosmetic reveal short.
+  if (liveState.leverAt != null && liveState.stopAt == null) return;
   const sessionId = await $.session.id();
   const turnCount = await $.session.turnCount();
   const seed = hashSeed(sessionId + ':' + turnCount + ':' + now);
@@ -337,12 +360,6 @@ async function handleTurnComplete($, e) {
   await saveEconomy($, liveState.economy);
 
   const outcomeClass = e.reason === 'aborted' ? 'ABORTED' : e.reason === 'error' ? 'ERROR' : liveState.outcome.outcomeClass;
-  const tier = liveState.outcome.tier;
-  const animMs = e.reason === 'aborted'
-    ? machine.TIMINGS.jamMs
-    : e.reason === 'error'
-      ? machine.TIMINGS.malfunctionMs
-      : machine.TIMINGS.outcomeMs(outcomeClass, tier);
 
   if (e.reason === 'aborted') {
     notifyAborted($);
@@ -351,7 +368,7 @@ async function handleTurnComplete($, e) {
   }
   maybePlaySound($, outcomeSoundKind(outcomeClass));
 
-  scheduleTickerStop($, animMs + 500);
+  pollTickerStop($, spinGeneration);
 }
 
 // ---------------------------------------------------------------------------
@@ -436,7 +453,7 @@ export function register(on, options) {
       const now = $.clock.now();
       const columns = e.viewport ? e.viewport.columns : undefined;
       const elapsedMs = liveState.leverAt != null ? Math.max(0, now - liveState.leverAt) : 0;
-      const info = { elapsedMs, mode: e.props.mode, tokens: null, hint: 'esc to interrupt', toolPulseAt };
+      const info = { elapsedMs, mode: e.props.mode, tokens: null, toolPulseAt };
       const built = machine.frame(liveState, now, { size: cfg.size, columns, info });
       return renderTree(built);
     } catch (err) {
@@ -474,7 +491,7 @@ export function register(on, options) {
       const maxRows = e.props.maxRows;
       const size = resolveAboveSize(cfg.idle, columns, maxRows);
       const elapsedMs = liveState.leverAt != null ? Math.max(0, now - liveState.leverAt) : 0;
-      const info = { elapsedMs, tokens: null, hint: 'esc to interrupt' };
+      const info = { elapsedMs, tokens: null };
       const built = machine.frame(liveState, now, { size, columns, maxRows, info });
       return renderTree(built);
     } catch (err) {

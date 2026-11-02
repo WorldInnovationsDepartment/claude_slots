@@ -1582,11 +1582,14 @@ __modules["./art.js"] = (function () {
   // Chassis geometry (§7)
   // ---------------------------------------------------------------------------
   
-  const STANDARD_GEO = Object.freeze({ width: 60, interior: 58, leftMargin: 10, cellW: 5, gap: 1, leverGap: 4 });
-  const GRAND_GEO = Object.freeze({ width: 80, interior: 78, leftMargin: 14, cellW: 7, gap: 1, leverGap: 4 });
+  const STANDARD_GEO = Object.freeze({ width: 48, interior: 46, leftMargin: 10, cellW: 5, gap: 1 });
+  const GRAND_GEO = Object.freeze({ width: 56, interior: 54, leftMargin: 14, cellW: 7, gap: 1 });
   const COMPACT_WIDTH = 40;
   
-  const TITLE = '✻';
+  /** Extra columns appended OUTSIDE the chassis's right border for the lever arm — reads as its own mounted mechanism, not part of the boxed interior. */
+  const LEVER_BAY_WIDTH = 2; // 1 gap column + 1 rod/knob column
+  
+  const TITLE = 'Lucky Prompt';
   
   function roleStyle(role) {
     const s = { color: role.hex };
@@ -1766,23 +1769,35 @@ __modules["./art.js"] = (function () {
   // layout (the same class of multi-span, gapped line) can reuse it too.
   const CHASSIS_FILL_STYLE = Object.freeze({ bg: COLORS.background.hex });
   
+  function leverBaySpans(glyph) {
+    // Explicit CHASSIS_FILL_STYLE bg even out here (not just inside the box):
+    // see that constant's own comment above it — an unstyled space run risks
+    // the exact stale-transcript-content bug documented in
+    // docs/ARCHITECTURE.md §4.1, which is why every chassis interior cell
+    // already carries an explicit background. Always exactly LEVER_BAY_WIDTH
+    // columns whether or not a glyph is present, so every line stays the same
+    // total width.
+    if (!glyph) return [span('  ', CHASSIS_FILL_STYLE)];
+    return [span(' ', CHASSIS_FILL_STYLE), span(glyph.ch, { ...glyph.style, bg: CHASSIS_FILL_STYLE.bg })];
+  }
+  
   /** @param {typeof STANDARD_GEO} geo @param {BoxParams} p */
   function buildBoxFrame(geo, p) {
     const { width, interior, leftMargin } = geo;
-    const fr = makeFrame(width);
+    const fr = makeFrame(width + LEVER_BAY_WIDTH);
     const borderStyle = roleStyle(p.outerHot ? COLORS.chassisBorderHot : COLORS.chassisBorderIdle);
     const wrap = (interiorSpans) => line(span('║', borderStyle), ...interiorSpans, span('║', borderStyle));
     const composeInterior = (placements) => compose(interior, placements, { fillStyle: CHASSIS_FILL_STYLE });
+    const pushLine = (boxSpans, leverGlyph) => fr.lines.push(line(boxSpans, leverBaySpans(leverGlyph)));
   
-    fr.lines.push(line(span('╔' + '═'.repeat(interior) + '╗', borderStyle)));
+    pushLine(line(span('╔' + '═'.repeat(interior) + '╗', borderStyle)), null);
   
     const marqueePlacements = [];
     pushMarquee(marqueePlacements, geo, p.marqueeText, p.bulbsLeft, p.bulbsRight, p.bulbMode || 'bulbs', p.marqueeStyle);
-    fr.lines.push(wrap(composeInterior(marqueePlacements)));
+    pushLine(wrap(composeInterior(marqueePlacements)), null);
   
-    fr.lines.push(line(span('╠' + '═'.repeat(interior) + '╣', borderStyle)));
+    pushLine(line(span('╠' + '═'.repeat(interior) + '╣', borderStyle)), null);
   
-    const leverCol = leftMargin + 3 * (geo.cellW + 2) + 2 * geo.gap + geo.leverGap;
     const knobStyle = roleStyle(COLORS.bulbLit);
     const rodStyle = roleStyle(COLORS.reelFrameIdle);
     const leverGlyphFor = (row) => {
@@ -1798,18 +1813,16 @@ __modules["./art.js"] = (function () {
     for (let row = 0; row < 5; row++) {
       const placements = [];
       pushReelRow(placements, leftMargin, geo, rowKinds[row], rowEntries[row], p.hotCols, row === 2, bodyOpts);
-      const lg = leverGlyphFor(row);
-      if (lg) placements.push({ col: leverCol, text: lg.ch, style: lg.style });
-      fr.lines.push(wrap(composeInterior(placements)));
+      pushLine(wrap(composeInterior(placements)), leverGlyphFor(row));
     }
   
-    fr.lines.push(line(span('╠' + '═'.repeat(interior) + '╣', borderStyle)));
+    pushLine(line(span('╠' + '═'.repeat(interior) + '╣', borderStyle)), null);
   
     const infoPlacements = [];
     pushInfoStrip(infoPlacements, geo, p.infoLeft, p.infoRight);
-    fr.lines.push(wrap(composeInterior(infoPlacements)));
+    pushLine(wrap(composeInterior(infoPlacements)), null);
   
-    fr.lines.push(line(span('╚' + '═'.repeat(interior) + '╝', borderStyle)));
+    pushLine(line(span('╚' + '═'.repeat(interior) + '╝', borderStyle)), null);
   
     return assertRect(fr);
   }
@@ -1952,20 +1965,6 @@ __modules["./art.js"] = (function () {
     return `CREDITS: ${fmtCredits(credits, size)}   LAST WIN: ${fmtCredits(lastWin, size)}`;
   }
   
-  function recentText(recent) {
-    const slots = [];
-    for (let i = 0; i < 3; i++) {
-      const r = recent && recent[i];
-      if (!r || !r.symbols) {
-        slots.push('---');
-        continue;
-      }
-      const glyphs = r.symbols.map((id) => getSymbol(id).glyph);
-      slots.push(glyphs.every((g) => g === glyphs[0]) ? glyphs.join('') : glyphs.join('-'));
-    }
-    return slots.join(' ');
-  }
-  
   // ---------------------------------------------------------------------------
   // Phase -> BoxParams resolvers. Each returns a params object consumable by
   // buildStandardFrame/buildGrandFrame directly (size-independent content).
@@ -1978,16 +1977,11 @@ __modules["./art.js"] = (function () {
       : [DEFAULT_TOP, DEFAULT_PAY, DEFAULT_BOT];
     const [bl, br] = ctx.size === 'grand' ? grandBulbPair(ctx.now ?? ctx.t) : bulbPair(ctx.now ?? ctx.t);
     const onTheHouse = ctx.economy.credits <= 0;
-    let infoLeft = normalInfo(ctx.size, ctx.economy.credits, ctx.economy.lastWin, onTheHouse);
-    if (ctx.size === 'grand') {
-      infoLeft = onTheHouse
-        ? infoLeft
-        : `CREDITS: ${fmtCredits(ctx.economy.credits, 'grand')}   LAST WIN: ${fmtCredits(ctx.economy.lastWin, 'grand')}   RECENT: ${recentText(ctx.economy.stats && ctx.economy.stats.recent)}`;
-    }
+    const infoLeft = normalInfo(ctx.size, ctx.economy.credits, ctx.economy.lastWin, onTheHouse);
     return {
       marqueeText: TITLE, bulbsLeft: bl, bulbsRight: br, bulbMode: 'bulbs',
       topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, tone: 'normal', theme: ctx.theme,
-      knobRow: 0, infoLeft, infoRight: 'esc to interrupt',
+      knobRow: 0, infoLeft, infoRight: '',
     };
   }
   
@@ -2013,7 +2007,7 @@ __modules["./art.js"] = (function () {
     return {
       marqueeText: TITLE, bulbsLeft: f.bulbs, bulbsRight: f.bulbs, bulbMode: 'blur',
       topSyms: f.top, paySyms: f.pay, botSyms: f.bot, hotCols: NO_HOT,
-      knobRow: f.knobRow, infoLeft: 'SPINNING...  0:00   0 tok', infoRight: 'esc to interrupt',
+      knobRow: f.knobRow, infoLeft: 'SPINNING...  0:00   0 tok', infoRight: '',
     };
   }
   
@@ -2031,7 +2025,7 @@ __modules["./art.js"] = (function () {
     const elapsedMs = info.elapsedMs ?? t;
     const tokens = info.tokens ?? 0;
     const infoLeft = `SPINNING...  ${fmtElapsed(elapsedMs)}   ${fmtTokens(tokens)} tok`;
-    const infoRight = 'esc to interrupt';
+    const infoRight = '';
     const glintPos = t % GLINT_PERIOD_MS;
     if (glintPos < GLINT_SUB_MS * 3) {
       const f = GLINT_SWEEPS[Math.floor(glintPos / GLINT_SUB_MS)];
@@ -2078,7 +2072,7 @@ __modules["./art.js"] = (function () {
     return {
       marqueeText: TITLE, bulbsLeft: hot.some(Boolean) ? '★●★●★' : '●●●●●', bulbsRight: hot.some(Boolean) ? '★●★●★' : '●●●●●', bulbMode: 'bulbs',
       topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: false,
-      infoLeft: normalInfo(size, creditsBefore, 0, false), infoRight: 'esc to interrupt',
+      infoLeft: normalInfo(size, creditsBefore, 0, false), infoRight: '',
     };
   }
   
@@ -2093,11 +2087,11 @@ __modules["./art.js"] = (function () {
     const hot = [true, true, true];
     if (t < 100) {
       const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
-      return { marqueeText: '* * *  J A C K P O T  * * *', bulbsLeft: '★★★★★', bulbsRight: '★★★★★', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+      return { marqueeText: '* * *  J A C K P O T  * * *', bulbsLeft: '★★★★★', bulbsRight: '★★★★★', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
     }
     if (t < 900) {
       const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
-      return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: '  ●   ●', bulbsRight: '●   ●  ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+      return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: '  ●   ●', bulbsRight: '●   ●  ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
     }
     if (t < 1900) {
       const tick = (t - 900) / 1000;
@@ -2105,7 +2099,7 @@ __modules["./art.js"] = (function () {
       return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: ' ●  ● ', bulbsRight: ' ●  ●', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '*** PAYOUT ***' };
     }
     const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 1);
-    return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: '  ●  ', bulbsRight: '  ●  ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    return { marqueeText: 'J A C K P O T ! ! !', bulbsLeft: '  ●  ', bulbsRight: '  ●  ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
   }
   
   function outcomeMedallion(t, o, creditsBefore, size) {
@@ -2114,13 +2108,13 @@ __modules["./art.js"] = (function () {
     const tick = t < 200 ? 0 : 1;
     const { credits, lastWin } = tickCredits(creditsBefore, o.payout, tick);
     if (t < 200) {
-      return { marqueeText: 'S I G N A T U R E   C O M B O', bulbsLeft: '☆●☆●☆', bulbsRight: '☆●☆●☆', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+      return { marqueeText: 'S I G N A T U R E   C O M B O', bulbsLeft: '☆●☆●☆', bulbsRight: '☆●☆●☆', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
     }
     if (t < 1200) {
       const sweepA = Math.floor(t / 200) % 2 === 0;
-      return { marqueeText: 'C L A U D E !', bulbsLeft: sweepA ? '  ☆    ' : '    ☆  ', bulbsRight: sweepA ? '    ☆  ' : '  ☆    ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+      return { marqueeText: 'C L A U D E !', bulbsLeft: sweepA ? '  ☆    ' : '    ☆  ', bulbsRight: sweepA ? '    ☆  ' : '  ☆    ', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
     }
-    return { marqueeText: 'S I G N A T U R E   C O M B O', bulbsLeft: '☆★☆★☆', bulbsRight: '☆★☆★☆', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    return { marqueeText: 'S I G N A T U R E   C O M B O', bulbsLeft: '☆★☆★☆', bulbsRight: '☆★☆★☆', bulbMode: 'decor', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
   }
   
   function outcomeTriple(t, o, creditsBefore, total, size) {
@@ -2130,11 +2124,11 @@ __modules["./art.js"] = (function () {
     if (t < pulseEnd) {
       const bright = Math.floor(t / 180) % 2 === 0;
       const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
-      return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: bright ? [true, true, true] : [false, false, false], knobRow: 0, outerHot: bright, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+      return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: bright ? [true, true, true] : [false, false, false], knobRow: 0, outerHot: bright, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
     }
     const tick = t < tickEnd ? (t - pulseEnd) / (tickEnd - pulseEnd) : 1;
     const { credits, lastWin } = tickCredits(creditsBefore, o.payout, tick);
-    return { marqueeText: TITLE, bulbsLeft: '●●●●●', bulbsRight: '●●●●●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: [true, true, true], knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    return { marqueeText: TITLE, bulbsLeft: '●●●●●', bulbsRight: '●●●●●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: [true, true, true], knobRow: 0, outerHot: true, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
   }
   
   function outcomeDouble(t, o, creditsBefore, size) {
@@ -2142,42 +2136,42 @@ __modules["./art.js"] = (function () {
     const hot = hotColsFor(o);
     if (t < 300) {
       const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 0);
-      return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+      return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: hot, knobRow: 0, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
     }
     const { credits, lastWin } = tickCredits(creditsBefore, o.payout, 1);
-    return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0, infoLeft: normalInfo(size, credits, lastWin), infoRight: 'esc to interrupt' };
+    return { marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0, infoLeft: normalInfo(size, credits, lastWin), infoRight: '' };
   }
   
   function outcomeNearMiss(t, o, creditsBefore, size) {
     const [top, pay, bot] = gridRows(o);
     const base = { topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0, tone: 'normal' };
     const info = normalInfo(size, creditsBefore, 0);
-    if (t < 450) return { ...base, marqueeText: TITLE, bulbsLeft: '●●●●●', bulbsRight: '●●●●●', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
-    if (t < 1350) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: 'SO CLOSE...', infoRight: 'esc to interrupt' };
-    return { ...base, marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
+    if (t < 450) return { ...base, marqueeText: TITLE, bulbsLeft: '●●●●●', bulbsRight: '●●●●●', bulbMode: 'bulbs', infoLeft: info, infoRight: '' };
+    if (t < 1350) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: 'SO CLOSE...', infoRight: '' };
+    return { ...base, marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', infoLeft: info, infoRight: '' };
   }
   
   function outcomeLose(t, o, creditsBefore, size) {
     const [top, pay, bot] = gridRows(o);
     const base = { topSyms: top, paySyms: pay, botSyms: bot, hotCols: NO_HOT, knobRow: 0, tone: 'dim' };
     const info = normalInfo(size, creditsBefore, 0);
-    if (t < 500) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
+    if (t < 500) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: info, infoRight: '' };
     if (t < 1100) return { ...base, marqueeText: TITLE, bulbsLeft: '○○○○○', bulbsRight: '○○○○○', bulbMode: 'bulbs', infoLeft: 'no dice, spin again?  o_o', infoRight: '' };
-    return { ...base, tone: 'normal', marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', infoLeft: info, infoRight: 'esc to interrupt' };
+    return { ...base, tone: 'normal', marqueeText: TITLE, bulbsLeft: '●○●○●', bulbsRight: '●○●○●', bulbMode: 'bulbs', infoLeft: info, infoRight: '' };
   }
   
   function jamParams(t, creditsAfter, size) {
     if (t < 300) {
       return { marqueeText: TITLE, bulbsLeft: '▓▒░', bulbsRight: '░▒▓', bulbMode: 'brake', topSyms: ['▓', '░', '▒'], paySyms: ['▒', '▓', '░'], botSyms: ['░', '▒', '▓'], hotCols: NO_HOT, knobRow: 3, infoLeft: 'esc pressed — brake engaged...', infoRight: '' };
     }
-    return { marqueeText: 'I N T E R R U P T E D', marqueeStyle: roleStyle(COLORS.abortedText), bulbsLeft: '◆ ◆', bulbsRight: '◆ ◆', bulbMode: 'decor', topSyms: ['—', '—', '—'], paySyms: ['—', '—', '—'], botSyms: ['—', '—', '—'], hotCols: NO_HOT, knobRow: 4, infoLeft: `CREDITS: ${fmtCredits(creditsAfter, size)}   spin refunded`, infoRight: 'esc to interrupt' };
+    return { marqueeText: 'I N T E R R U P T E D', marqueeStyle: roleStyle(COLORS.abortedText), bulbsLeft: '◆ ◆', bulbsRight: '◆ ◆', bulbMode: 'decor', topSyms: ['—', '—', '—'], paySyms: ['—', '—', '—'], botSyms: ['—', '—', '—'], hotCols: NO_HOT, knobRow: 4, infoLeft: `CREDITS: ${fmtCredits(creditsAfter, size)}   spin refunded`, infoRight: '' };
   }
   
   function malfunctionParams(t, creditsAfter, size) {
     if (t < 300) {
       return { marqueeText: TITLE, bulbsLeft: '▓▒░', bulbsRight: '░▒▓', bulbMode: 'void', topSyms: ['░', '░', '░'], paySyms: ['░', '░', '░'], botSyms: ['░', '░', '░'], hotCols: NO_HOT, knobRow: 3, infoLeft: 'hmm, something jammed...', infoRight: '' };
     }
-    return { marqueeText: '* * *  E R R O R  * * *', marqueeStyle: roleStyle(COLORS.errorText), bulbsLeft: '░ ░', bulbsRight: '░ ░', bulbMode: 'void', topSyms: ['—', '—', '—'], paySyms: ['—', '—', '—'], botSyms: ['—', '—', '—'], hotCols: NO_HOT, knobRow: 4, infoLeft: `CREDITS: ${fmtCredits(creditsAfter, size)}   spin refunded`, infoRight: 'esc to interrupt' };
+    return { marqueeText: '* * *  E R R O R  * * *', marqueeStyle: roleStyle(COLORS.errorText), bulbsLeft: '░ ░', bulbsRight: '░ ░', bulbMode: 'void', topSyms: ['—', '—', '—'], paySyms: ['—', '—', '—'], botSyms: ['—', '—', '—'], hotCols: NO_HOT, knobRow: 4, infoLeft: `CREDITS: ${fmtCredits(creditsAfter, size)}   spin refunded`, infoRight: '' };
   }
   
   /** Resolve the full BoxParams for a given (phase, t, outcome, ...) — size-independent. */
@@ -2243,7 +2237,6 @@ __modules["./art.js"] = (function () {
     '—': () => ({ color: COLORS.abortedText.hex, dim: true }),
   };
   const GLYPH_TOKENS_SORTED = Object.keys(GLYPH_COLOR).sort((a, b) => b.length - a.length);
-  const HINT_TOKENS = ['esc to interrupt', 'esc:x'];
   
   function colorizeCompactText(text) {
     const spans = [];
@@ -2253,15 +2246,6 @@ __modules["./art.js"] = (function () {
       if (end > plainStart) spans.push(span(text.slice(plainStart, end), roleStyle(COLORS.infoText)));
     };
     outer: while (i < text.length) {
-      for (const hint of HINT_TOKENS) {
-        if (text.startsWith(hint, i)) {
-          flushPlain(i);
-          spans.push(span(hint, roleStyle(COLORS.hintText)));
-          i += hint.length;
-          plainStart = i;
-          continue outer;
-        }
-      }
       for (const tok of GLYPH_TOKENS_SORTED) {
         if (text.startsWith(tok, i)) {
           flushPlain(i);
@@ -2305,7 +2289,7 @@ __modules["./art.js"] = (function () {
     const cr = fmtCredits(ctx.economy.credits, 'compact');
     const win = fmtCredits(ctx.economy.lastWin, 'compact');
     const line1 = `✻   ♦ BAR ✻   cr:${cr}`;
-    const line2 = onTheHouse ? `ON THE HOUSE         esc to interrupt` : `win:${win}              esc to interrupt`;
+    const line2 = onTheHouse ? `ON THE HOUSE` : `win:${win}`;
     return [compactTextLine(line1, width), compactTextLine(line2, width)];
   }
   
@@ -2314,7 +2298,7 @@ __modules["./art.js"] = (function () {
     const tokens = (ctx.info && ctx.info.tokens) ?? 0;
     const cr = fmtCredits(ctx.economy.credits, 'compact');
     const line1 = `✻  [▓▓▓ spinning]  cr:${cr}`;
-    const line2 = `${fmtElapsed(elapsedMs)}  ${fmtTokens(tokens)} tok      esc to interrupt`;
+    const line2 = `${fmtElapsed(elapsedMs)}  ${fmtTokens(tokens)} tok`;
     return [compactTextLine(line1, width), compactTextLine(line2, width)];
   }
   
@@ -2347,13 +2331,13 @@ __modules["./art.js"] = (function () {
       const elapsedMs = (ctx.info && ctx.info.elapsedMs) ?? ctx.t;
       const tokens = (ctx.info && ctx.info.tokens) ?? 0;
       const cr = fmtCredits(ctx.economy.credits, 'compact');
-      return [compactTextLine(`[spinning ${fmtElapsed(elapsedMs)} ${fmtTokens(tokens)} tok] cr:${cr} esc:x`, width)];
+      return [compactTextLine(`[spinning ${fmtElapsed(elapsedMs)} ${fmtTokens(tokens)} tok] cr:${cr}`, width)];
     }
     const onTheHouse = ctx.economy.credits <= 0;
     const cr = fmtCredits(ctx.economy.credits, 'compact');
     const win = fmtCredits(ctx.economy.lastWin, 'compact');
     const status = onTheHouse ? 'ON THE HOUSE' : `cr:${cr} win:${win}`;
-    return [compactTextLine(`♦ BAR ✻ * ${status} * esc:x`, width)];
+    return [compactTextLine(`♦ BAR ✻ * ${status} *`, width)];
   }
   
   function buildCompactFrame(linesArr, width = COMPACT_WIDTH) {
@@ -2390,7 +2374,7 @@ __modules["./art.js"] = (function () {
   }
   
 
-  return { LEVER_DURATION_MS, SPINUP_DURATION_MS, STOPPING_STAGGER_MS, OVERSHOOT_MS, REVEAL_DURATION_MS, JAM_DURATION_MS, MALFUNCTION_DURATION_MS, OUTCOME_DURATIONS_MS, outcomeDurationMs, COMPACT_WIDTH, TITLE, roleStyle, isSymbolId, CHASSIS_FILL_STYLE, buildStandardFrame, buildGrandFrame, resultLine, resolveParams, renderFrame, frameToPlainText };
+  return { LEVER_DURATION_MS, SPINUP_DURATION_MS, STOPPING_STAGGER_MS, OVERSHOOT_MS, REVEAL_DURATION_MS, JAM_DURATION_MS, MALFUNCTION_DURATION_MS, OUTCOME_DURATIONS_MS, outcomeDurationMs, COMPACT_WIDTH, LEVER_BAY_WIDTH, TITLE, roleStyle, isSymbolId, CHASSIS_FILL_STYLE, buildStandardFrame, buildGrandFrame, resultLine, resolveParams, renderFrame, frameToPlainText };
 })();
 
 __modules["./machine.js"] = (function () {
